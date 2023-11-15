@@ -40,7 +40,6 @@ class Physique():
         self.space.debug_draw(self.draw_option)
         self.space.step(0.01)
 
-    self.space.add(rails)
 
 
 class Spline():
@@ -61,31 +60,70 @@ class Spline():
         self.curve.degree = d
         self.degree=d
 
-def main():
-    pygame.init()
-    screen = pygame.display.set_mode((600, 600))
-    pygame.display.set_caption("Maybe an Attraction")
-    clock = pygame.time.Clock()
+class Canvas():
+    def __init__(self,screen):
+        self.screen = screen
+        self.curve = Spline()
+        self.physics = Physics(self.screen)
+        #self.physics.add_circle(400,700)
+        self.ctrl_points=[]
+        self.count=0
+        self.selected=None
+        self.move_point=False
+        self.add_mode=0
+        
+        self.add_button = (20,460,50,20)
+        self.del_button = (90,460,50,20)
+        self.sel_button = (160,460,50,20)
+        self.hide_button = (230,460,50,20)
+        self.play_button = (300,460,50,20)
+        
+        self.edit_button = (20,460,50,20)
+        
+    def add_points(self,xy):
+        self.ctrl_points.append(xy)
+    
+    def render(self):
+        if cfg.edit_mode:
+            if cfg.show_points:
+                if self.count>=2:
+                    pygame.draw.lines(self.screen,(100,100,100),0,self.ctrl_points)
+                for i,point in enumerate(self.ctrl_points):
+                    if i==0:
+                        pygame.draw.circle(self.screen,(0,140,200),point,5)
+                    elif i==self.selected:
+                        pygame.draw.circle(self.screen,(20,200,80),point,5)
+                    else:
+                        pygame.draw.circle(self.screen,(140,140,140),point,5)
+            if self.count>=self.curve.degree+1:
+                pygame.draw.lines(self.screen,cfg.color,0,self.curve.points,width=cfg.width)
+        self.button_render()
 
-    space = pymunk.Space() 
-    space.gravity = (0.0, 900.0)
+def move(self,xy):
+        if self.move_point:
+            self.ctrl_points.pop(self.selected)
+            self.ctrl_points.insert(self.selected,xy)
+            if self.count>=self.curve.degree+1:
+                self.curve.draw(self.ctrl_points)
+                
+            return True
+    def simulate(self):
+        self.physics.run()
 
-    add_rails(space)
-    draw_options = pymunk.pygame_util.DrawOptions(screen)
-
+if __name__=="__main__":
+    screen = pygame.display.set_mode((500,500))
+    canvas = Canvas(screen)
+    def update():
+        screen.fill(cfg.fill)
+        canvas.simulate()
+        canvas.render()
+        pygame.display.update()
+                    
+    update()
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                sys.exit(0)
-            elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                sys.exit(0)
-
-        screen.fill((255,255,255))
-        space.debug_draw(draw_options)
-        space.step(1/50.0) 
-
-        pygame.display.flip()
-        clock.tick(50)
-
-if __name__ == '__main__':
-    sys.exit(main())
+                pygame.quit()
+                sys.exit()
+        update()
+    
