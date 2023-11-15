@@ -40,8 +40,7 @@ class Physique():
         self.space.debug_draw(self.draw_option)
         self.space.step(0.01)
 
-    space.add(rails)
-    return rail_simple
+    self.space.add(rails)
 
 
 class Spline():
