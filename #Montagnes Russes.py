@@ -5,30 +5,27 @@ import pygame
 import pymunk
 import pymunk.pygame_util
 
-
 from geomdl import BSpline
 
-# Create a 3-dimensional B-spline Curve
-curve = BSpline.Curve()
-# Set degree
-curve.degree = 3
-# Set control points
-curve.ctrlpts = [[10, 5, 10], [10, 20, -30], [40, 10, 25], [-10, 5, 0]]
-# Set knot vector
-curve.knotvector = [0, 0, 0, 0, 1, 1, 1, 1]
-# Set evaluation delta (controls the number of curve points)
-curve.delta = 0.05
-# Get curve points (the curve will be automatically evaluated)
-curve_points = curve.evalpts
 
-def add_rails(space):
-    rails = pymunk.Body(body_type = pymunk.Body.STATIC)
-    rails.position = (300, 300)
-    rail_simple = pymunk.Segment(rails, (-150, 0), (255, 0), 5)
-    rail_simple.friction = 1
-    
+rails = BSpline.Curve()# Create a 3-dimensional B-spline Curve
+rails.degree = 3# Set degree
+rails.ctrlpts = [[10, 5, 10], [10, 20, -30], [40, 10, 25], [-10, 5, 0]]# Set control points
+rails.knotvector = [0, 0, 0, 0, 1, 1, 1, 1]# Set knot vector
+rails.delta = 0.05# Set evaluation delta (controls the number of curve points)
+rails_points = rails.evalpts# Get curve points (the curve will be automatically evaluated)
+class GeneratingRails():
+    def add_rails(space):
+        rails = pymunk.Body(body_type = pymunk.Body.STATIC)
+        rails.position = (300, 300)
+        for i,p in enumerate(bspline[:-1]):
+            rails = pymunk.Segment(self.space.static_body,p, bspline[i+1], 1)
+            rails.elasticity = 1
+            self.space.add(rails)
+
     space.add(rails, rail_simple)
     return rail_simple
+
 
 def main():
     pygame.init()
