@@ -51,24 +51,17 @@ class Wagon:
         DampedSpring(space, chassis.body, wheel3.body,
                      v5, (0, 0), L/6, tension_ressort, 70)
 
-       #Ajout des attributs utiles
+        # Ajout des attributs utiles
 
-       self.wheel1 = wheel1
-       self.wheel2 = wheel2
-       self.wheel3 = wheem3
-       self.chassis  = chassis
+        self.wheel1 = wheel1
+        self.wheel2 = wheel2
+        self.wheel3 = wheem3
+        self.chassis = chassis
 
+    # définitions des getters
 
-    #définitions des getters
-    
-    def get_wheel1(self):
-          return (self.wheel1)
-    def get_wheel2(self):
-          return (self.wheel2)
-    def get_wheel3(self):
-          return (self.wheel3)
+    def get_all_wheels(self):
+        return (self.wheel1, self.wheel2, self.wheel3)
+
     def get_chassis(self):
-          return (self.chassis)
-    
-
-      
+        return (self.chassis)
