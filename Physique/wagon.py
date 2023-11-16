@@ -9,7 +9,7 @@ import random
 random.seed(1)
 
 
-class wagon:
+class Wagon:
     """wagon(space, Mass, L, h, position_init) will create a wagon of mass M, lenght L,
 
       height h and starting position of the center of the body.Tension sets the force of the spring.
@@ -22,7 +22,8 @@ class wagon:
 
         # creation faculatative d'une ligne de départ sous le wagon
 
-        # Start_line(space, (position_init[0]-(L/2+10), position_init[1]+50),(position_init[0]+L/2+10, position_init[1]+50))
+        Start_line(space, (position_init[0]-(L/2+10), position_init[1]+50),
+                   (position_init[0]+L/2+10, position_init[1]+50))
 
         # repartition des masses
 
