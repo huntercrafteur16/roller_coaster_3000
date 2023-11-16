@@ -9,25 +9,39 @@ random.seed(1)
 # Création du pendule
 
 
-def wagon(space):
+def add_wagon(space):
     wagon = pymunk.Body()
     wagon_shape = pymunk.Poly(
         wagon, [(-20, -20), (-20, 20), (20, 20), (20, -20)])
     wagon.position = (50, 50)
     wagon_shape.mass = 1
     wagon_shape.friction = 1
+    wagon.velocity = (20, 0)
     space.add(wagon, wagon_shape)
+    return wagon
 
+# Création section parabole
+
+
+def création_section(space):
+    segments = {i: ([300 + i*20, 300 + (i*20)**2], [300 + (i+1)
+                    * 20, 300 + ((i+1)*20)**2]) for i in range(-5, 6)}
     ligne = pymunk.Body(body_type=pymunk.Body.STATIC)
-    ligne_shape1 = pymunk.Segment(ligne, [100, 200], [200, 400], 10)
-    ligne_shape2 = pymunk.Segment(ligne, [200, 400], [400, 400], 10)
-    ligne_shape3 = pymunk.Segment(ligne, [400, 400], [500, 200], 10)
-    space.add(ligne, ligne_shape1, ligne_shape2, ligne_shape3)
+    space.add(ligne)
+    for i, segment in segments.items():
+        ligne_shape = pymunk.Segment(ligne, segment[0], segment[1], 5)
+        space.add(ligne_shape)
+    position_x_to_indice = {segments[i][0][0]: i for i in range(-5, 6)}
+    return ligne, segments, position_x_to_indice
 
-    joint = pymunk.GrooveJoint(ligne, wagon, [100, 200], [200, 400], [0, 0])
+# Création de la liaison
+
+
+def création_liaison(space, ligne, segments, wagon, i):
+    joint = pymunk.GrooveJoint(
+        ligne, wagon, segments[i][0], segments[i][1], [0, 0])
     joint.collide_bodies = False
-    space.add(joint)
-    return
+    return joint
 
 # main
 
@@ -41,7 +55,11 @@ def main():
     space = pymunk.Space()
     space.gravity = (0.0, 100.0)
     draw_options = pymunk.pygame_util.DrawOptions(screen)
-    wagon(space)
+    wagon = add_wagon(space)
+    ligne, segments, position_x_to_indice = création_section(
+        space)
+    joint = création_liaison(space, ligne, segments, wagon, 0)
+    space.add(joint)
 
     while True:
         for event in pygame.event.get():
@@ -49,6 +67,12 @@ def main():
                 sys.exit(0)
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 sys.exit(0)
+
+        if wagon.position in position_x_to_indice.keys():
+            space.remove(joint)
+            joint = création_liaison(
+                space, ligne, segments, wagon, position_x_to_indice[wagon.position])
+            space.add(joint)
 
         screen.fill((255, 255, 255))
         space.debug_draw(draw_options)
