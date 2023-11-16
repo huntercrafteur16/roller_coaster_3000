@@ -26,7 +26,7 @@ class Wagon:
         # creation faculatative d'une ligne de départ sous le wagon
 
         Start_line(space, (position_init[0]-(L/2+10), position_init[1]+50),
-                   (position_init[0]+L/2+10, position_init[1]+50))
+                   (position_init[0]+L/2+100, position_init[1]+70))
 
         # repartition des masses
 
