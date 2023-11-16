@@ -53,15 +53,15 @@ class Wagon:
 
         # Ajout des attributs utiles
 
-        self.wheel1 = wheel1
-        self.wheel2 = wheel2
-        self.wheel3 = wheem3
-        self.chassis = chassis
+        self.w1 = wheel1.shape
+        self.w2 = wheel2.shape
+        self.w3 = wheel3.shape
+        self.c = chassis.body
 
     # définitions des getters
 
-    def get_all_wheels(self):
-        return (self.wheel1, self.wheel2, self.wheel3)
+    def get_all_wheels_shape(self):
+        return (self.w1, self.w2, self.w3)
 
-    def get_chassis(self):
-        return (self.chassis)
+    def get_chassis_body(self):
+        return (self.c)
