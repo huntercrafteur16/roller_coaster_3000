@@ -13,7 +13,7 @@ from typing import List
 from wagon import *
 # Library imports
 import pygame
-
+from rails import *
 # pymunk imports
 import pymunk
 import pymunk.pygame_util
@@ -41,6 +41,7 @@ class physicManager(object):
         # Static barrier walls (lines) that the balls bounce off of
         self._add_static_scenery()
         self.createWagon()
+        self.createSampleRail()
 
         # Execution control and time until the next ball spawns
 
@@ -117,3 +118,12 @@ class physicManager(object):
         :return: None
         """
         self._space.debug_draw(self._draw_options)
+
+    def createSampleRail(self):
+        rail = Rail()
+        rail.addPoint((50, 200), False)
+        rail.addPoint((100, 100), False)
+        rail.addPoint((150, 300), False)
+        rail.addPoint((150, 400), False)
+
+        rail.renderRail(self._space)

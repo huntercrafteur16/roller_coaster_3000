@@ -55,7 +55,7 @@ class Wagon:
 
         self.wheel1 = wheel1
         self.wheel2 = wheel2
-        self.wheel3 = wheem3
+        self.wheel3 = wheel3
         self.chassis = chassis
 
     # définitions des getters

@@ -16,7 +16,7 @@ class Rail():
 
     def __init__(self, degree=2) -> None:
         self.curve = BSpline.Curve(degree=degree)
-        self.curve.delta = 0.0
+        self.curve.delta = 0.05
 
     def addPoint(self, point: tuple, isPulling: bool):
         self.curve.ctrlpts.append(point)
@@ -25,13 +25,18 @@ class Rail():
             self.pullingPts.append(point)
 
     def renderRail(self, space):
+        self.curve.degree = 2
+        self.curve.ctrlpts = [(155, 25), (258, 47), (584, 45)]
+
         self.curve.knotvector = utilities.generate_knot_vector(
             self.curve.degree, len(self.curve.ctrlpts))
+        self.curve.evaluate()
         bspline = self.curve.evalpts
+        print(self.curve.ctrlpts, self.curve.evalpts)
         for i, p in enumerate(bspline[:-1]):
             railseg = pymunk.Segment(
                 space.static_body, p, bspline[i+1], 1)
-            railseg.elasticity = 0
+            railseg.elasticity = 1
             if p in self.pullingPts:
                 railseg.color = (255, 0, 0, 255)
 
@@ -49,6 +54,7 @@ class Physique():
         self.space.gravity = 0, 200
 
     def add_rails(self, bspline):
+
         rails = pymunk.Body(body_type=pymunk.Body.STATIC)
         rails.position = (300, 300)
         for i, p in enumerate(bspline[:-1]):
