@@ -47,6 +47,12 @@ class physicManager(object):
     def createWagon(self):
         self.wagon = Wagon(self._space, 5, 30, 20, (300, 100))
 
+    def __processPullingWagons(self):
+
+        for wagon in self.wagons:
+            pass
+        # TODO
+
     def process(self) -> None:
         """
         The main loop of the game.
