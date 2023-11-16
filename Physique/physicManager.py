@@ -122,8 +122,8 @@ class physicManager(object):
     def createSampleRail(self):
         rail = Rail()
         rail.addPoint((50, 200), False)
-        rail.addPoint((100, 100), False)
-        rail.addPoint((150, 300), False)
+        rail.addPoint((100, 100), True)
+        rail.addPoint((150, 300), True)
         rail.addPoint((150, 400), False)
 
         rail.renderRail(self._space)

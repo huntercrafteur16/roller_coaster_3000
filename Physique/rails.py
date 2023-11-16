@@ -17,16 +17,17 @@ class Rail():
     def __init__(self, degree=2) -> None:
         self.curve = BSpline.Curve(degree=degree)
         self.curve.delta = 0.05
+        self.curve.degree = 2
 
     def addPoint(self, point: tuple, isPulling: bool):
-        self.curve.ctrlpts.append(point)
+        self.curvePts.append(point)
 
         if isPulling:
             self.pullingPts.append(point)
 
     def renderRail(self, space):
-        self.curve.degree = 2
-        self.curve.ctrlpts = [(155, 25), (258, 47), (584, 45)]
+        print(self.curve.ctrlpts)
+        self.curve.ctrlpts = self.curvePts
 
         self.curve.knotvector = utilities.generate_knot_vector(
             self.curve.degree, len(self.curve.ctrlpts))
