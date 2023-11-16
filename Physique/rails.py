@@ -11,13 +11,16 @@ random.seed(1)  # make the simulation the same each time, easier to debug
 
 
 class Rail():
+    """
+    Classe permettant le paramètrage et l'affichage de rails sous forme de spline dans pymunsk
+    """
     curvePts = []
     pullingPts = []
 
     def __init__(self, degree=2) -> None:
         self.curve = BSpline.Curve(degree=degree)
         self.curve.delta = 0.05
-        self.curve.degree = 2
+        self.curve.degree = degree
 
     def addPoint(self, point: tuple, isPulling: bool):
         self.curvePts.append(point)

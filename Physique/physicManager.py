@@ -47,7 +47,7 @@ class physicManager(object):
         # Execution control and time until the next ball spawns
 
     def createWagon(self):
-        self.wagon = Wagon(self._space, 5, 150, 50, (300, 100), 100)
+        self.wagon = Wagon(self._space, 5, 150, 50, (300, 100), 800, True)
 
     def __processPullingWagons(self):
 
