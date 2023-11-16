@@ -1,4 +1,5 @@
 from GUI.interface import *
+from GUI.graphiques import *
 
 var = {}
 func = {}

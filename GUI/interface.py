@@ -1,5 +1,8 @@
 from tkinter import *
 
+from matplotlib.sankey import UP
+from GUI.graphiques import graphe_vitesse
+
 # On définit une classe "Interface" qui prend en argument deux dictionnaires,
 # les variables et les fonctions donc l'interface a besoin pour s'implémenter
 
@@ -24,7 +27,7 @@ class Interface():
 
         # Boutons Start/Reset
         buttons = Frame(toolbar, bg="lightgray", height=100, padx=5)
-        buttons.pack(side=LEFT, expand=True, fill=X)
+        buttons.grid(row=0, column=0)
 
         def doNothing():
             pass
@@ -38,7 +41,7 @@ class Interface():
 
         # Paramètres
         param = Frame(toolbar, bg="lightgray", width=200, padx=5)
-        param.pack(side=RIGHT, expand=False)
+        param.grid(row=0, column=1)
 
         apply_param = Button(param, height=2, text='Appliquer les paramètres',
                              bg='lightgray', fg='red', activebackground='red', command=doNothing)
@@ -65,20 +68,52 @@ class Interface():
         scale_f = Scale(param_f, from_=0, to=10, showvalue=False, variable=f,
                         tickinterval=2, orient=HORIZONTAL, width=10)
 
-        label_m.grid(row=0, column=1)
-        entry_m.grid(row=0, column=2)
-        scale_m.grid(row=0, column=3)
+        label_m.grid(row=0, column=1, columnspan=2)
+        entry_m.grid(row=1, column=1)
+        scale_m.grid(row=1, column=2)
         param_m.grid(row=0, column=1, padx=5, pady=5)
 
-        label_v.grid(row=0, column=1)
-        entry_v.grid(row=0, column=2)
-        scale_v.grid(row=0, column=3)
+        label_v.grid(row=0, column=1, columnspan=2)
+        entry_v.grid(row=1, column=1)
+        scale_v.grid(row=1, column=2)
         param_v.grid(row=0, column=2, padx=5, pady=5)
 
-        label_f.grid(row=0, column=1)
-        entry_f.grid(row=0, column=2)
-        scale_f.grid(row=0, column=3)
+        label_f.grid(row=0, column=1, columnspan=2)
+        entry_f.grid(row=1, column=1)
+        scale_f.grid(row=1, column=2)
         param_f.grid(row=0, column=3, padx=5, pady=5)
+
+        # Boutons radio pour voir ou non un des graphes proposés
+        void = Frame(toolbar, width=30, bg="lightgray", padx=5)
+        graph_choice = Frame(toolbar, padx=5)
+        void.grid(row=0, column=2)
+        graph_choice.grid(row=0, column=3)
+
+        choice = IntVar()
+        label_graph_choice = Label(
+            graph_choice, text="Choix du graphe à afficher")
+        label_graph_choice.pack(side=TOP)
+
+        Radiobuttons = Frame(graph_choice)
+        Radiobuttons.pack(side=BOTTOM)
+
+        Radiobutton(Radiobuttons, variable=choice, value=1,
+                    height=1).grid(row=1, column=0)
+        Label(Radiobuttons, text='aucun', width=4,
+              height=1).grid(row=1, column=1)
+        Label(Radiobuttons, text=' ', width=4, height=1).grid(row=1, column=2)
+        Radiobutton(Radiobuttons, variable=choice, value=2,
+                    height=1).grid(row=1, column=3)
+        Label(Radiobuttons, text='vitesse(t)',
+              width=6, height=1).grid(row=1, column=4)
+        Label(Radiobuttons, text=' ', width=4, height=1).grid(row=1, column=5)
+        Radiobutton(Radiobuttons, variable=choice, value=3,
+                    height=1).grid(row=1, column=6)
+        Label(Radiobuttons, text='accélération(t)',
+              width=10, height=1).grid(row=1, column=7)
+
+    def renderGraph(self):
+        pass
 
     def renderGUI(self):
         self.root.mainloop()
