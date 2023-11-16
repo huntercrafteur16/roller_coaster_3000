@@ -11,20 +11,22 @@ random.seed(1)  # make the simulation the same each time, easier to debug
 
 
 class Rail():
+    """
+    Classe permettant le paramètrage et l'affichage de rails sous forme de spline dans pymunsk
+    """
     curvePts = []
     pullingPts = []
 
     def __init__(self, degree=2) -> None:
         self.curve = BSpline.Curve(degree=degree)
-        self.curve.delta = 0.0
+        self.curve.delta = 0.05
+        self.curve.degree = degree
 
     def addPoint(self, point: tuple, isPulling: bool):
-        self.curve.ctrlpts.append(point)
-
-        if isPulling:
-            self.pullingPts.append(point)
+        self.curvePts.append(point)
 
     def renderRail(self, space):
+        self.curve.ctrlpts = self.curvePts
         self.curve.knotvector = utilities.generate_knot_vector(
             self.curve.degree, len(self.curve.ctrlpts))
         bspline = self.curve.evalpts
@@ -32,9 +34,8 @@ class Rail():
             railseg = pymunk.Segment(
                 space.static_body, p, bspline[i+1], 1)
             railseg.elasticity = 0
-            if p in self.pullingPts:
+            if i < len(bspline)/2:
                 railseg.color = (255, 0, 0, 255)
-
             space.add(railseg)
 
 
