@@ -1,34 +1,47 @@
-from pymunk.vec2d import Vec2d
-import numpy as np
-import os
-import platform
-import sys
-from tkinter import Frame, TclError, Tk
-import pygame
-import pymunk
 import pymunk.pygame_util
+import pymunk
+import pygame
+import sys
 import random
+from pymunk import Vec2d
 random.seed(1)
 
+# Création du pendule
 
-def add_wagon(space, m, L):
-    ligne = pymunk.Body(body_type=pymunk.Body.STATIC)
-    ligne_shape = pymunk.Segment(ligne, (0, 300), (600, 300), 8)
 
+def wagon(space):
     wagon = pymunk.Body()
-    wagon_shape = pymunk.Poly(wagon, [(-5, -5), (5, -5), (5, 5), (-5, 5)])
-    space.add(ligne, ligne_shape, wagon, wagon_shape)
+    wagon_shape = pymunk.Poly(
+        wagon, [(-20, -20), (-20, 20), (20, 20), (20, -20)])
+    wagon.position = (50, 50)
+    wagon_shape.mass = 1
+    wagon_shape.friction = 1
+    space.add(wagon, wagon_shape)
+
+    ligne = pymunk.Body(body_type=pymunk.Body.STATIC)
+    ligne_shape1 = pymunk.Segment(ligne, [100, 200], [200, 400], 10)
+    ligne_shape2 = pymunk.Segment(ligne, [200, 400], [400, 400], 10)
+    ligne_shape3 = pymunk.Segment(ligne, [400, 400], [500, 200], 10)
+    space.add(ligne, ligne_shape1, ligne_shape2, ligne_shape3)
+
+    joint = pymunk.GrooveJoint(ligne, wagon, [100, 200], [200, 400], [0, 0])
+    joint.collide_bodies = False
+    space.add(joint)
     return
 
+# main
 
-def animate():
 
-    clock = pygame.time.Clock()
-    space = pymunk.Space()
-    space.gravity = (0.0, 900)
+def main():
+    pygame.init()
     screen = pygame.display.set_mode((600, 600))
-    wagon_body = add_wagon(space, 10, 100)
+    pygame.display.set_caption("Wagon")
+    clock = pygame.time.Clock()
+
+    space = pymunk.Space()
+    space.gravity = (0.0, 100.0)
     draw_options = pymunk.pygame_util.DrawOptions(screen)
+    wagon(space)
 
     while True:
         for event in pygame.event.get():
@@ -44,4 +57,5 @@ def animate():
         clock.tick(50)
 
 
-animate()
+if __name__ == '__main__':
+    main()
