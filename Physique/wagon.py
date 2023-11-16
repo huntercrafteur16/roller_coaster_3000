@@ -20,6 +20,9 @@ class Wagon:
 
     def __init__(self, space, Mass: float, L: float, h: float, position_init: tuple, tension_ressort=500):
 
+        assert L >= 20, 'la longueur minimale est 20'
+        assert h <= L, 'la hauteur doit être inférieure à la largeur'
+
         # creation faculatative d'une ligne de départ sous le wagon
 
         Start_line(space, (position_init[0]-(L/2+10), position_init[1]+50),
@@ -47,3 +50,18 @@ class Wagon:
         PivotJoint(space, chassis.body, wheel2.body, v3, (0, 0), False)
         DampedSpring(space, chassis.body, wheel3.body,
                      v5, (0, 0), L/6, tension_ressort, 70)
+
+        # Ajout des attributs utiles
+
+        self.wheel1 = wheel1
+        self.wheel2 = wheel2
+        self.wheel3 = wheem3
+        self.chassis = chassis
+
+    # définitions des getters
+
+    def get_all_wheels(self):
+        return (self.wheel1, self.wheel2, self.wheel3)
+
+    def get_chassis(self):
+        return (self.chassis)
