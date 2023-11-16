@@ -14,13 +14,15 @@ class wagon:
       height h and starting position of the center of the body.Tension sets the force of the spring.
         For a flat line, choose position_init = (x, y_line-50 )
 
-        Example wagon(space, 5, 100, 50, (300, 150)) will add a wagon to space"""
+        Example: wagon(space, 5, 100, 50, (300, 150)) will add a wagon to space"""
 
     def __init__(self, space, Mass: float, L: float, h: float, position_init: tuple, tension_ressort=500):
 
-        Mass_roue, Mass_chassis = (1/3)*Mass, (2/3)*Mass
         Start_line(space, (position_init[0]-(L/2+10), position_init[1]+50),
                    (position_init[0]+L/2+10, position_init[1]+50))
+
+        Mass_roue, Mass_chassis = (1/3)*Mass, (2/3)*Mass
+
         p = Vec2d(position_init[0], position_init[1])
         vs = [(-L/2, -h/2), (L/2, -h/2), (L/2, h/2), (-L/2, h/2)]
         v2, v3 = vs[2], vs[3]
@@ -37,7 +39,7 @@ class wagon:
                      v5, (0, 0), L/6, tension_ressort, 70)
 
 
-d  # ef animate():
+# def animate():
 
 # clock = pygame.time.Clock()
 # space = pymunk.Space()
