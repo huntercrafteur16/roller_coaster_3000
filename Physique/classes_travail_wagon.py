@@ -9,6 +9,10 @@ from PIL import Image
 
 
 class PivotJoint:
+    """Classe PivotJoint : ajoute à space une liaison pivot entre le Body b et le body b2, 
+    avec les points d'encrage a et a2 (coordonées locales), collide est un booléen 
+    autorisant ou non les colisions."""
+
     def __init__(self, space, b, b2, a=(0, 0), a2=(0, 0), collide=True):
         joint = pymunk.PinJoint(b, b2, a, a2)
         joint.collide_bodies = collide
@@ -16,6 +20,9 @@ class PivotJoint:
 
 
 class Segment:
+    """Classe Segment : ajoute à space une ligne à partir du point p0 suivant le vecteur v, 
+   d'épaisseur radius."""
+
     def __init__(self, space, p0, v, radius=10):
         self.body = pymunk.Body()
         self.body.position = p0
