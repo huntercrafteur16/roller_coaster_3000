@@ -1,5 +1,6 @@
+from time import sleep
 from pylab import *
-from matplotlib import *
+from matplotlib import pyplot as plt
 
 # On veut afficher le graphe en direct, pendant l'animation du wagon.
 # Pour cela on modélise la courbe par sa liste des vitesses discrétisée par dt
@@ -24,24 +25,46 @@ def graphe_vitesse(List_speeds, tf):
         line.set_xdata(t[:i])  # actualise les valeurs de t
         line.set_ydata(List_speeds[:i])  # actualise les valeurs de v
         draw()  # force le dessin de la figure
-        pause(0.05)
+        pause(0.5)
     ioff()
     show()
 
 
-def update_graph(newdata) -> bool:
-    pass
-
-
 class AnimatedGraph():
-    def __init__(self) -> None:
-        pass
+    def __init__(self, tlim: tuple, datalim: tuple, title) -> None:
+        self.t = []
+        self.data = []
+        self.plt = plt
+        self.plt.xlim(tlim)
+        self.plt.ylim(datalim)
+        self.plt.title = title
+        self.plt.ion()
+        self.curve, = self.plt.plot(self.t, self.data)
 
-    def drawNext(self) -> None:
-        pass
+    def drawNext(self, t, data) -> None:
+
+        self.t.append(t)
+        self.data.append(data)
+        self.curve.set_xdata(self.t)
+        self.curve.set_ydata(self.data)
+        self.plt.draw()
 
     def reset(self):
-        pass
+        self.t = np.array([])
+        self.data = np.array([])
+        self.curve.set_xdata([])
+        self.curve.set_ydata([])
+        self.plt.draw()
+
+    def fixDisplay(self):
+        self.plt.ioff()
+        self.plt.show()
 
 
-graphe_vitesse([0.02*x**4-x**2+3*x for x in linspace(0, 5, 50)], 5)
+# graphe_vitesse([0.02*x**4-x**2+3*x for x in linspace(0, 5, 50)], 5)
+graph_test = AnimatedGraph((0, 10), (-5, 5), "test")
+
+for x in range(0, 100):
+    graph_test.drawNext(x/10, sin(x))
+    pause(0.05)
+graph_test.fixDisplay()
