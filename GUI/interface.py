@@ -40,7 +40,7 @@ class Interface():
         play_pause.grid(row=0, column=1, padx=3, pady=3)
 
         # Paramètres
-        param = Frame(toolbar, bg="lightgray", width=200, padx=5)
+        param = Frame(toolbar, bg="lightgray", width=200, padx=5, pady=5)
         param.grid(row=0, column=1)
 
         apply_param = Button(param, height=2, text='Appliquer les paramètres',
@@ -69,27 +69,27 @@ class Interface():
                         tickinterval=2, orient=HORIZONTAL, width=10)
 
         label_m.grid(row=0, column=1, columnspan=2)
-        entry_m.grid(row=1, column=1)
+        entry_m.grid(row=1, column=1, padx=3)
         scale_m.grid(row=1, column=2)
         param_m.grid(row=0, column=1, padx=5, pady=5)
 
         label_v.grid(row=0, column=1, columnspan=2)
-        entry_v.grid(row=1, column=1)
+        entry_v.grid(row=1, column=1, padx=3)
         scale_v.grid(row=1, column=2)
         param_v.grid(row=0, column=2, padx=5, pady=5)
 
         label_f.grid(row=0, column=1, columnspan=2)
-        entry_f.grid(row=1, column=1)
+        entry_f.grid(row=1, column=1, padx=3)
         scale_f.grid(row=1, column=2)
         param_f.grid(row=0, column=3, padx=5, pady=5)
 
         # Boutons radio pour voir ou non un des graphes proposés
-        void = Frame(toolbar, width=30, bg="lightgray", padx=5)
+        void = Frame(toolbar, width=15, bg="lightgray", padx=5)
         graph_choice = Frame(toolbar, padx=5)
         void.grid(row=0, column=2)
         graph_choice.grid(row=0, column=3)
 
-        choice = IntVar()
+        choice = IntVar(value=0)
         label_graph_choice = Label(
             graph_choice, text="Choix du graphe à afficher")
         label_graph_choice.pack(side=TOP)
@@ -101,18 +101,34 @@ class Interface():
                     height=1).grid(row=1, column=0)
         Label(Radiobuttons, text='aucun', width=4,
               height=1).grid(row=1, column=1)
-        Label(Radiobuttons, text=' ', width=4, height=1).grid(row=1, column=2)
+        Label(Radiobuttons, text=' ', width=3, height=1).grid(row=1, column=2)
         Radiobutton(Radiobuttons, variable=choice, value=2,
                     height=1).grid(row=1, column=3)
         Label(Radiobuttons, text='vitesse(t)',
               width=6, height=1).grid(row=1, column=4)
-        Label(Radiobuttons, text=' ', width=4, height=1).grid(row=1, column=5)
+        Label(Radiobuttons, text=' ', width=3, height=1).grid(row=1, column=5)
         Radiobutton(Radiobuttons, variable=choice, value=3,
                     height=1).grid(row=1, column=6)
         Label(Radiobuttons, text='accélération(t)',
               width=10, height=1).grid(row=1, column=7)
+        Label(Radiobuttons, text=' ', width=3, height=1).grid(row=1, column=8)
 
-    def renderGraph(self):
+        t_graph = DoubleVar(value=10)
+        Label(Radiobuttons, text='Durée (s): ', width=7,
+              height=1).grid(row=1, column=9, sticky=E)
+        Entry(Radiobuttons, textvariable=t_graph, width=4).grid(
+            row=1, column=10, sticky=E, padx=5, pady=5)
+
+        # A l'intérieur de simu : roller coaster et graphe
+
+        roller_coaster = Frame(simu, bg='white')
+        graphe = Frame(simu)
+        roller_coaster.grid(row=1, column=1, rowspan=3, columnspan=3)
+
+    def renderNothing(self):
+        pass
+
+    def renderSpeeds(self, List_speeds, tf):
         pass
 
     def renderGUI(self):
