@@ -30,6 +30,27 @@ def propagagation_sinus():
 
 #propagagation_sinus()
 
+    ion() #début animation
+    x=linspace(0,tf,len(Courbe))#axe des temps discrétisé comme la liste des vitesses
+    t=array([])
+    v=array([]) #liste des vitesses initiales
+    line, = plot(t, v) # une reference a la courbe est mise dans line
+    xlim(-0.5, tf+0.5)
+    xlabel('temps')
+    ylim(-1,5)
+    ylabel('vitesse')
+    plt.title("Graphe des vitesses")
+    for i in range(len(Courbe)):
+        t.append(x[i])
+        v.append(Courbe[i])
+        line, = plot(t, v)
+        line.set_ydata(v)# modifie les valeurs de v
+        draw() # force le dessin de la figure
+        pause(0.05)
+    print(v)
+    
+    ioff()
+    show()
 ### On veut afficher le graphe en direct, pendant l'animation du wagon.
 ### Pour cela on modélise la courbe par sa liste des vitesses discrétisée par dt
 ### et on affiche 
@@ -41,10 +62,14 @@ def graphe_vitesse(Courbe,tf):
     v=array([0.0 for i in range(len(Courbe))]) #liste des vitesses initiales
     line, = plot(t, v) # une reference a la courbe est mise dans line
     xlim(-0.5, tf+0.5)
+    xlabel('temps')
     ylim(-1,5)
+    ylabel('vitesse')
+    plt.title("Graphe des vitesses")
     for i in range(len(Courbe)):
         v[i]=Courbe[i]
-        line.set_ydata(v) # modifie les valeurs de y
+        line.set_xdata(t[:i])
+        line.set_ydata(v[:i]) # modifie les valeurs de v
         draw() # force le dessin de la figure
         pause(0.05)
     print(v)
@@ -52,7 +77,7 @@ def graphe_vitesse(Courbe,tf):
     ioff()
     show()
 
-graphe_vitesse([0.02*x**4-x**2+3*x for x in linspace(0,5,70)],5)
+graphe_vitesse([0.02*x**4-x**2+3*x for x in linspace(0,5,50)],5)
 
 
     
