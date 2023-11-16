@@ -23,6 +23,7 @@ class physicManager(object):
 
     def __init__(self, width, height, gravity=980, fps=30) -> None:
         # Space
+        self._fps = fps
         self._space = pymunk.Space()
         self._space.gravity = (0.0, gravity)
 
@@ -30,7 +31,7 @@ class physicManager(object):
         # Time step
         self._dt = 1.0 / fps
         # Number of physics steps per screen frame
-        self._physics_steps_per_frame = 1
+        self._physics_steps_per_frame = 10
 
         # pygame
         pygame.init()
@@ -46,7 +47,7 @@ class physicManager(object):
         # Execution control and time until the next ball spawns
 
     def createWagon(self):
-        self.wagon = Wagon(self._space, 5, 50, 20, (300, 100))
+        self.wagon = Wagon(self._space, 5, 150, 50, (300, 100), 100)
 
     def __processPullingWagons(self):
 
@@ -62,7 +63,7 @@ class physicManager(object):
         # Main loop
         # Progress time forward
         for x in range(self._physics_steps_per_frame):
-            self._space.step(self._dt)
+            self._space.step(self._dt/self._physics_steps_per_frame)
 
         if self._process_events() == "QUIT":
             return False
@@ -71,7 +72,7 @@ class physicManager(object):
         self._draw_objects()
         pygame.display.flip()
         # Delay fixed time between frames
-        self._clock.tick(50)
+        self._clock.tick(self._fps)
         pygame.display.set_caption("fps: " + str(self._clock.get_fps()))
         return True
 

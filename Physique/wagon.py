@@ -25,8 +25,8 @@ class Wagon:
 
         # creation faculatative d'une ligne de départ sous le wagon
 
-        Start_line(space, (position_init[0]-(L/2+10), position_init[1]+50),
-                   (position_init[0]+L/2+10, position_init[1]+50))
+        Start_line(space, (position_init[0]-(L/2+10)-50, position_init[1]+50),
+                   (position_init[0]+L/2+10+50, position_init[1]+50))
 
         # repartition des masses
 
@@ -48,6 +48,7 @@ class Wagon:
 
         PivotJoint(space, chassis.body, wheel1.body, v2, (0, 0), False)
         PivotJoint(space, chassis.body, wheel2.body, v3, (0, 0), False)
+
         DampedSpring(space, chassis.body, wheel3.body,
                      v5, (0, 0), L/6, tension_ressort, 60)
 

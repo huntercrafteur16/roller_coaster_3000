@@ -13,8 +13,9 @@ class PivotJoint:
     avec les points d'encrage a et a2 (coordonées locales), collide est un booléen 
     autorisant ou non les colisions."""
 
-    def __init__(self, space, b, b2, a=(0, 0), a2=(0, 0), collide=True):
+    def __init__(self, space, b, b2, a=(0, 0), a2=(0, 0), collide=False):
         joint = pymunk.PinJoint(b, b2, a, a2)
+        joint._set_error_bias(1e-6)
         joint.collide_bodies = collide
         space.add(joint)
 
@@ -39,7 +40,7 @@ class Circle:
     """Classe Circle : ajoute à space un cercle à position, de masse Mass et de rayon radius"""
 
     def __init__(self, space, pos, Mass, radius=20):
-        self.body = pymunk.Body()
+        self.body = pymunk.Body(body_type=pymunk.Body.DYNAMIC)
         self.body.position = pos
         shape = pymunk.Circle(self.body, radius)
         shape.density = Mass/(np.pi*(radius**2))
