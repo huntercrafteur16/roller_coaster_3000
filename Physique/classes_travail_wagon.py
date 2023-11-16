@@ -31,6 +31,7 @@ class Segment:
         shape.elasticity = 0
         shape.filter = pymunk.ShapeFilter(group=1)
         shape.color = (0, 255, 0, 0)
+        self.shape = shape
         space.add(self.body, shape)
 
 
@@ -44,6 +45,7 @@ class Circle:
         shape.density = Mass/(np.pi*(radius**2))
         shape.friction = 1
         shape.elasticity = 0.1
+        self.shape = shape
         space.add(self.body, shape)
 
 
@@ -86,6 +88,7 @@ class Poly:
         shape.density = Mass/(L*h)
         shape.elasticity = 0.5
         shape.color = (255, 0, 0, 0)
+        self.shape = shape
         space.add(self.body, shape)
 
 

@@ -49,19 +49,22 @@ class Wagon:
         PivotJoint(space, chassis.body, wheel1.body, v2, (0, 0), False)
         PivotJoint(space, chassis.body, wheel2.body, v3, (0, 0), False)
         DampedSpring(space, chassis.body, wheel3.body,
-                     v5, (0, 0), L/6, tension_ressort, 70)
+                     v5, (0, 0), L/6, tension_ressort, 60)
 
         # Ajout des attributs utiles
 
-        self.wheel1 = wheel1
-        self.wheel2 = wheel2
-        self.wheel3 = wheel3
-        self.chassis = chassis
+        self.w1 = wheel1.shape
+        self.w2 = wheel2.shape
+        self.w3 = wheel3.shape
+        self.c = chassis.body
 
     # définitions des getters
 
-    def get_all_wheels(self):
-        return (self.wheel1, self.wheel2, self.wheel3)
+    def get_all_wheels_shape(self):
+        return (self.w1, self.w2, self.w3)
 
-    def get_chassis(self):
-        return (self.chassis)
+    def get_chassis_body(self):
+        return (self.c)
+
+    def get_chassis_velocity(self):
+        return (self.c.velocity)
