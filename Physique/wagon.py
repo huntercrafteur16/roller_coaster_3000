@@ -65,3 +65,6 @@ class Wagon:
 
     def get_chassis_body(self):
         return (self.c)
+
+    def get_chassis_velocity(self):
+        return (self.c.velocity)
