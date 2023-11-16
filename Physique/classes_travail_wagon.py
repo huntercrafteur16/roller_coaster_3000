@@ -35,6 +35,8 @@ class Segment:
 
 
 class Circle:
+    """Classe Circle : ajoute à space un cercle à position, de masse Mass et de rayon radius"""
+
     def __init__(self, space, pos, Mass, radius=20):
         self.body = pymunk.Body()
         self.body.position = pos
@@ -46,6 +48,8 @@ class Circle:
 
 
 class Box:
+    """Classe Box: ajoute à space une boite rectangulaire entre p0 et p1"""
+
     def __init__(self, space, p0=(0, 0), p1=(400, 200), d=4):
         x0, y0 = p0
         x1, y1 = p1
@@ -59,6 +63,8 @@ class Box:
 
 
 class Start_line:
+    """Classe Start_line: ajoute à space une ligne entre p0 et p1"""
+
     def __init__(self, space, p0, p1):
         x0, y0 = p0
         x1, y1 = p1
@@ -69,6 +75,9 @@ class Start_line:
 
 
 class Poly:
+    """Classe Poly: ajoute à space un polynome à la position pos,
+     avec les points vertices, de mass Mass si l'aire est L*h"""
+
     def __init__(self, space, pos, vertices, Mass, L, h):
         self.body = pymunk.Body(1, 100)
         self.body.position = pos
@@ -81,6 +90,9 @@ class Poly:
 
 
 class DampedSpring:
+    """Classe Poly: ajoute à space un ressort entre body b et b2, avec les ancrages anchor_b, anchor_b2 (coordonées locales),
+     de longueur au repos rest_length, raideur stiffness controle damping"""
+
     def __init__(self, space, b, b2, anchor_b, anchor_b2, rest_length, stiffness, damping):
         joint = pymunk.DampedSpring(
             b, b2, anchor_b, anchor_b2, rest_length, stiffness, damping)
