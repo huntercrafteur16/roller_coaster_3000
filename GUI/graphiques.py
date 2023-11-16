@@ -10,7 +10,7 @@ def graphe_vitesse(List_speeds,tf):
     ion() # début animation
     t=linspace(0,tf,len(List_speeds)) # axe des temps discrétisé comme la liste des vitesses
     line, = plot(t, List_speeds) # une reference a la courbe est mise dans line
-    
+
     xlim(-0.5, tf+0.5)                         
     xlabel('temps')                  
     ylim(-1,5)                          # mise en forme
