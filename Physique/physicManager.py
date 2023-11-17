@@ -49,6 +49,9 @@ class physicManager(object):
         wagon_handler = self._space.add_collision_handler(2, 1)
         wagon_handler.pre_solve = self._onRailCollision
 
+    def getWagon(self):
+        return self.wagon
+
     def process(self) -> bool:
         """
         The main loop of the simulation.

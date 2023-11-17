@@ -43,8 +43,8 @@ class AnimatedGraph():
 
     def drawNext(self, t, data) -> None:
 
-        self.t.append(t)
-        self.data.append(data)
+        self.t.append(t)  # type: ignore
+        self.data.append(data)  # type: ignore
         self.curve.set_xdata(self.t)
         self.curve.set_ydata(self.data)
         draw()
