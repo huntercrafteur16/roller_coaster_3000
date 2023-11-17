@@ -21,7 +21,7 @@ class physicManager(object):
 
     def __init__(self, width, height, gravity=980, fps=30) -> None:
         # Space
-
+        self.update_func = None
         self._fps = fps
         self._space = pymunk.Space()
         self._space.gravity = (0.0, gravity)
@@ -65,7 +65,9 @@ class physicManager(object):
 
         self._clear_screen()
         self._draw_objects()
-        self.updateFunc()
+
+        if self.updateFunc != None:  # type: ignore
+            self.updateFunc()  # type: ignore
         pygame.display.flip()
 
         # Delay fixed time between frames
@@ -124,6 +126,3 @@ class physicManager(object):
 
         self._pull_body(arbiter.shapes[0].body)
         return True
-
-    def onUpdate(self, function):
-        function()
