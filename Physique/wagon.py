@@ -1,3 +1,4 @@
+from tkinter import GROOVE
 from Physique.classes_travail_wagon import *
 from pymunk.vec2d import Vec2d
 import numpy as np
@@ -38,12 +39,16 @@ class Wagon:
         vs = [(-L/2, -h/2), (L/2, -h/2), (L/2, h/2),
               (-L/2, h/2), ((4*L/6), 0), ((-4*L/6), 0)]
         v2, v3 = vs[2], vs[3]
-        v4 = (0, h+L)
-        v5 = (0, h/2)
+        v4 = (-L/2, h+L)
+        v5 = (-L/2, h/2)
+        v6 = (L/2, h+L)
+        v7 = (+L/2, h/2)
+
         chassis = Poly(space, p, vs, Mass_chassis, L, h)
-        wheel1 = Circle(space, p+v2, Mass_roues/3, L/6)
-        wheel2 = Circle(space, p+v3,  Mass_roues/3, L/6)
-        wheel3 = Circle(space, p+v4, Mass_roues/3, L/6)
+        wheel1 = Circle(space, p+v2, Mass_roues/4, 2, L/6)
+        wheel2 = Circle(space, p+v3,  Mass_roues/4, 2, L/6)
+        wheel3 = Circle(space, p+v4, Mass_roues/4, 0, L/6)
+        wheel4 = Circle(space, p+v6, Mass_roues/4, 0, L/6)
 
         # Ajout des liaisons
 
@@ -53,11 +58,20 @@ class Wagon:
         DampedSpring(space, chassis.body, wheel3.body,
                      v5, (0, 0), L/6, tension_ressort, 60)
 
+        DampedSpring(space, chassis.body, wheel4.body,
+                     v7, (0, 0), L/6, tension_ressort, 60)
+
+        GrooveJoint(space, chassis.body, wheel3.body,
+                    (-L/2, h/2), (-L/2, h/2+100), (0, 0))
+        GrooveJoint(space, chassis.body, wheel4.body,
+                    (L/2, h/2), (L/2, h/2+100), (0, 0))
+
         # Ajout des attributs utiles
 
         self.w1 = wheel1.shape
         self.w2 = wheel2.shape
         self.w3 = wheel3.shape
+        self.w4 = wheel4.shape
         self.c = chassis.body
         self.m = Mass
         self.L = L
@@ -65,7 +79,7 @@ class Wagon:
     # définitions des getters
 
     def get_all_wheels_shape(self):
-        return (self.w1, self.w2, self.w3)
+        return (self.w1, self.w2, self.w3, self.w4)
 
     def get_chassis_body(self):
         return (self.c)
