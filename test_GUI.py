@@ -1,7 +1,11 @@
 from GUI.interface import *
+from GUI.graphiques import AnimatedGraph
+import time
 
-var = {}
-func = {}
+GUI = Interface()
+GUI.render_GUI()
 
-GUI = Interface(var, func)
-GUI.renderGUI()
+while True:
+    print(GUI.get_param())
+    time.sleep(1/60)
+    GUI.render_GUI()
