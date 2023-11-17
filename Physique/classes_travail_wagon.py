@@ -39,13 +39,16 @@ class Segment:
 class Circle:
     """Classe Circle : ajoute à space un cercle à position, de masse Mass et de rayon radius"""
 
-    def __init__(self, space, pos, Mass, radius=20):
+    def __init__(self, space, pos, Mass, collision, radius=20):
         self.body = pymunk.Body(body_type=pymunk.Body.DYNAMIC)
         self.body.position = pos
         shape = pymunk.Circle(self.body, radius)
         shape.density = Mass/(np.pi*(radius**2))
+        shape.collision_type = collision  # colision type of wheel
         shape.friction = 1
         shape.elasticity = 0.1
+        shape.color = (175, 175, 175, 0)
+        shape.shape_outline_color = (0, 0, 0, 0)
         self.shape = shape
         space.add(self.body, shape)
 
@@ -88,7 +91,8 @@ class Poly:
         shape.filter = pymunk.ShapeFilter(group=1)
         shape.density = Mass/(L*h)
         shape.elasticity = 0.5
-        shape.color = (255, 0, 0, 0)
+        shape.color = (82.3, 70.1, 30.9, 0)
+
         self.shape = shape
         space.add(self.body, shape)
 
@@ -100,4 +104,13 @@ class DampedSpring:
     def __init__(self, space, b, b2, anchor_b, anchor_b2, rest_length, stiffness, damping):
         joint = pymunk.DampedSpring(
             b, b2, anchor_b, anchor_b2, rest_length, stiffness, damping)
+
+        space.add(joint)
+
+
+class GrooveJoint:
+    def __init__(self, space, a, b, groove_a, groove_b, anchor_b):
+        joint = pymunk.GrooveJoint(
+            a, b, groove_a, groove_b, anchor_b)
+        joint.collide_bodies = False
         space.add(joint)

@@ -15,28 +15,43 @@ class Rail():
     Classe permettant le paramètrage et l'affichage de rails sous forme de spline dans pymunsk
     """
     curvePts = []
-    pullingPts = []
+    # liste des intervalles contenant les points [(0,5),(10,100)] ******___****************
+    pullingPts_int = []
 
     def __init__(self, degree=2) -> None:
         self.curve = BSpline.Curve(degree=degree)
         self.curve.delta = 0.05
         self.curve.degree = degree
+        self.width = 1
 
     def addPoint(self, point: tuple, isPulling: bool):
         self.curvePts.append(point)
+
+    def _addFreeRail(self, c_deb, c_fin, space: pymunk.Space):
+        railseg = pymunk.Segment(space.static_body, c_deb, c_fin, self.width)
+        railseg.color = (125, 125, 125, 255)
+        railseg.elasticity = 0
+        railseg.collision_type = 0  # la collision d'un rail non tractant sera 0
+        space.add(railseg)
+
+    def _addPullRail(self, c_deb, c_fin, space: pymunk.Space):
+        railseg = pymunk.Segment(space.static_body, c_deb, c_fin, self.width)
+        railseg.color = (255, 0, 0, 255)
+        railseg.elasticity = 0
+        railseg.collision_type = 1  # la collision d'un rail  tractant sera 1
+        space.add(railseg)
 
     def renderRail(self, space):
         self.curve.ctrlpts = self.curvePts
         self.curve.knotvector = utilities.generate_knot_vector(
             self.curve.degree, len(self.curve.ctrlpts))
         bspline = self.curve.evalpts
+
         for i, p in enumerate(bspline[:-1]):
-            railseg = pymunk.Segment(
-                space.static_body, p, bspline[i+1], 1)
-            railseg.elasticity = 0
             if i < len(bspline)/2:
-                railseg.color = (255, 0, 0, 255)
-            space.add(railseg)
+                self._addFreeRail(p, bspline[i+1], space)
+            else:
+                self._addPullRail(p, bspline[i+1], space)
 
 
 class Physique():
