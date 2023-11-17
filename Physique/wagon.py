@@ -35,7 +35,8 @@ class Wagon:
         # Ajout des objets
 
         p = Vec2d(position_init[0], position_init[1])
-        vs = [(-L/2, -h/2), (L/2, -h/2), (L/2, h/2), (-L/2, h/2)]
+        vs = [(-L/2, -h/2), (L/2, -h/2), (L/2, h/2),
+              (-L/2, h/2), ((4*L/6), 0), ((-4*L/6), 0)]
         v2, v3 = vs[2], vs[3]
         v4 = (0, h+L)
         v5 = (0, h/2)
