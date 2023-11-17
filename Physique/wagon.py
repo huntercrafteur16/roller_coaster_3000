@@ -59,6 +59,7 @@ class Wagon:
         self.w3 = wheel3.shape
         self.c = chassis.body
         self.m = Mass
+
     # définitions des getters
 
     def get_all_wheels_shape(self):
@@ -71,10 +72,13 @@ class Wagon:
         return (self.c.velocity)
 
     def get_kinetic(self):
-        return ((1/2) * self.m * self.c.velocity ** 2)
+        return (self.c.kinetic_energy)
 
     def get_potential(self):
         return (self.m*9.81*(600-self.c.position[1]))
 
     def get_total_energy(self):
         return (self.get_kinetic() + self.get_potential())
+
+    def get_chassis_acceleration(self):
+        return (self.c.force/self.m)
