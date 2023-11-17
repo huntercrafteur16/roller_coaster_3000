@@ -23,15 +23,18 @@ def add_wagon(space):
 
 
 def création_section(space):
-    segments = {i: ([300 + i*10, 300 - 0.01*(i*10)**2], [300 +
-                    (i+1)*10, 300 - 0.01*((i+1)*10)**2]) for i in range(-10, 11)}
+    # création des segments qui linéarisent une parabole
+    segments = {i: ([300 + i*15, 300 - 0.01*(i*15)**2], [300 +
+                    (i+1)*15, 300 - 0.01*((i+1)*15)**2]) for i in range(-10, 11)}
     ligne = pymunk.Body(body_type=pymunk.Body.STATIC)
     space.add(ligne)
     for i, segment in segments.items():
         ligne_shape = pymunk.Segment(ligne, segment[0], segment[1], 5)
         space.add(ligne_shape)
-    position_x_to_indice = {segments[i][0][0]: i for i in range(-10, 11)}
-    return ligne, segments, position_x_to_indice
+    # création d’un dict pour connaître l’indice d’une positon donnée
+    x_to_i_gauche = {segments[i][0][0]: i for i in range(-10, 11)}
+    x_to_i_droite = {segments[i][1][0]: i for i in range(-10, 11)}
+    return ligne, segments, x_to_i_gauche, x_to_i_droite
 
 # Création de la liaison
 
@@ -50,16 +53,23 @@ def main():
     screen = pygame.display.set_mode((600, 600))
     pygame.display.set_caption("Wagon")
     clock = pygame.time.Clock()
-
     space = pymunk.Space()
-    space.gravity = (0.0, 50)
+    space.gravity = (0.0, 200)
     draw_options = pymunk.pygame_util.DrawOptions(screen)
+
+    # création des objets
+
     wagon = add_wagon(space)
-    ligne, segments, position_x_to_indice = création_section(
+    ligne, segments, x_to_i_gauche, x_to_i_droite = création_section(
         space)
     joint = création_liaison(space, ligne, segments, wagon, -10)
     space.add(joint)
-    update_position_x = segments[-10][1][0] - 3
+
+    # initialisation des paramètres
+
+    wagon.position = segments[-10][1]
+    update_suivant = segments[-10][1][0] - 5
+    update_précédent = segments[-10][0][0] + 5
     update_indice = -10
 
     while True:
@@ -68,14 +78,28 @@ def main():
                 sys.exit(0)
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 sys.exit(0)
-
-        if wagon.position[0] >= update_position_x:
+    # Changement de liaison glissière si nécessaire
+        # passage au segment d’après
+        if wagon.position[0] >= update_suivant and wagon.velocity[0] >= 0:
             space.remove(joint)
             joint = création_liaison(
-                space, ligne, segments, wagon, position_x_to_indice[update_position_x + 3])
+                space, ligne, segments, wagon, x_to_i_gauche[update_suivant + 5])
             space.add(joint)
+            # update des paramètres
             update_indice += 1
-            update_position_x = segments[update_indice][1][0] - 3
+            update_suivant = segments[update_indice][1][0] - 5
+            update_précédent = segments[update_indice][0][0] + 5
+
+        # passage au segment d’avant
+        if wagon.position[0] <= update_précédent and wagon.velocity[0] <= 0:
+            space.remove(joint)
+            joint = création_liaison(
+                space, ligne, segments, wagon, x_to_i_droite[update_précédent - 5])
+            space.add(joint)
+            # update des paramètres
+            update_indice -= 1
+            update_suivant = segments[update_indice][1][0] - 5
+            update_précédent = segments[update_indice][0][0] + 5
 
         screen.fill((255, 255, 255))
         space.debug_draw(draw_options)
