@@ -6,7 +6,7 @@ Class physicManager qui gère la physique Pymunk
 # Python imports
 from functools import partial
 import random
-from typing import List
+from typing import Callable, List
 
 from Physique.wagon import Wagon
 # Library imports
@@ -18,10 +18,10 @@ import pymunk.pygame_util
 
 
 class physicManager(object):
+    update_func: Callable
 
-    def __init__(self, width, height, gravity=980, fps=30) -> None:
+    def __init__(self, width, height, gravity=980, fps=60) -> None:
         # Space
-        self.update_func = None
         self._fps = fps
         self._space = pymunk.Space()
         self._space.gravity = (0.0, gravity)
@@ -123,7 +123,7 @@ class physicManager(object):
         wagon.get_chassis_body().apply_force_at_local_point((1000, 0), (0, 0))
 
     def _pull_body(self, body: pymunk.Body):
-        body.apply_force_at_local_point((-1000, 0), (0, 0))
+        body.apply_force_at_local_point((10000, 0), (0, 0))
 
     def _onRailCollision(self, arbiter, sapce, data):
 

@@ -18,10 +18,10 @@ def updateGraph(graph: AnimatedGraph, wagon: Physique.wagon.Wagon):
     global i
     i += 1
     v_curr = wagon.get_chassis_velocity()
-    graph.drawNext(i, abs(v_curr))
+    graph.drawNext(i, v_curr[0])
 
 
-physicmanager = physicManager(600, 600)
+physicmanager = physicManager(1980, 600)
 wagon = physicmanager.getWagon()
 
 
@@ -29,7 +29,7 @@ root = Tk()
 
 animgraph = AnimatedGraph((0, 1000), (-1e3, 1e3), "test")
 graph = FigureCanvasTkAgg(animgraph.fig, master=root)
-physicmanager.updateFunc = partial(
+physicmanager.update_func = partial(
     updateGraph, animgraph, wagon)  # type: ignore
 canvas = graph.get_tk_widget()
 canvas.grid(row=0, column=0)
