@@ -4,7 +4,6 @@ Class physicManager qui gère la physique Pymunk
 -on peut effectuer scénario standart
 """
 # Python imports
-from functools import partial
 import os
 import platform
 import random

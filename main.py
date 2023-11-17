@@ -24,6 +24,7 @@ i = 0
 while cont:
     vitesse_graph.drawNext(
         i, abs(manager.getWagon().get_chassis_velocity()))
-    interface.render_GUI()
-    cont = manager.process()
+    GUI_cont = interface.render_GUI()
+    phys_cont = manager.process()
+    cont = GUI_cont and phys_cont
     i += 1

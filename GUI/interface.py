@@ -1,3 +1,4 @@
+
 from tkinter import *
 # from GUI.graphiques import AnimatedGraph
 import time
@@ -12,13 +13,17 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 
 class Interface():
+    isRunning: bool
+
     def __init__(self):
+        # dimensions de la fenetre pymunk en px
         roller_coaster_width = 1600
         roller_coaster_height = 550
         # Fenêtre principale
         self.root = Tk()
         self.root.title("Bienvenue dans le Roller Coaster 3000, visiteur !")
-
+        self.isRunning = True
+        self.root.protocol('WM_DELETE_WINDOW', self.killInterface)
         # Trois frames : barre d'outils, simulation, barre des graphes
         toolbar = Frame(self.root, bg="lightgray")
         simu = Frame(self.root, borderwidth=5, bg="white")
@@ -151,5 +156,9 @@ class Interface():
     def get_param(self):
         return {'mass': self.applied_m, 'force': self.applied_f, 'frict': self.applied_c}
 
-    def render_GUI(self):
+    def render_GUI(self) -> bool:
         self.root.update()
+        return self.isRunning
+
+    def killInterface(self):
+        self.isRunning = False
