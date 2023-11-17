@@ -34,18 +34,19 @@ class Rail():
             railseg = pymunk.Segment(
                 space.static_body, p, bspline[i+1], 1)
             railseg.elasticity = 0
+
             def calculate_derivatives(bspline):
-                derivatives=[]
-                for k in range(1,len(bspline)-1):
-                    slope=(bspline[k+1]-bspline[k])/self.curve.delta
+                derivatives = []
+                for k in range(1, len(bspline)-1):
+                    slope = (bspline[k+1]-bspline[k])/self.curve.delta
                     derivatives.append(slope)
                 return slope
-            derivatives=calculate_derivatives(bspline)
-            first_descendant_ind=0
-            while derivatives[k]>=0:
-                k+=1
-            first_descendant_ind=k
-            if i< first descendant_ind :
+            derivatives = calculate_derivatives(bspline)
+            first_descendant_ind = 0
+            while derivatives[k] >= 0:
+                k += 1
+            first_descendant_ind = k
+            if i < first_descendant_ind:
                 railseg.color = (255, 0, 0, 255)
             space.add(railseg)
 
@@ -55,7 +56,7 @@ if __name__ == "__main__":
     canvas = Canvas(screen)
 
     def update():
-        screen.fill(color="#444444")
+        screen.fill(color=(255, 255, 255, 255))
         canvas.simulate()
         canvas.render()
         pygame.display.update()
@@ -67,5 +68,3 @@ if __name__ == "__main__":
                 pygame.quit()
                 sys.exit()
         update()
-
-
