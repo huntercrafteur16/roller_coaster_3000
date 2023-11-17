@@ -116,3 +116,6 @@ class physicManager(object):
 
     def _pull_wagon(self, wagon: Wagon):
         wagon.get_chassis_body().apply_force_at_local_point((100000, 0), (0, 0))
+
+    def onUpdate(self, func):
+        func()
