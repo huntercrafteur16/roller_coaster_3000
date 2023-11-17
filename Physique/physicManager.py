@@ -4,12 +4,14 @@ Class physicManager qui gère la physique Pymunk
 -on peut effectuer scénario standart
 """
 # Python imports
+from functools import partial
 import random
 from typing import List
-from wagon import *
+
+from Physique.wagon import Wagon
 # Library imports
 import pygame
-from rails import *
+from Physique.rails import *
 # pymunk imports
 import pymunk
 import pymunk.pygame_util
@@ -19,6 +21,7 @@ class physicManager(object):
 
     def __init__(self, width, height, gravity=980, fps=30) -> None:
         # Space
+        self.update_func = None
         self._fps = fps
         self._space = pymunk.Space()
         self._space.gravity = (0.0, gravity)
@@ -43,14 +46,10 @@ class physicManager(object):
 
     def createWagon(self):
         self.wagon = Wagon(self._space, 5, 150, 50, (300, 100), 800)
+        wagon_handler = self._space.add_collision_handler(2, 1)
+        wagon_handler.pre_solve = self._onRailCollision
 
-    def __processPullingWagons(self):
-
-        for wagon in self.wagons:
-            pass
-        # TODO
-
-    def process(self) -> None:
+    def process(self) -> bool:
         """
         The main loop of the simulation.
         :return: None
@@ -66,6 +65,9 @@ class physicManager(object):
 
         self._clear_screen()
         self._draw_objects()
+
+        if self.update_func != None:  # type: ignore
+            self.update_func()  # type: ignore
         pygame.display.flip()
 
         # Delay fixed time between frames
@@ -74,7 +76,7 @@ class physicManager(object):
         pygame.display.set_caption("fps: " + str(self._clock.get_fps()))
         return True
 
-    def _process_events(self) -> None:
+    def _process_events(self) -> str:
         """
         Handle game and events like keyboard input. Call once per frame only.
         :return: None
@@ -115,4 +117,12 @@ class physicManager(object):
         rail.renderRail(self._space)
 
     def _pull_wagon(self, wagon: Wagon):
-        wagon.get_chassis_body().apply_force_at_local_point((100000, 0), (0, 0))
+        wagon.get_chassis_body().apply_force_at_local_point((1000, 0), (0, 0))
+
+    def _pull_body(self, body: pymunk.Body):
+        body.apply_force_at_local_point((-1000, 0), (0, 0))
+
+    def _onRailCollision(self, arbiter, sapce, data):
+
+        self._pull_body(arbiter.shapes[0].body)
+        return True
