@@ -44,6 +44,7 @@ class Circle:
         self.body.position = pos
         shape = pymunk.Circle(self.body, radius)
         shape.density = Mass/(np.pi*(radius**2))
+        shape.collision_type = 2  # colision type of wheel
         shape.friction = 1
         shape.elasticity = 0.1
         self.shape = shape
