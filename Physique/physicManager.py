@@ -37,6 +37,8 @@ class physicManager(object):
         self._screen = pygame.display.set_mode((width, height))
         self._clock = pygame.time.Clock()
         self._draw_options = pymunk.pygame_util.DrawOptions(self._screen)
+        self._draw_options.constraint_color = (255, 255, 255, 255)
+        self._draw_options.flags ^= pymunk.pygame_util.DrawOptions.DRAW_CONSTRAINTS
 
         # Static barrier walls (lines) that the balls bounce off of
         self.createWagon()
