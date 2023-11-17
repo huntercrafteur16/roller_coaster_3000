@@ -66,8 +66,8 @@ class physicManager(object):
         self._clear_screen()
         self._draw_objects()
 
-        if self.updateFunc != None:  # type: ignore
-            self.updateFunc()  # type: ignore
+        if self.update_func != None:  # type: ignore
+            self.update_func()  # type: ignore
         pygame.display.flip()
 
         # Delay fixed time between frames
