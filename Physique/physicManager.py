@@ -21,11 +21,12 @@ class physicManager(object):
     update_func: Callable
 
     def __init__(self, width, height, gravity=980, fps=60) -> None:
+
         # Space
         self._fps = fps
         self._space = pymunk.Space()
         self._space.gravity = (0.0, gravity)
-
+        self.update_func = lambda x: None
         # Physics
         # Time step
         self._dt = 1.0 / fps
