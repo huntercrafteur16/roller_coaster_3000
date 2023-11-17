@@ -7,6 +7,12 @@ from pymunk import Vec2d
 import numpy as np
 random.seed(1)
 
+# chemin
+
+
+def chemin(i):
+    return - 0.1*np.exp(5 + 0.2*i)
+
 # norme
 
 
@@ -20,7 +26,7 @@ def add_wagon(space):
     wagon_shape = pymunk.Poly(
         wagon, [(-20, -20), (-20, 20), (20, 20), (20, -20)])
     wagon_shape.mass = 1
-    wagon_shape.friction = 1
+    wagon_shape.friction = 0
     space.add(wagon, wagon_shape)
     return wagon
 
@@ -29,8 +35,8 @@ def add_wagon(space):
 
 def création_section(space):
     # création des segments qui linéarisent une parabole
-    segments = {i: ((300 + i*20, 300 - 0.005*(i*20)**2), (300 +
-                    (i+1)*20, 300 - 0.005*((i+1)*20)**2)) for i in range(-10, 11)}
+    segments = {i: ((300 + i*20, 300 + chemin(i)), (300 +
+                    (i+1)*20, 300 + chemin(i+1))) for i in range(-10, 11)}
     ligne = pymunk.Body(body_type=pymunk.Body.STATIC)
     space.add(ligne)
     for i, segment in segments.items():
@@ -59,12 +65,13 @@ def main():
     pygame.display.set_caption("Wagon")
     clock = pygame.time.Clock()
     space = pymunk.Space()
-    space.gravity = (0.0, 200)
+    space.gravity = (0.0, 300)
     draw_options = pymunk.pygame_util.DrawOptions(screen)
 
     # création des objets
 
     wagon = add_wagon(space)
+    wagon.velocity = Vec2d(150, 0)
     ligne, segments, p_to_i_gauche, p_to_i_droite = création_section(
         space)
     joint = création_liaison(space, ligne, segments, wagon, -10)
@@ -109,9 +116,9 @@ def main():
 
         screen.fill((255, 255, 255))
         space.debug_draw(draw_options)
-        space.step(1/50.0)
+        space.step(1/200.0)
         pygame.display.flip()
-        clock.tick(50)
+        clock.tick(200)
 
 
 if __name__ == '__main__':
