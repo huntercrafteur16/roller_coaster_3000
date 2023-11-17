@@ -37,13 +37,20 @@ class Rail():
     pullingPts = []
     constantSpeedPts = []
 
-    def __init__(self, degree=2) -> None:
+    def __init__(self, screen, degree=2) -> None:
+        self.screen = screen
+        self.degree = int(degree)
         self.curve = BSpline.Curve(degree=int(degree))
         self.curve.delta = 0.05
         self.curve.degree = int(degree)
+        self.count = 0
 
     def addPoint(self, point: tuple, desc: tuple):
         self.curvePts.append(point)
+
+    def set_degree(self, degree=2):
+        self.curve.degree = degree
+        self.degree = degree
 
     def renderRail(self, space):
         self.curve.ctrlpts = self.curvePts
@@ -97,28 +104,12 @@ class Rail():
             pulling_parts(bspline)
             space.add(railseg)
 
-
-class Spline():
-    def __init__(self, screen, degree=2):
-        self.screen = screen
-        self.degree = int(degree)
-        self.curve = BSpline.Curve(degree=self.degree)
-        self.curvePts = []
-        self.count = 0
-
     def draw(self, curvePts):
         self.curve.degree = self.degree  # Set the degree first
         self.curve.ctrlpts = curvePts
         self.curve.knotvector = utilities.generate_knot_vector(
             self.curve.degree, len(self.curve.ctrlpts))
         self.curvePts = self.curve.evalpts
-
-    def set_degree(self, degree=2):
-        self.curve.degree = degree
-        self.degree = degree
-
-    def add_point(self, xy):
-        self.curvePts.append(xy)
 
     def render(self):
         if self.count >= 2:
@@ -139,8 +130,8 @@ class Spline():
 class Canvas():
     def __init__(self, screen):
         self.screen = screen
-        self.curve = Spline(screen)
-        self.physics = Rail()
+        self.curve = Rail(screen)
+        self.physics = Rail(screen)
         self.ctrl_points = []
         self.count = 0
         self.selected = None
