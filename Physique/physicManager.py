@@ -6,7 +6,7 @@ Class physicManager qui gère la physique Pymunk
 # Python imports
 from functools import partial
 import random
-from typing import List
+from typing import Callable, List
 
 from Physique.wagon import Wagon
 # Library imports
@@ -18,10 +18,10 @@ import pymunk.pygame_util
 
 
 class physicManager(object):
+    update_func: Callable
 
-    def __init__(self, width, height, gravity=980, fps=30) -> None:
+    def __init__(self, width, height, gravity=980, fps=60) -> None:
         # Space
-        self.update_func = None
         self._fps = fps
         self._space = pymunk.Space()
         self._space.gravity = (0.0, gravity)
@@ -37,6 +37,8 @@ class physicManager(object):
         self._screen = pygame.display.set_mode((width, height))
         self._clock = pygame.time.Clock()
         self._draw_options = pymunk.pygame_util.DrawOptions(self._screen)
+        self._draw_options.constraint_color = (255, 255, 255, 255)
+        self._draw_options.flags ^= pymunk.pygame_util.DrawOptions.DRAW_CONSTRAINTS
 
         # Static barrier walls (lines) that the balls bounce off of
         self.createWagon()
@@ -48,6 +50,9 @@ class physicManager(object):
         self.wagon = Wagon(self._space, 5, 150, 50, (300, 100), 800)
         wagon_handler = self._space.add_collision_handler(2, 1)
         wagon_handler.pre_solve = self._onRailCollision
+
+    def getWagon(self):
+        return self.wagon
 
     def process(self) -> bool:
         """
@@ -120,7 +125,7 @@ class physicManager(object):
         wagon.get_chassis_body().apply_force_at_local_point((1000, 0), (0, 0))
 
     def _pull_body(self, body: pymunk.Body):
-        body.apply_force_at_local_point((-1000, 0), (0, 0))
+        body.apply_force_at_local_point((10000, 0), (0, 0))
 
     def _onRailCollision(self, arbiter, sapce, data):
 
