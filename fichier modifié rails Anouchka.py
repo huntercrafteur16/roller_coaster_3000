@@ -50,3 +50,22 @@ class Rail():
             space.add(railseg)
 
 
+if __name__ == "__main__":
+    screen = pygame.display.set_mode((500, 500))
+    canvas = Canvas(screen)
+
+    def update():
+        screen.fill(color="#444444")
+        canvas.simulate()
+        canvas.render()
+        pygame.display.update()
+
+    update()
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+        update()
+
+
