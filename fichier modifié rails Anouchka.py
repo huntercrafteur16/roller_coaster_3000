@@ -17,7 +17,7 @@ class Rail():
     """
     curvePts = []
     pullingPts = []
-    constanteSpeedPts = []
+    constantSpeedPts = []
 
     def __init__(self, degree=2) -> None:
         self.curve = BSpline.Curve(degree=degree)
