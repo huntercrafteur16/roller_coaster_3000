@@ -13,7 +13,6 @@ def add_wagon(space):
     wagon = pymunk.Body()
     wagon_shape = pymunk.Poly(
         wagon, [(-20, -20), (-20, 20), (20, 20), (20, -20)])
-    wagon.position = (50, 50)
     wagon_shape.mass = 1
     wagon_shape.friction = 1
     wagon.velocity = (20, 0)
@@ -24,14 +23,14 @@ def add_wagon(space):
 
 
 def création_section(space):
-    segments = {i: ([300 + i*20, 300 + (i*20)**2], [300 + (i+1)
-                    * 20, 300 + ((i+1)*20)**2]) for i in range(-5, 6)}
+    segments = {i: ([300 + i*10, 300 - 0.01*(i*10)**2], [300 +
+                    (i+1)*10, 300 - 0.01*((i+1)*10)**2]) for i in range(-10, 11)}
     ligne = pymunk.Body(body_type=pymunk.Body.STATIC)
     space.add(ligne)
     for i, segment in segments.items():
         ligne_shape = pymunk.Segment(ligne, segment[0], segment[1], 5)
         space.add(ligne_shape)
-    position_x_to_indice = {segments[i][0][0]: i for i in range(-5, 6)}
+    position_x_to_indice = {segments[i][0][0]: i for i in range(-10, 11)}
     return ligne, segments, position_x_to_indice
 
 # Création de la liaison
@@ -53,13 +52,15 @@ def main():
     clock = pygame.time.Clock()
 
     space = pymunk.Space()
-    space.gravity = (0.0, 100.0)
+    space.gravity = (0.0, 50)
     draw_options = pymunk.pygame_util.DrawOptions(screen)
     wagon = add_wagon(space)
     ligne, segments, position_x_to_indice = création_section(
         space)
-    joint = création_liaison(space, ligne, segments, wagon, 0)
+    joint = création_liaison(space, ligne, segments, wagon, -10)
     space.add(joint)
+    update_position_x = segments[-10][1][0] - 3
+    update_indice = -10
 
     while True:
         for event in pygame.event.get():
@@ -68,11 +69,13 @@ def main():
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 sys.exit(0)
 
-        if wagon.position in position_x_to_indice.keys():
+        if wagon.position[0] >= update_position_x:
             space.remove(joint)
             joint = création_liaison(
-                space, ligne, segments, wagon, position_x_to_indice[wagon.position])
+                space, ligne, segments, wagon, position_x_to_indice[update_position_x + 3])
             space.add(joint)
+            update_indice += 1
+            update_position_x = segments[update_indice][1][0] - 3
 
         screen.fill((255, 255, 255))
         space.debug_draw(draw_options)
