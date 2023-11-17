@@ -34,6 +34,10 @@ class Rail():
         self.curvePts.append(point)
 
     def renderRail(self, space):
+        """
+        Cette fonction crée la courbe comme un objet de pymunk 
+        donc affichable dans l'espace
+        """
         self.curve.ctrlpts = self.curvePts
         self.curve.knotvector = utilities.generate_knot_vector(
             self.curve.degree, len(self.curve.ctrlpts))
