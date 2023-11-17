@@ -26,7 +26,7 @@ class physicManager(object):
         self._fps = fps
         self._space = pymunk.Space()
         self._space.gravity = (0.0, gravity)
-        self.update_func = lambda x: None
+        self.update_func = lambda: None
         # Physics
         # Time step
         self._dt = 1.0 / fps
