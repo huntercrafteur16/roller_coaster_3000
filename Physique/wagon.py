@@ -37,7 +37,7 @@ class Wagon:
         p = Vec2d(position_init[0], position_init[1])
         vs = [(-L/2, -h/2), (L/2, -h/2), (L/2, h/2), (-L/2, h/2)]
         v2, v3 = vs[2], vs[3]
-        v4 = (0, h+50)
+        v4 = (0, h+L)
         v5 = (0, h/2)
         chassis = Poly(space, p, vs, Mass_chassis, L, h)
         wheel1 = Circle(space, p+v2, Mass_roues/3, L/6)
@@ -58,6 +58,8 @@ class Wagon:
         self.w2 = wheel2.shape
         self.w3 = wheel3.shape
         self.c = chassis.body
+        self.m = Mass
+        self.L = L
 
     # définitions des getters
 
@@ -69,3 +71,18 @@ class Wagon:
 
     def get_chassis_velocity(self):
         return (self.c.velocity)
+
+    def get_kinetic(self):
+        return (self.c.kinetic_energy)
+
+    def get_potential(self):
+        return (self.m*9.81*(600-self.c.position[1]))
+
+    def get_total_energy(self):
+        return (self.get_kinetic() + self.get_potential())
+
+    def get_chassis_acceleration(self):
+        return (self.c.force/self.m)
+
+    def get_starting_position(self, pos_rail: tuple):
+        return ((pos_rail[0], pos_rail[1]-(self.L/4)))
