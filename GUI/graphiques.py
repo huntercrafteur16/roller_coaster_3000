@@ -72,4 +72,20 @@ def animated_graph(List_speeds,xfinal):
         pause(0.05)
     graph_test.fixDisplay()  # affiche le graphe
 
-animated_graph(Courbe1,durée_exp)
+#animated_graph(Courbe1,durée_exp)
+
+def graphe_image_par_image(List_speeds,xfinal):
+    t = linspace(0, tf, len(List_speeds))
+    
+    xlim(-0.5, tf+0.5)
+    xlabel('temps')
+    ylim(-1, 5)                          # mise en forme
+    ylabel('vitesse')
+    plt.grid()
+    plt.title("Graphe des vitesses")
+    
+    for i in range(len(List_speeds)):
+        plt.plot(t[:i],List_speeds[i])
+        pause(0.5)
+    ioff()
+    show()
