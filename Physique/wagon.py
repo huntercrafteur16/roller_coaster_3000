@@ -1,0 +1,71 @@
+from classes_travail_wagon import *
+from pymunk.vec2d import Vec2d
+import numpy as np
+import pymunk
+import sys
+import pygame
+import pymunk.pygame_util
+import random
+random.seed(1)
+
+
+class Wagon:
+    """wagon(space, Mass, L, h, position_init) will create a wagon of mass M, lenght L,
+
+      height h and starting position of the center of the body.Tension sets the force of the spring.
+
+        For a flat line, choose position_init = (x, y_line-50 )
+
+        Example: wagon(space, 5, 100, 50, (300, 150)) will add a wagon to space"""
+
+    def __init__(self, space, Mass: float, L: float, h: float, position_init: tuple, tension_ressort=500, StartingLine=False):
+
+        assert L >= 20, 'la longueur minimale est 20'
+        assert h <= L, 'la hauteur doit être inférieure à la largeur'
+
+        # creation faculatative d'une ligne de départ sous le wagon
+        if StartingLine:
+            Start_line(space, (position_init[0]-(L/2+10)-50, position_init[1]+50),
+                       (position_init[0]+L/2+10+50, position_init[1]+50))
+
+        # repartition des masses
+
+        Mass_roues, Mass_chassis = (1/3)*Mass, (2/3)*Mass
+
+        # Ajout des objets
+
+        p = Vec2d(position_init[0], position_init[1])
+        vs = [(-L/2, -h/2), (L/2, -h/2), (L/2, h/2), (-L/2, h/2)]
+        v2, v3 = vs[2], vs[3]
+        v4 = (0, h+50)
+        v5 = (0, h/2)
+        chassis = Poly(space, p, vs, Mass_chassis, L, h)
+        wheel1 = Circle(space, p+v2, Mass_roues/3, L/6)
+        wheel2 = Circle(space, p+v3,  Mass_roues/3, L/6)
+        wheel3 = Circle(space, p+v4, Mass_roues/3, L/6)
+
+        # Ajout des liaisons
+
+        PivotJoint(space, chassis.body, wheel1.body, v2, (0, 0), False)
+        PivotJoint(space, chassis.body, wheel2.body, v3, (0, 0), False)
+
+        DampedSpring(space, chassis.body, wheel3.body,
+                     v5, (0, 0), L/6, tension_ressort, 60)
+
+        # Ajout des attributs utiles
+
+        self.w1 = wheel1.shape
+        self.w2 = wheel2.shape
+        self.w3 = wheel3.shape
+        self.c = chassis.body
+
+    # définitions des getters
+
+    def get_all_wheels_shape(self):
+        return (self.w1, self.w2, self.w3)
+
+    def get_chassis_body(self):
+        return (self.c)
+
+    def get_chassis_velocity(self):
+        return (self.c.velocity)
