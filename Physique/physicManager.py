@@ -4,6 +4,7 @@ Class physicManager qui gère la physique Pymunk
 -on peut effectuer scénario standart
 """
 # Python imports
+from functools import partial
 import random
 from typing import List
 from wagon import *
@@ -111,8 +112,12 @@ class physicManager(object):
         rail.renderRail(self._space)
 
     def _pull_wagon(self, wagon: Wagon):
-        wagon.get_chassis_body().apply_force_at_local_point((100000, 0), (0, 0))
+        wagon.get_chassis_body().apply_force_at_local_point((1000, 0), (0, 0))
 
-    def _onRailCollision(self, arbiter, space, data):
-        print("collision")
-        print(data)
+    def _pull_body(self, body: pymunk.Body):
+        body.apply_force_at_local_point((-1000, 0), (0, 0))
+
+    def _onRailCollision(self, arbiter, sapce, data):
+
+        self._pull_body(arbiter.shapes[0].body)
+        return True
