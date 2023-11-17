@@ -1,4 +1,4 @@
-from classes_travail_wagon import *
+from Physique.classes_travail_wagon import *
 from pymunk.vec2d import Vec2d
 import numpy as np
 import pymunk

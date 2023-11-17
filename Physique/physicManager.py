@@ -7,10 +7,11 @@ Class physicManager qui gère la physique Pymunk
 from functools import partial
 import random
 from typing import List
-from wagon import *
+
+from Physique.wagon import Wagon
 # Library imports
 import pygame
-from rails import *
+from Physique.rails import *
 # pymunk imports
 import pymunk
 import pymunk.pygame_util
@@ -20,6 +21,7 @@ class physicManager(object):
 
     def __init__(self, width, height, gravity=980, fps=30) -> None:
         # Space
+
         self._fps = fps
         self._space = pymunk.Space()
         self._space.gravity = (0.0, gravity)
@@ -47,7 +49,7 @@ class physicManager(object):
         wagon_handler = self._space.add_collision_handler(2, 1)
         wagon_handler.pre_solve = self._onRailCollision
 
-    def process(self) -> None:
+    def process(self) -> bool:
         """
         The main loop of the simulation.
         :return: None
@@ -63,6 +65,7 @@ class physicManager(object):
 
         self._clear_screen()
         self._draw_objects()
+        self.updateFunc()
         pygame.display.flip()
 
         # Delay fixed time between frames
@@ -122,5 +125,5 @@ class physicManager(object):
         self._pull_body(arbiter.shapes[0].body)
         return True
 
-    def onUpdate(self, func):
-        func()
+    def onUpdate(self, function):
+        function()
