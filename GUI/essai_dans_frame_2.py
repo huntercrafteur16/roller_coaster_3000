@@ -43,5 +43,5 @@ graph = FigureCanvasTkAgg(fig, master=app)
 canvas = graph.get_tk_widget()
 canvas.grid(row=0, column=0)
   
-ani=FuncAnimation(fig, update_graph, interval=500)
+ani=FuncAnimation(fig, update_graph, interval=1000)
 app.mainloop()

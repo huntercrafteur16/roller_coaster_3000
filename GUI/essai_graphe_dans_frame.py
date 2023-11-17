@@ -14,32 +14,33 @@ import matplotlib.animation as animation
 
 durée_exp=5
 List_speeds= [0.02*x**4-x**2+3*x for x in linspace(0, durée_exp, 50)]
-
 t = linspace(0, durée_exp, len(List_speeds))
-i=0
-while i<50:
-    def update_graph(dt):
-        i=i+1
-        x, y1 = t[:i],List_speeds[:i]
-        ax1.clear()
-        ax1.set_ylim(0, durée_exp, auto=False)
-        ax1.set_xlabel('Temps')
-        ax1.set_ylabel('vitesse', color='r')
-        ax1.plot(x, y1)
+nul=[0 for k in List_speeds]
 
-    app = tk.Tk()
-    app.wm_title("Graphe Matplotlib dans Tkinter")
-    
-    style.use("ggplot")
-    fig = Figure(figsize=(8, 5), dpi=112)
-    ax1 = fig.add_subplot(211)
+def update_graph(dt):
+    x, y1 = t,List_speeds
+    ax1.clear()
+    ax1.set_ylim(-1, max(List_speeds)+0.5, auto=False)
+    ax1.set_xlim(0, durée_exp, auto=False)
     ax1.set_xlabel('Temps')
     ax1.set_ylabel('vitesse', color='r')
-    fig.tight_layout()
+    ax1.plot(x, y1)
 
-    graph = FigureCanvasTkAgg(fig, master=app)
-    canvas = graph.get_tk_widget()
-    canvas.grid(row=0, column=0)
-    
-    ani=FuncAnimation(fig, update_graph, interval=500)
-    app.mainloop()
+app = tk.Tk()
+app.wm_title("Graphe Matplotlib dans Tkinter")
+
+style.use("ggplot")
+fig = Figure(figsize=(8, 5), dpi=112)
+ax1 = fig.add_subplot(211)
+ax1.set_ylim(-1, max(List_speeds)+0.5, auto=False)
+ax1.set_xlim(0, durée_exp, auto=False)
+ax1.set_xlabel('Temps')
+ax1.set_ylabel('vitesse', color='r')
+fig.tight_layout()
+
+graph = FigureCanvasTkAgg(fig, master=app)
+canvas = graph.get_tk_widget()
+canvas.grid(row=0, column=0)
+
+anim=FuncAnimation(fig, update_graph, interval=500)
+app.mainloop()
