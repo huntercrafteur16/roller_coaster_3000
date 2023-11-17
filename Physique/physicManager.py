@@ -43,12 +43,8 @@ class physicManager(object):
 
     def createWagon(self):
         self.wagon = Wagon(self._space, 5, 150, 50, (300, 100), 800)
-
-    def __processPullingWagons(self):
-
-        for wagon in self.wagons:
-            pass
-        # TODO
+        wagon_handler = self._space.add_collision_handler(2, 1)
+        wagon_handler.pre_solve = self._onRailCollision
 
     def process(self) -> None:
         """
@@ -74,7 +70,7 @@ class physicManager(object):
         pygame.display.set_caption("fps: " + str(self._clock.get_fps()))
         return True
 
-    def _process_events(self) -> None:
+    def _process_events(self) -> str:
         """
         Handle game and events like keyboard input. Call once per frame only.
         :return: None
@@ -116,3 +112,7 @@ class physicManager(object):
 
     def _pull_wagon(self, wagon: Wagon):
         wagon.get_chassis_body().apply_force_at_local_point((100000, 0), (0, 0))
+
+    def _onRailCollision(self, arbiter, space, data):
+        print("collision")
+        print(data)
