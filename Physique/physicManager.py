@@ -5,6 +5,8 @@ Class physicManager qui gère la physique Pymunk
 """
 # Python imports
 from functools import partial
+import os
+import platform
 import random
 from typing import Callable, List
 
@@ -20,8 +22,14 @@ import pymunk.pygame_util
 class physicManager(object):
     update_func: Callable
 
-    def __init__(self, width, height, gravity=980, fps=60) -> None:
+    def __init__(self, width, height, root=None, frame=None, gravity=980, fps=60) -> None:
 
+        if frame != None:
+            os.environ['SDL_WINDOWID'] = str(frame.winfo_id())
+            if platform.system == "Windows":
+                os.environ['SDL_VIDEODRIVER'] = 'windib'
+        if root != None:
+            self.root = root
         # Space
         self._fps = fps
         self._space = pymunk.Space()
@@ -80,6 +88,11 @@ class physicManager(object):
         self._clock.tick(self._fps)
 
         pygame.display.set_caption("fps: " + str(self._clock.get_fps()))
+        if self.root != None:
+            try:
+                self.root.update()
+            except:
+                running = False
         return True
 
     def _process_events(self) -> str:

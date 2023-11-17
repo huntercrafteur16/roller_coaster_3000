@@ -22,7 +22,7 @@ def updateGraph(graph: AnimatedGraph, wagon: Physique.wagon.Wagon):
     graph.drawNext(i, v_curr[0])
 
 
-physicmanager = physicManager(600, 600)
+physicmanager = physicManager(600, 600, None)
 wagon = physicmanager.getWagon()
 root = Tk()
 
