@@ -16,6 +16,9 @@ i = 0
 
 
 def updateGraph(graph: AnimatedGraph, wagon: Physique.wagon.Wagon):
+    """
+    Affiche le graph
+    """
     global i
     i += 1
     v_curr = wagon.get_chassis_velocity()
@@ -34,6 +37,6 @@ canvas = graph.get_tk_widget()
 canvas.grid(row=0, column=0)
 
 cont = True
-while cont == True:
+while cont is True:
     cont = physicmanager.process()
     root.update()

@@ -6,19 +6,18 @@ Class physicManager qui gère la physique Pymunk
 # Python imports
 import os
 import platform
-import random
-from typing import Callable, List
-
-from Physique.wagon import Wagon
-# Library imports
-import pygame
-from Physique.rails import *
-# pymunk imports
+from typing import Callable
 import pymunk
 import pymunk.pygame_util
+import pygame
+from Physique.wagon import Wagon
+from Physique.rails import Rail
 
 
 class physicManager(object):
+    """
+    Manager du monde physique pymunk et de l'interaction entre les différentes actions
+    """
     update_func: Callable  # fonction qui sera appelée à chaque boucle
 
     def __init__(self, width, height, root=None, frame=None, gravity=980, fps=60) -> None:
@@ -65,6 +64,7 @@ class physicManager(object):
         wagon_handler.pre_solve = self._onRailCollision
 
     def getWagon(self):
+        "retoure le wagon"
         return self.wagon
 
     def process(self) -> bool:
@@ -100,6 +100,7 @@ class physicManager(object):
         Handle game and events like keyboard input. Call once per frame only.
         :return: None
         """
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return "QUIT"
@@ -143,7 +144,7 @@ class physicManager(object):
     def _pull_body(self, body: pymunk.Body):
         body.apply_force_at_local_point((10000, 0), (0, 0))
 
-    def _onRailCollision(self, arbiter, sapce, data):
+    def _onRailCollision(self, arbiter, space, data):
 
         self._pull_body(arbiter.shapes[0].body)
         return True
