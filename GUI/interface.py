@@ -100,7 +100,7 @@ class Interface():
         # A l'intérieur de simu : roller coaster et graphe
         self.roller_coaster = Frame(
             simu, bg='white', height=roller_coaster_height, width=roller_coaster_width)
-        self.frame_graph = Frame(graphbar, bg='blue')
+        self.frame_graph = Frame(graphbar, bg='blue', width=100, height=50)
         self.roller_coaster.grid(
             row=1, column=1, rowspan=3, columnspan=3, sticky=N)
 
