@@ -5,6 +5,8 @@ from Physique.physicManager import physicManager
 from GUI.graphiques import AnimatedGraph
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from Physique.wagon import Wagon
+
+
 interface = Interface()
 
 manager = physicManager(interface.get_pymunk_frame().winfo_width(), interface.get_pymunk_frame().winfo_height(), interface.simu,

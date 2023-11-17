@@ -20,28 +20,30 @@ import pymunk.pygame_util
 
 
 class physicManager(object):
-    update_func: Callable
+    update_func: Callable  # fonction qui sera appelée à chaque boucle
 
     def __init__(self, width, height, root=None, frame=None, gravity=980, fps=60) -> None:
 
+        # code pour contenir la fenetre dans la frame tkinter indiquée #
         if frame != None:
             os.environ['SDL_WINDOWID'] = str(frame.winfo_id())
             if platform.system == "Windows":
                 os.environ['SDL_VIDEODRIVER'] = 'windib'
         if root != None:
             self.root = root
-        # Space
+
+        # Réglage des paramètres temporels
         self._fps = fps
-        self._space = pymunk.Space()
-        self._space.gravity = (0.0, gravity)
-        self.update_func = lambda: None
-        # Physics
-        # Time step
         self._dt = 1.0 / fps
-        # Number of physics steps per screen frame
         self._physics_steps_per_frame = 10
 
-        # pygame
+        # instanciation et réglage des paramètres physiques
+        self._space = pymunk.Space()
+        self._space.gravity = (0.0, gravity)
+
+        # Number of physics steps per screen frame
+
+        # initialisation de pygame avec paramètres
         pygame.init()
         self._screen = pygame.display.set_mode((width, height))
         self._clock = pygame.time.Clock()
@@ -49,13 +51,16 @@ class physicManager(object):
         self._draw_options.constraint_color = (255, 255, 255, 255)
         self._draw_options.flags ^= pymunk.pygame_util.DrawOptions.DRAW_CONSTRAINTS
 
-        # Static barrier walls (lines) that the balls bounce off of
+        # scénario test
         self.createWagon()
         self._createSampleRail()
 
-        # Execution control and time until the next ball spawns
+        # réglages autres
+        # fonction qui sera exécutée après chaque actualisation
+        self.update_func = lambda: None
 
-    def createWagon(self):
+    def createWagon(self):  # va être bientôt supprimée servait pour le premier MVP
+
         self.wagon = Wagon(self._space, 5, 150, 50, (300, 100), 800)
         wagon_handler = self._space.add_collision_handler(2, 1)
         wagon_handler.pre_solve = self._onRailCollision
@@ -65,35 +70,31 @@ class physicManager(object):
 
     def process(self) -> bool:
         """
-        The main loop of the simulation.
-        :return: None
+        Boucle principale de la simulation qui permet d'actualiser la physique et l'affichage pygame
+        :return: Bool selon que l'on doive continuer ou arrêter la boucle
         """
-        # Main loop
-        # Progress time forward
-        # oversampling physics compared to fps
+        # frames de simulation physique pour 1 frame d'affichage (physics oversampling)
         for x in range(self._physics_steps_per_frame):
             self._space.step(self._dt/self._physics_steps_per_frame)
 
-        if self._process_events() == "QUIT":
-            return False
+        if self._process_events() == "QUIT":  # vérification des évènements terminaux
 
+            return False
+        # fonctions nécessaires et explicites
         self._clear_screen()
         self._draw_objects()
 
-        if self.update_func != None:  # type: ignore
-            self.update_func()  # type: ignore
+        # fonction externe envoyée lors de l'exécution de process
+        self.update_func()
+
+        # actualisation du rendu pygame
         pygame.display.flip()
 
-        # Delay fixed time between frames
+        # On pause la simulation selon les fps voulus
         self._clock.tick(self._fps)
 
-        pygame.display.set_caption("fps: " + str(self._clock.get_fps()))
-        if self.root != None:
-            try:
-                self.root.update()
-            except:
-                running = False
-        return True
+        # pygame.display.set_caption("fps: " + str(self._clock.get_fps())) #affichage du nombre de fps sur le titre de la fenêtre
+        return True  # aucun problème ni arrêt
 
     def _process_events(self) -> str:
         """
@@ -109,6 +110,8 @@ class physicManager(object):
                 pygame.image.save(self._screen, "bouncing_balls.png")
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                 self._pull_wagon(self.wagon)
+                return "NOTHING"
+        return "NOTHING"
 
     def _clear_screen(self) -> None:
         """
