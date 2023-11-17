@@ -1,4 +1,5 @@
 from functools import partial
+from re import I
 import tkinter as tk
 from tkinter.tix import Tk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
@@ -10,26 +11,22 @@ import Physique.wagon
 import Physique.classes_travail_wagon
 from Physique.physicManager import physicManager
 
-
-t = linspace(0, 100, 1000)
-y = np.sin(0.1*t**(1.5))*2**(-0.2*t)
 global i
 i = 0
 
-def updateGraph(graph: AnimatedGraph):
+
+def updateGraph(graph: AnimatedGraph, wagon: Physique.wagon.Wagon):
     global i
-    t_curr = t[i]
-    y_curr = y[i]
-    graph.drawNext(t_curr, y_curr)
     i += 1
     v_curr = wagon.get_chassis_velocity()
     graph.drawNext(i, v_curr[0])
 
-physicmanager = physicManager(600, 600)
 
+physicmanager = physicManager(600, 600)
+wagon = physicmanager.getWagon()
 root = Tk()
 
-animgraph = AnimatedGraph((0, 100), (min(y)-0.5, max(y)+0.5), "test")
+animgraph = AnimatedGraph((0, 1000), (-1e4, 1e4), "test")
 graph = FigureCanvasTkAgg(animgraph.fig, master=root)
 physicmanager.update_func = partial(
     updateGraph, animgraph, wagon)  # type: ignore
