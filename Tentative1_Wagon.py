@@ -4,7 +4,13 @@ import pygame
 import sys
 import random
 from pymunk import Vec2d
+import numpy as np
 random.seed(1)
+
+# norme
+
+
+def norme(p): return np.sqrt(p[0]**2 + p[1]**2)
 
 # Création du pendule
 
@@ -15,7 +21,6 @@ def add_wagon(space):
         wagon, [(-20, -20), (-20, 20), (20, 20), (20, -20)])
     wagon_shape.mass = 1
     wagon_shape.friction = 1
-    wagon.velocity = (20, 0)
     space.add(wagon, wagon_shape)
     return wagon
 
@@ -24,17 +29,17 @@ def add_wagon(space):
 
 def création_section(space):
     # création des segments qui linéarisent une parabole
-    segments = {i: ([300 + i*15, 300 - 0.01*(i*15)**2], [300 +
-                    (i+1)*15, 300 - 0.01*((i+1)*15)**2]) for i in range(-10, 11)}
+    segments = {i: ((300 + i*20, 300 - 0.005*(i*20)**2), (300 +
+                    (i+1)*20, 300 - 0.005*((i+1)*20)**2)) for i in range(-10, 11)}
     ligne = pymunk.Body(body_type=pymunk.Body.STATIC)
     space.add(ligne)
     for i, segment in segments.items():
         ligne_shape = pymunk.Segment(ligne, segment[0], segment[1], 5)
         space.add(ligne_shape)
     # création d’un dict pour connaître l’indice d’une positon donnée
-    x_to_i_gauche = {segments[i][0][0]: i for i in range(-10, 11)}
-    x_to_i_droite = {segments[i][1][0]: i for i in range(-10, 11)}
-    return ligne, segments, x_to_i_gauche, x_to_i_droite
+    p_to_i_gauche = {segments[i][0]: i for i in range(-10, 11)}
+    p_to_i_droite = {segments[i][1]: i for i in range(-10, 11)}
+    return ligne, segments, p_to_i_gauche, p_to_i_droite
 
 # Création de la liaison
 
@@ -60,17 +65,18 @@ def main():
     # création des objets
 
     wagon = add_wagon(space)
-    ligne, segments, x_to_i_gauche, x_to_i_droite = création_section(
+    ligne, segments, p_to_i_gauche, p_to_i_droite = création_section(
         space)
     joint = création_liaison(space, ligne, segments, wagon, -10)
     space.add(joint)
 
     # initialisation des paramètres
 
-    wagon.position = segments[-10][1]
-    update_suivant = segments[-10][1][0] - 5
-    update_précédent = segments[-10][0][0] + 5
-    update_indice = -10
+    update_indice = -9
+    seuil = 2
+    wagon.position = segments[update_indice][1]
+    update_suivant = segments[update_indice][1]
+    update_précédent = segments[update_indice][0]
 
     while True:
         for event in pygame.event.get():
@@ -80,26 +86,26 @@ def main():
                 sys.exit(0)
     # Changement de liaison glissière si nécessaire
         # passage au segment d’après
-        if wagon.position[0] >= update_suivant and wagon.velocity[0] >= 0:
+        if norme([wagon.position[0] - update_suivant[0], wagon.position[1] - update_suivant[1]]) < seuil and wagon.velocity[0] >= 0:
             space.remove(joint)
             joint = création_liaison(
-                space, ligne, segments, wagon, x_to_i_gauche[update_suivant + 5])
+                space, ligne, segments, wagon, p_to_i_gauche[update_suivant])
             space.add(joint)
             # update des paramètres
             update_indice += 1
-            update_suivant = segments[update_indice][1][0] - 5
-            update_précédent = segments[update_indice][0][0] + 5
+            update_suivant = segments[update_indice][1]
+            update_précédent = segments[update_indice][0]
 
         # passage au segment d’avant
-        if wagon.position[0] <= update_précédent and wagon.velocity[0] <= 0:
+        if norme([wagon.position[0] - update_précédent[0], wagon.position[1] - update_précédent[1]]) < seuil and wagon.velocity[0] <= 0:
             space.remove(joint)
             joint = création_liaison(
-                space, ligne, segments, wagon, x_to_i_droite[update_précédent - 5])
+                space, ligne, segments, wagon, p_to_i_droite[update_précédent])
             space.add(joint)
             # update des paramètres
             update_indice -= 1
-            update_suivant = segments[update_indice][1][0] - 5
-            update_précédent = segments[update_indice][0][0] + 5
+            update_suivant = segments[update_indice][1]
+            update_précédent = segments[update_indice][0]
 
         screen.fill((255, 255, 255))
         space.debug_draw(draw_options)
