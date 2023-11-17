@@ -1,7 +1,7 @@
 from functools import partial
 from re import I
 import tkinter as tk
-from tkinter.tix import Tk
+from tkinter import Tk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from pylab import *
 from matplotlib import pyplot, style as plt
@@ -26,7 +26,7 @@ physicmanager = physicManager(600, 600, None)
 wagon = physicmanager.getWagon()
 root = Tk()
 
-animgraph = AnimatedGraph((0, 1000), (-1e4, 1e4), "test")
+animgraph = AnimatedGraph("test")
 graph = FigureCanvasTkAgg(animgraph.fig, master=root)
 physicmanager.update_func = partial(
     updateGraph, animgraph, wagon)  # type: ignore
