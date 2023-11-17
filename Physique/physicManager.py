@@ -48,7 +48,7 @@ class physicManager(object):
         # Execution control and time until the next ball spawns
 
     def createWagon(self):
-        self.wagon = Wagon(self._space, 5, 150, 50, (300, 100), 800)
+        self.wagon = Wagon(self._space, 1000, 150, 50, (300, 100), 80000)
         wagon_handler = self._space.add_collision_handler(2, 1)
         wagon_handler.pre_solve = self._onRailCollision
 
