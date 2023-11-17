@@ -18,28 +18,24 @@ from Physique.physicManager import physicManager
 
 
 t = linspace(0, 100, 1000)
-y = np.sin(t)
+y = np.sin(0.1*t**(1.5))*2**(-0.2*t)
 global i
 i = 0
-
 
 def updateGraph(graph: AnimatedGraph):
     global i
     t_curr = t[i]
     y_curr = y[i]
     graph.drawNext(t_curr, y_curr)
-    print(i)
     i += 1
     if i == len(t):
         i -= 1
 
-
 physicmanager = physicManager(600, 600)
-
 
 root = Tk()
 
-animgraph = AnimatedGraph((0, 100), (-1, 1), "test")
+animgraph = AnimatedGraph((0, 100), (min(y)-0.5, max(y)+0.5), "test")
 graph = FigureCanvasTkAgg(animgraph.fig, master=root)
 physicmanager.updateFunc = partial(updateGraph, animgraph)
 
