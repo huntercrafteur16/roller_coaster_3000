@@ -19,15 +19,16 @@ class physicManager(object):
     Manager du monde physique pymunk et de l'interaction entre les différentes actions
     """
     update_func: Callable  # fonction qui sera appelée à chaque boucle
+    isPaused: bool
 
     def __init__(self, width, height, root=None, frame=None, gravity=980, fps=60) -> None:
 
         # code pour contenir la fenetre dans la frame tkinter indiquée #
-        if frame != None:
+        if frame is not None:
             os.environ['SDL_WINDOWID'] = str(frame.winfo_id())
             if platform.system == "Windows":
                 os.environ['SDL_VIDEODRIVER'] = 'windib'
-        if root != None:
+        if root is not None:
             self.root = root
 
         # Réglage des paramètres temporels
@@ -56,6 +57,7 @@ class physicManager(object):
         # réglages autres
         # fonction qui sera exécutée après chaque actualisation
         self.update_func = lambda: None
+        self.isPaused = True
 
     def createWagon(self):  # va être bientôt supprimée servait pour le premier MVP
 
@@ -72,8 +74,12 @@ class physicManager(object):
         Boucle principale de la simulation qui permet d'actualiser la physique et l'affichage pygame
         :return: Bool selon que l'on doive continuer ou arrêter la boucle
         """
+        # on court circuit le process si on pause le temps
+        if self.isPaused:
+            return True
+
         # frames de simulation physique pour 1 frame d'affichage (physics oversampling)
-        for x in range(self._physics_steps_per_frame):
+        for _ in range(self._physics_steps_per_frame):
             self._space.step(self._dt/self._physics_steps_per_frame)
 
         if self._process_events() == "QUIT":  # vérification des évènements terminaux
@@ -148,3 +154,12 @@ class physicManager(object):
 
         self._pull_body(arbiter.shapes[0].body)
         return True
+
+    def getTime(self) -> float:
+        return float(pygame.time.get_ticks()/1000)
+
+    def pause(self) -> None:
+        self.isPaused = True
+
+    def play(self) -> None:
+        self.isPaused = False

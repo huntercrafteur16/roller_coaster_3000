@@ -21,12 +21,12 @@ vitesse_graph.attach_to_frame(interface.get_graph_frame()[0])
 interface.get_graph_frame()[0].pack()
 
 
+manager.play()
 cont = True  # continuer l'exécution du programme
-i = 0
 while cont:
+    print(manager.getTime())
     vitesse_graph.drawNext(
-        i, abs(manager.getWagon().get_chassis_velocity()))
+        manager.getTime(), abs(manager.getWagon().get_chassis_velocity()))
     GUI_cont = interface.render_GUI()
     phys_cont = manager.process()
     cont = GUI_cont and phys_cont
-    i += 1
