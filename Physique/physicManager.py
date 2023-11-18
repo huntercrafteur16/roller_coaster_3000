@@ -20,9 +20,13 @@ class physicManager(object):
     """
     update_func: Callable  # fonction qui sera appelée à chaque boucle
     isPaused: bool
+    time: int  # temps de la simulation en millisecondes
 
     def __init__(self, width, height, root=None, frame=None, gravity=980, fps=60) -> None:
-
+        self.width = width
+        self.height = height
+        self.frame = frame
+        self.gravity = gravity
         # code pour contenir la fenetre dans la frame tkinter indiquée #
         if frame is not None:
             os.environ['SDL_WINDOWID'] = str(frame.winfo_id())
@@ -58,6 +62,8 @@ class physicManager(object):
         # fonction qui sera exécutée après chaque actualisation
         self.update_func = lambda: None
         self.isPaused = True
+        self.time = 0
+        self.pausedTime = 0
 
     def createWagon(self):  # va être bientôt supprimée servait pour le premier MVP
 
@@ -76,6 +82,7 @@ class physicManager(object):
         """
         # on court circuit le process si on pause le temps
         if self.isPaused:
+            self._clock.tick_busy_loop(self._fps)
             return True
 
         # frames de simulation physique pour 1 frame d'affichage (physics oversampling)
@@ -96,7 +103,8 @@ class physicManager(object):
         pygame.display.flip()
 
         # On pause la simulation selon les fps voulus
-        self._clock.tick(self._fps)
+        self.time += self._clock.tick_busy_loop(self._fps)
+        print(self.time)
 
         # pygame.display.set_caption("fps: " + str(self._clock.get_fps())) #affichage du nombre de fps sur le titre de la fenêtre
         return True  # aucun problème ni arrêt
@@ -155,11 +163,24 @@ class physicManager(object):
         self._pull_body(arbiter.shapes[0].body)
         return True
 
-    def getTime(self) -> float:
-        return float(pygame.time.get_ticks()/1000)
+    def getTime(self) -> int:
+        """
+        Renvoie le temps du programme en millisecondes
+        """
+        return self.time
 
     def pause(self) -> None:
+        """Pause le temps de la simulation"""
         self.isPaused = True
+        self.pausedTime = self.getTime()
 
     def play(self) -> None:
+        """redémarre le temps de la simulation"""
         self.isPaused = False
+        self.time = self.pausedTime
+
+    def reinit(self):
+        """Réinitialise la simulation aux paramètres initiax"""
+
+        self.__init__(self.width, self.height, self.root,
+                      self.frame, self.gravity, self._fps)

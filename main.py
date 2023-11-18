@@ -23,10 +23,18 @@ interface.get_graph_frame()[0].pack()
 
 manager.play()
 cont = True  # continuer l'exécution du programme
+i = 0
 while cont:
-    print(manager.getTime())
+    if i > 100 and not manager.isPaused:
+        manager.pause()
+    if i > 200 and manager.isPaused:
+        manager.play()
+    if i > 500:
+        manager.reinit()
+
     vitesse_graph.drawNext(
         manager.getTime(), abs(manager.getWagon().get_chassis_velocity()))
     GUI_cont = interface.render_GUI()
     phys_cont = manager.process()
     cont = GUI_cont and phys_cont
+    i += 1
