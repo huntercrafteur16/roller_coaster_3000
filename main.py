@@ -1,4 +1,5 @@
 """Fichier principal du programme"""
+import time
 from GUI.interface import Interface
 from GUI.graphiques import AnimatedGraph
 from Physique.physicManager import physicManager
@@ -25,16 +26,23 @@ manager.play()
 cont = True  # continuer l'exécution du programme
 i = 0
 while cont:
-    if i > 100 and not manager.isPaused:
+
+    '''
+    if i > 50 and not manager.isPaused:
         manager.pause()
-    if i > 200 and manager.isPaused:
+    if i > 70 and manager.isPaused:
         manager.play()
-    if i > 500:
+    '''
+
+    if i == 100:
+        i = 0
+
         manager.reinit()
+        manager.play()
 
     vitesse_graph.drawNext(
         manager.getTime(), abs(manager.getWagon().get_chassis_velocity()))
+    i += 1
     GUI_cont = interface.render_GUI()
     phys_cont = manager.process()
     cont = GUI_cont and phys_cont
-    i += 1

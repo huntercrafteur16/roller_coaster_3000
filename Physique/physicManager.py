@@ -30,7 +30,7 @@ class physicManager(object):
         # code pour contenir la fenetre dans la frame tkinter indiquée #
         if frame is not None:
             os.environ['SDL_WINDOWID'] = str(frame.winfo_id())
-            if platform.system == "Windows":
+            if platform.system() == "Windows":
                 os.environ['SDL_VIDEODRIVER'] = 'windib'
         if root is not None:
             self.root = root
@@ -58,6 +58,7 @@ class physicManager(object):
         self.createWagon()
         self._createSampleRail()
 
+        pygame.display.init()
         # réglages autres
         # fonction qui sera exécutée après chaque actualisation
         self.update_func = lambda: None
@@ -100,11 +101,13 @@ class physicManager(object):
         self.update_func()
 
         # actualisation du rendu pygame
-        pygame.display.flip()
+        try:
+            pygame.display.flip()
+        except:
+            pass
 
         # On pause la simulation selon les fps voulus
         self.time += self._clock.tick_busy_loop(self._fps)
-        print(self.time)
 
         # pygame.display.set_caption("fps: " + str(self._clock.get_fps())) #affichage du nombre de fps sur le titre de la fenêtre
         return True  # aucun problème ni arrêt
@@ -132,7 +135,13 @@ class physicManager(object):
         Clears the screen.
         :return: None
         """
-        self._screen.fill(pygame.Color("white"))
+        try:
+            self._screen.fill(pygame.Color("white"))
+
+        except:
+            pygame.init()
+            pygame.display.init()
+            print("error")
 
     def _draw_objects(self) -> None:
         """
@@ -142,15 +151,15 @@ class physicManager(object):
         self._space.debug_draw(self._draw_options)
 
     def _createSampleRail(self):
-        rail = Rail()
-        rail.addPoint((50, 200), False)
-        rail.addPoint((250, 100), True)
-        rail.addPoint((450, 300), True)
-        rail.addPoint((600, 400), False)
-        rail.addPoint((800, 400), False)
-        rail.addPoint((1000, 300), False)
+        self.rail = Rail()
+        self.rail.addPoint((50, 200), False)
+        self.rail.addPoint((250, 100), True)
+        self.rail.addPoint((450, 300), True)
+        self.rail.addPoint((600, 400), False)
+        self.rail.addPoint((800, 400), False)
+        self.rail.addPoint((1000, 300), False)
 
-        rail.renderRail(self._space)
+        self.rail.renderRail(self._space)
 
     def _pull_wagon(self, wagon: Wagon):
         wagon.get_chassis_body().apply_force_at_local_point((1000, 0), (0, 0))
@@ -180,7 +189,14 @@ class physicManager(object):
         self.time = self.pausedTime
 
     def reinit(self):
-        """Réinitialise la simulation aux paramètres initiax"""
+        self._clear_screen()
+        self._space = pymunk.Space()
+        self.createWagon()
+        self._createSampleRail()
 
-        self.__init__(self.width, self.height, self.root,
-                      self.frame, self.gravity, self._fps)
+        # réglages autres
+        # fonction qui sera exécutée après chaque actualisation
+        self.update_func = lambda: None
+        self.isPaused = True
+        self.time = 0
+        self.pausedTime = 0
