@@ -37,7 +37,7 @@ class Wagon:
 
         p = Vec2d(position_init[0], position_init[1])
         vs = [(-L/2, -h/2), (L/2, -h/2), (L/2, h/2),
-              (-L/2, h/2), ((4*L/6), 0), ((-4*L/6), 0)]
+              (-L/2, h/2), ((2*L/3), 0), ((-2*L/3), 0)]
         v2, v3 = vs[2], vs[3]
         v4 = (-L/2, h+L)
         v5 = (-L/2, h/2)
@@ -75,6 +75,9 @@ class Wagon:
         self.c = chassis.body
         self.m = Mass
         self.L = L
+        self.h = h
+        self.tension = tension_ressort
+        self.StartingLine = StartingLine
 
     # définitions des getters
 
