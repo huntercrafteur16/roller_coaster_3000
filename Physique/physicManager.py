@@ -19,15 +19,20 @@ class physicManager(object):
     Manager du monde physique pymunk et de l'interaction entre les différentes actions
     """
     update_func: Callable  # fonction qui sera appelée à chaque boucle
+    isPaused: bool
+    time: int  # temps de la simulation en millisecondes
 
     def __init__(self, width, height, root=None, frame=None, gravity=980, fps=60) -> None:
-
+        self.width = width
+        self.height = height
+        self.frame = frame
+        self.gravity = gravity
         # code pour contenir la fenetre dans la frame tkinter indiquée #
-        if frame != None:
+        if frame is not None:
             os.environ['SDL_WINDOWID'] = str(frame.winfo_id())
-            if platform.system == "Windows":
+            if platform.system() == "Windows":
                 os.environ['SDL_VIDEODRIVER'] = 'windib'
-        if root != None:
+        if root is not None:
             self.root = root
 
         # Réglage des paramètres temporels
@@ -53,9 +58,13 @@ class physicManager(object):
         self.createWagon()
         self._createSampleRail()
 
+        pygame.display.init()
         # réglages autres
         # fonction qui sera exécutée après chaque actualisation
         self.update_func = lambda: None
+        self.isPaused = True
+        self.time = 0
+        self.pausedTime = 0
 
     def createWagon(self):  # va être bientôt supprimée servait pour le premier MVP
 
@@ -72,8 +81,13 @@ class physicManager(object):
         Boucle principale de la simulation qui permet d'actualiser la physique et l'affichage pygame
         :return: Bool selon que l'on doive continuer ou arrêter la boucle
         """
+        # on court circuit le process si on pause le temps
+        if self.isPaused:
+            self._clock.tick_busy_loop(self._fps)
+            return True
+
         # frames de simulation physique pour 1 frame d'affichage (physics oversampling)
-        for x in range(self._physics_steps_per_frame):
+        for _ in range(self._physics_steps_per_frame):
             self._space.step(self._dt/self._physics_steps_per_frame)
 
         if self._process_events() == "QUIT":  # vérification des évènements terminaux
@@ -87,10 +101,13 @@ class physicManager(object):
         self.update_func()
 
         # actualisation du rendu pygame
-        pygame.display.flip()
+        try:
+            pygame.display.flip()
+        except:
+            pass
 
         # On pause la simulation selon les fps voulus
-        self._clock.tick(self._fps)
+        self.time += self._clock.tick_busy_loop(self._fps)
 
         # pygame.display.set_caption("fps: " + str(self._clock.get_fps())) #affichage du nombre de fps sur le titre de la fenêtre
         return True  # aucun problème ni arrêt
@@ -118,7 +135,13 @@ class physicManager(object):
         Clears the screen.
         :return: None
         """
-        self._screen.fill(pygame.Color("white"))
+        try:
+            self._screen.fill(pygame.Color("white"))
+
+        except:
+            pygame.init()
+            pygame.display.init()
+            print("error")
 
     def _draw_objects(self) -> None:
         """
@@ -128,15 +151,15 @@ class physicManager(object):
         self._space.debug_draw(self._draw_options)
 
     def _createSampleRail(self):
-        rail = Rail()
-        rail.addPoint((50, 200), False)
-        rail.addPoint((250, 100), True)
-        rail.addPoint((450, 300), True)
-        rail.addPoint((600, 400), False)
-        rail.addPoint((800, 400), False)
-        rail.addPoint((1000, 300), False)
+        self.rail = Rail()
+        self.rail.addPoint((50, 200), False)
+        self.rail.addPoint((250, 100), True)
+        self.rail.addPoint((450, 300), True)
+        self.rail.addPoint((600, 400), False)
+        self.rail.addPoint((800, 400), False)
+        self.rail.addPoint((1000, 300), False)
 
-        rail.renderRail(self._space)
+        self.rail.renderRail(self._space)
 
     def _pull_wagon(self, wagon: Wagon):
         wagon.get_chassis_body().apply_force_at_local_point((1000, 0), (0, 0))
@@ -148,3 +171,32 @@ class physicManager(object):
 
         self._pull_body(arbiter.shapes[0].body)
         return True
+
+    def getTime(self) -> int:
+        """
+        Renvoie le temps du programme en millisecondes
+        """
+        return self.time
+
+    def pause(self) -> None:
+        """Pause le temps de la simulation"""
+        self.isPaused = True
+        self.pausedTime = self.getTime()
+
+    def play(self) -> None:
+        """redémarre le temps de la simulation"""
+        self.isPaused = False
+        self.time = self.pausedTime
+
+    def reinit(self):
+        self._clear_screen()
+        self._space = pymunk.Space()
+        self.createWagon()
+        self._createSampleRail()
+
+        # réglages autres
+        # fonction qui sera exécutée après chaque actualisation
+        self.update_func = lambda: None
+        self.isPaused = True
+        self.time = 0
+        self.pausedTime = 0
