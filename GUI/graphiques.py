@@ -58,8 +58,8 @@ class AnimatedGraph():
         draw()
 
     def reset(self):
-        self.t = np.array([])
-        self.data = np.array([])
+        self.t = []
+        self.data = []
         self.curve.set_xdata([])
         self.curve.set_ydata([])
         draw()
@@ -76,13 +76,13 @@ class AnimatedGraph():
 # graphe_vitesse([0.02*x**4-x**2+3*x for x in linspace(0, 5, 50)], 5)
 
 
-def animated_graph(List_speeds, xfinal):
-    graph_test = AnimatedGraph(
-        (0, xfinal), (-1, max(List_speeds)+0.5), "test")  # mise en forme
-    for x in range(0, len(List_speeds)):
-        # dessine point par point la courbe
-        graph_test.drawNext(xfinal*x/len(List_speeds), List_speeds[x])
-        pause(0.05)
-    graph_test.fixDisplay()  # affiche le graphe
+# def animated_graph(List_speeds, xfinal):
+#     graph_test = AnimatedGraph(
+#         (0, xfinal), (-1, max(List_speeds)+0.5), "test")  # mise en forme
+#     for x in range(0, len(List_speeds)):
+#         # dessine point par point la courbe
+#         graph_test.drawNext(xfinal*x/len(List_speeds), List_speeds[x])
+#         pause(0.05)
+#     graph_test.fixDisplay()  # affiche le graphe
 
 # animated_graph(Courbe1,durée_exp)
