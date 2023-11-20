@@ -12,6 +12,7 @@ import pymunk.pygame_util
 import pygame
 from Physique.wagon import Wagon
 from Physique.rails import Rail
+from Physique.ClasseTrain import *
 
 
 class physicManager(object):
@@ -55,7 +56,7 @@ class physicManager(object):
         self._draw_options.flags ^= pymunk.pygame_util.DrawOptions.DRAW_CONSTRAINTS
 
         # scénario test
-        self.createWagon()
+        self.createTrain()
         self._createSampleRail()
 
         pygame.display.init()
@@ -66,11 +67,12 @@ class physicManager(object):
         self.time = 0
         self.pausedTime = 0
 
-    def createWagon(self):  # va être bientôt supprimée servait pour le premier MVP
-
-        self.wagon = Wagon(self._space, 5, 150, 50, (300, 100), 800)
+    # va être bientôt supprimée servait pour le premier MVP
+    def createTrain(self, mass=5, l=50, h=20, N=3):
+        self.wagon = Wagon(self._space, mass, l, h, (330, 130), 800)
         wagon_handler = self._space.add_collision_handler(2, 1)
         wagon_handler.pre_solve = self._onRailCollision
+        self.Train = Train(self._space, self.wagon, N)
 
     def getWagon(self):
         "retoure le wagon"
@@ -188,10 +190,14 @@ class physicManager(object):
         self.isPaused = False
         self.time = self.pausedTime
 
-    def reinit(self):
-        self._clear_screen()
+    def reinit(self, param=None):
+
         self._space = pymunk.Space()
-        self.createWagon()
+        if param is None:
+            self.createTrain()
+        else:
+            self.createTrain(param["mass"], 50,
+                             20, param["nbr_wagon"])
         self._createSampleRail()
 
         # réglages autres
@@ -200,3 +206,4 @@ class physicManager(object):
         self.isPaused = True
         self.time = 0
         self.pausedTime = 0
+        self._screen.fill(pygame.Color("white"))

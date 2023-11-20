@@ -1,30 +1,25 @@
-from tkinter import GROOVE
-from Physique.classes_travail_wagon import *
 from pymunk.vec2d import Vec2d
-import numpy as np
 import pymunk
-import sys
-import pygame
-import pymunk.pygame_util
-import random
-random.seed(1)
+from Physique.classes_travail_wagon import Start_line, Poly
+from Physique.classes_travail_wagon import Circle, PivotJoint, DampedSpring, GrooveJoint
 
 
 class Wagon:
+
     """wagon(space, Mass, L, h, position_init) will create a wagon of mass M, lenght L,
+       height h and starting position of the center of the body.Tension sets the force 
+       of the spring.
+       For a flat line, choose position_init = (x, y_line-50 )
+       Example: wagon(space, 5, 100, 50, (300, 150)) will add a wagon to space"""
 
-      height h and starting position of the center of the body.Tension sets the force of the spring.
-
-        For a flat line, choose position_init = (x, y_line-50 )
-
-        Example: wagon(space, 5, 100, 50, (300, 150)) will add a wagon to space"""
-
-    def __init__(self, space, Mass: float, L: float, h: float, position_init: tuple, tension_ressort=500, StartingLine=False):
+    def __init__(self, space: pymunk.Space, Mass: float, L: float, h: float, position_init: tuple,
+                 tension_ressort=500, StartingLine=False):
 
         assert L >= 20, 'la longueur minimale est 20'
         assert h <= L, 'la hauteur doit être inférieure à la largeur'
 
         # creation faculatative d'une ligne de départ sous le wagon
+
         if StartingLine:
             Start_line(space, (position_init[0]-(L/2+10)-50, position_init[1]+50),
                        (position_init[0]+L/2+10+50, position_init[1]+50))
@@ -37,7 +32,7 @@ class Wagon:
 
         p = Vec2d(position_init[0], position_init[1])
         vs = [(-L/2, -h/2), (L/2, -h/2), (L/2, h/2),
-              (-L/2, h/2), ((4*L/6), 0), ((-4*L/6), 0)]
+              (-L/2, h/2), ((2*L/3), 0), ((-2*L/3), 0)]
         v2, v3 = vs[2], vs[3]
         v4 = (-L/2, h+L)
         v5 = (-L/2, h/2)
@@ -75,29 +70,40 @@ class Wagon:
         self.c = chassis.body
         self.m = Mass
         self.L = L
+        self.h = h
+        self.tension = tension_ressort
+        self.StartingLine = StartingLine
 
     # définitions des getters
 
     def get_all_wheels_shape(self):
+        """renvoie les roues de self"""
         return (self.w1, self.w2, self.w3, self.w4)
 
     def get_chassis_body(self):
-        return (self.c)
+        """renvoie le chassis de self"""
+        return self.c
 
     def get_chassis_velocity(self):
-        return (self.c.velocity)
+        """renvoie la vitesse de self"""
+        return self.c.velocity
 
     def get_kinetic(self):
-        return (self.c.kinetic_energy)
+        """renvoie l'energie cinétique de self"""
+        return self.c.kinetic_energy
 
     def get_potential(self):
-        return (self.m*9.81*(600-self.c.position[1]))
+        """renvoie l'energie potentielle de self"""
+        return self.m*9.81*(600-self.c.position[1])
 
     def get_total_energy(self):
-        return (self.get_kinetic() + self.get_potential())
+        """renvoie l'energie mécanique de self"""
+        return self.get_kinetic() + self.get_potential()
 
     def get_chassis_acceleration(self):
-        return (self.c.force/self.m)
+        """renvoie l'accélération de self"""
+        return self.c.force/self.m
 
-    def get_starting_position(self, pos_rail: tuple):
-        return ((pos_rail[0], pos_rail[1]-(self.L/4)))
+    def get_starting_position(self, pos_rail: tuple[float, float]):
+        """renvoie la position à laquelle appeler le wagon en fonction de la position du rail"""
+        return (pos_rail[0], pos_rail[1]-(self.L/4))
