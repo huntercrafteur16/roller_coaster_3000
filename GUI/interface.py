@@ -6,6 +6,7 @@ import time
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from GUI.musique import Musique
 
 
 # On définit une classe "Interface" qui prend en argument deux dictionnaires,
@@ -36,6 +37,9 @@ class Interface():
         # Variables
         self.applied_m, self.applied_f, self.applied_c = 1, 10, 0.1
         m, f, c = DoubleVar(value=1), DoubleVar(value=10), DoubleVar(value=0.1)
+        
+        # Musique
+        self.music = Musique()
 
         def apply_values():
             self.applied_m = float(m.get())
