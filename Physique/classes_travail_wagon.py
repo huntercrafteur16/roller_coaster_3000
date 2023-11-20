@@ -1,3 +1,6 @@
+"""definit toutes les classes de travail qui permettent la
+ contruction du wagon et du train"""
+
 import pymunk
 import numpy as np
 
