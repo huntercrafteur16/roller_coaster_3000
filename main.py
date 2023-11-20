@@ -2,7 +2,7 @@
 from GUI.interface import Interface
 from GUI.graphiques import AnimatedGraph
 from Physique.physicManager import physicManager
-
+from tkinter import filedialog as fd
 
 global manager
 global graphs
@@ -32,11 +32,16 @@ def update_sim():
     manager.reinit(param)
 
 
+def open_file():
+    fd.askopenfile()
+
+
 # dictionnaire qui connecte les fonctions des boutons de l'affichade tkinter
 dict_func = {
     "start_reset": reset_sim,
     "play_pause": play_pause_sim,
-    "apply": update_sim
+    "apply": update_sim,
+    "open": open_file
 }
 # génération de l'objet générant l'interface principal
 interface = Interface(dict_func)
@@ -52,17 +57,16 @@ manager = physicManager(interface.get_pymunk_frame().winfo_width(),
 vitesse_graph = AnimatedGraph("vitesse")
 acceleration_graph = AnimatedGraph("accéleration")
 
-graphs = [vitesse_graph,acceleration_graph]
+graphs = [vitesse_graph, acceleration_graph]
 # on le connecte à la frame tkinter voulue
-vitesse_graph.attach_to_frame(interface.get_graph_frame("vitesse")[0])
+# vitesse_graph.attach_to_frame(interface.get_graph_frame("vitesse")[0])
 
 
 manager.play()
 cont = True  # continuer l'exécution du programme
 
 while cont:
-    vitesse_graph.drawNext(
-        manager.getTime(), abs(manager.getWagon().get_chassis_velocity()))
+    # vitesse_graph.drawNext(manager.getTime(), abs(manager.getWagon().get_chassis_velocity()))
 
     GUI_cont = interface.render_GUI()
     phys_cont = manager.process()
