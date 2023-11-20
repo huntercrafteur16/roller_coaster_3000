@@ -80,23 +80,8 @@ while cont:
         manager.getTime(), abs(manager.getWagon().get_chassis_acceleration()))
     energie_graph.drawNext(
         manager.getTime(), abs(manager.getWagon().get_total_energy()))
-
-    if interface.choice.get() == 'none':
-        interface.get_graph_frame("vitesse").forget()
-        interface.get_graph_frame("acceleration").forget()
-        interface.get_graph_frame("energie").forget()
-    elif interface.choice.get() == 'vitesse':
-        interface.get_graph_frame("acceleration").forget()
-        interface.get_graph_frame("energie").forget()
-        interface.get_graph_frame("vitesse").pack()
-    elif interface.choice.get() == 'energie':
-        interface.get_graph_frame("acceleration").forget()
-        interface.get_graph_frame("vitesse").forget()
-        interface.get_graph_frame("energie").pack()
-    else:
-        interface.get_graph_frame("energie").forget()
-        interface.get_graph_frame("vitesse").forget()
-        interface.get_graph_frame("acceleration").pack()
+    
+    interface.affiche_frame_voulue() # fonction qui affiche ou non la frame en fonction de la valeur du radio button
 
     GUI_cont = interface.render_GUI()
     phys_cont = manager.process()
