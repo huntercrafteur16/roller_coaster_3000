@@ -67,8 +67,10 @@ class physicManager(object):
         self.time = 0
         self.pausedTime = 0
 
-    # va être bientôt supprimée servait pour le premier MVP
     def createTrain(self, mass=5, l=50, h=20, N=3):
+        """
+        Crée le premier wagon et le reste du train
+        """
         self.wagon = Wagon(self._space, mass, l, h, (330, 130), 800)
         wagon_handler = self._space.add_collision_handler(2, 1)
         wagon_handler.pre_solve = self._onRailCollision
@@ -160,17 +162,17 @@ class physicManager(object):
         self.rail.addPoint((600, 400), "FREE")
         self.rail.addPoint((800, 400), "PULL")
         self.rail.addPoint((1000, 300), "FREE")
-
-        self.rail.renderRail(self._space)
+        self.rail.renderRail(self._space, 50, 3)  # TODO à modifier
 
     def _pull_wagon(self, wagon: Wagon):
+        """exerce la force de traction au wagon"""
         wagon.get_chassis_body().apply_force_at_local_point((1000, 0), (0, 0))
 
     def _pull_body(self, body: pymunk.Body):
+        """exerce la force de traction à un body"""
         body.apply_force_at_local_point((10000, 0), (0, 0))
 
     def _onRailCollision(self, arbiter, space, data):
-
         self._pull_body(arbiter.shapes[0].body)
         return True
 
@@ -191,7 +193,7 @@ class physicManager(object):
         self.time = self.pausedTime
 
     def reinit(self, param=None):
-
+        """reinitialise la simulation"""
         self._space = pymunk.Space()
         if param is None:
             self.createTrain()
