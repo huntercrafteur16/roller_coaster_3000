@@ -1,6 +1,6 @@
 """Fichier principal du programme"""
 from GUI.interface import Interface
-from GUI.graphiques import AnimatedGraph
+from GUI.graphiques import AnimatedGraph, DynamicGraph
 from Physique.physicManager import physicManager
 from tkinter import filedialog as fd
 
@@ -15,8 +15,6 @@ def reset_sim():
     global manager
     global graphs
     manager.reinit()
-    for graph in graphs:
-        graph.reset()
 
 
 def play_pause_sim():
@@ -57,31 +55,20 @@ manager = physicManager(interface.get_pymunk_frame().winfo_width(),
                         interface.simu, interface.get_pymunk_frame())
 
 # graphe de représentation de vitesse
-vitesse_graph = AnimatedGraph("vitesse")
-acceleration_graph = AnimatedGraph("accelération")
-energie_graph = AnimatedGraph("énergie")
 
-graphs = [vitesse_graph, acceleration_graph, energie_graph]
-# on le connecte à la frame tkinter voulue
-vitesse_graph.attach_to_frame(interface.get_graph_frame("vitesse"))
-acceleration_graph.attach_to_frame(
-    interface.get_graph_frame("acceleration"))
-energie_graph.attach_to_frame(
-    interface.get_graph_frame("energie"))
+dyn_graphs = DynamicGraph(interface.get_graph_frame(), plot_titles=["vitesse"])
+'''
+dyn_graphs.add_subplot("accel")
+
+dyn_graphs.add_subplot("energie")
+'''
 
 manager.play()
 cont = True  # continuer l'exécution du programme
 
 while cont:
-
-    vitesse_graph.drawNext(
-        manager.getTime(), abs(manager.getWagon().get_chassis_velocity()))
-    acceleration_graph.drawNext(
-        manager.getTime(), abs(manager.getWagon().get_chassis_acceleration()))
-    energie_graph.drawNext(
-        manager.getTime(), abs(manager.getWagon().get_total_energy()))
-    
-    interface.affiche_frame_voulue() # fonction qui affiche ou non la frame en fonction de la valeur du radio button
+    dyn_graphs.update_data(manager.getTime(), [abs(
+        manager.getWagon().get_chassis_velocity())])
 
     GUI_cont = interface.render_GUI()
     phys_cont = manager.process()

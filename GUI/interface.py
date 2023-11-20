@@ -46,7 +46,7 @@ class Interface():
 
         toolbar.pack(side=TOP, expand=False, fill=X)
         simu.pack(expand=True, fill=BOTH)
-        graphbar.pack(side=BOTTOM, fill=X, expand=False)
+        graphbar.pack(side=BOTTOM, fill=X, expand=True)
 
         # Variables
         self.applied_m, self.applied_f, self.applied_nbr_wagon = 1, 10, 3
@@ -124,9 +124,9 @@ class Interface():
         # A l'intérieur de simu : roller coaster et graphe
         self.roller_coaster = Frame(
             simu, bg='white', height=roller_coaster_height, width=roller_coaster_width)
-        self.frame_graph = [Frame(graphbar, bg='blue', width=100, height=50),
-                            Frame(graphbar, bg='blue', width=100, height=50),
-                            Frame(graphbar, bg='blue', width=100, height=50)]
+        self.frame_graph = Frame(graphbar, bg='blue', width=50, height=50)
+
+        self.frame_graph.pack()
         self.roller_coaster.grid(
             row=1, column=1, rowspan=3, columnspan=3, sticky=N)
 
@@ -134,7 +134,7 @@ class Interface():
 
         # Boutons radio pour voir ou non un des graphes proposés
         graph_choice = Frame(graphbar, height=80)
-        graph_choice.pack(side=LEFT, expand=False, padx=5, pady=5)
+        # graph_choice.pack(side=LEFT, expand=False, padx=5, pady=5)
 
         self.choice = StringVar(value='none')
         label_graph_choice = Label(
@@ -167,34 +167,12 @@ class Interface():
         self.Energie_button.grid(row=4, column=1, sticky=E)
         Label(Radiobuttons, text='Énergie mécanique(t)',
               width=15, height=1).grid(row=4, column=0, sticky=E)
-    
+
     # fonction qui affiche ou non la frame en fonction de la valeur du radio button
-    def affiche_frame_voulue(self):
-        if self.choice.get() == 'none':
-            self.get_graph_frame("vitesse").forget()
-            self.get_graph_frame("acceleration").forget()
-            self.get_graph_frame("energie").forget()
-        elif self.choice.get() == 'vitesse':
-            self.get_graph_frame("acceleration").forget()
-            self.get_graph_frame("energie").forget()
-            self.get_graph_frame("vitesse").pack()
-        elif self.choice.get() == 'energie':
-            self.get_graph_frame("acceleration").forget()
-            self.get_graph_frame("vitesse").forget()
-            self.get_graph_frame("energie").pack()
-        else:
-            self.get_graph_frame("energie").forget()
-            self.get_graph_frame("vitesse").forget()
-            self.get_graph_frame("acceleration").pack()
-            
+
     # Donne la frame qui doit contenir un graphe et le choix de graphe associé
-    def get_graph_frame(self, name):
-        if name == "vitesse":
-            return self.frame_graph[0]
-        elif name == "acceleration":
-            return self.frame_graph[1]
-        else:
-            return self.frame_graph[2]
+    def get_graph_frame(self):
+        return self.frame_graph
 
     # Donne la frame dans laquelle
     def get_pymunk_frame(self):
