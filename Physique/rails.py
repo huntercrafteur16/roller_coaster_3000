@@ -1,12 +1,12 @@
 """Module qui définit les classes relatives aux rails"""
 
+import random
 from geomdl import BSpline
 from geomdl import utilities
 import pymunk.pygame_util
 import pymunk
 import pygame
 import sys
-import random
 
 random.seed(1)  # make the simulation the same each time, easier to debug
 
