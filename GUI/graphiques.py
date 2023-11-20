@@ -46,7 +46,7 @@ class AnimatedGraph():
         ion()
         self.curve, = plt.plot(self.t, self.data)
 
-    def drawNext(self, t, data) -> None:
+    def drawNext(self, t, data) -> None: # actualise les données du graphiques à l'instant t
         xlim((0, t))
 
         if self._ymax <= abs(data):
