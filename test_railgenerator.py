@@ -20,8 +20,10 @@ if __name__ == "__main__":
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                canvas.select(*event.pos)
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                canvas.select_left(*event.pos)
+            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:
+                canvas.select_right(*event.pos)
             elif event.type == pygame.MOUSEBUTTONUP:
                 canvas.move_point = False
             elif event.type == pygame.MOUSEMOTION:

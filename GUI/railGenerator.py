@@ -1,6 +1,6 @@
 from geomdl import BSpline
 from geomdl import utilities
-
+from math import *
 
 import pygame
 from Physique.rails import Rail
@@ -12,6 +12,7 @@ class Config():
         self.width = 2
         self.color = (255, 180, 0)
         self.dark = (0, 0, 0)
+        self.sea = (0, 255, 255)
         self.bright = (0, 255, 0)
         self.brightdanger = (255, 0, 0)
         self.restrict = False
@@ -138,6 +139,8 @@ class Canvas():
         self.move_point = False
         self.add_mode = 0
         self.rail_type = None
+        self.presel = False
+        self.lineselection = []
         # affichage graphique
         self.my_font = pygame.font.SysFont('Comic Sans MS', 10)
         width, height = screen.get_width(), screen.get_height()
@@ -183,6 +186,7 @@ class Canvas():
                 self.screen.blit(
                     text_surface, (self.del_button[0], self.del_button[1]+20))
 
+            if len(self.lineselection) == 2:
                 pygame.draw.rect(
                     self.screen, self.cfg.bright if self.rail_type == "FREE" else self.cfg.bright, self.free_type_button)
                 text_surface = self.my_font.render(
@@ -230,7 +234,8 @@ class Canvas():
                 if self.count >= 2:
                     pygame.draw.lines(
                         self.screen, (100, 100, 100), 0, self.ctrl_points)
-                    # cette ligne trace les segments entre les points
+
+                # cette ligne trace les segments entre les points
                 for i, point in enumerate(self.ctrl_points):
                     if i == 0:
                         pygame.draw.circle(
@@ -245,9 +250,19 @@ class Canvas():
                             self.screen, (140, 140, 140), point, 5)
                         # les autres points
             if self.count >= self.curve.curve.degree+1:
-                pygame.draw.lines(self.screen, self.cfg.color, 0,
-                                  self.curve.curvePts, width=self.cfg.width)
+                if len(self.lineselection) < 2:
+                    pygame.draw.lines(self.screen, self.cfg.color,
+                                      0, self.curve.curvePts, width=self.cfg.width)
                 # la courbe calculée
+                else:
+                    if self.lineselection[0] != 0:
+                        pygame.draw.lines(
+                            self.screen, self.cfg.color, 0, self.curve.curvePts[:self.lineselection[0]+1], width=self.cfg.width)
+                    pygame.draw.lines(
+                        self.screen, self.cfg.sea, 0, self.curve.curvePts[self.lineselection[0]:self.lineselection[1]+1], width=self.cfg.width)
+                    if self.lineselection[1] != len(self.curve.curvePts)-1:
+                        pygame.draw.lines(
+                            self.screen, self.cfg.color, 0, self.curve.curvePts[self.lineselection[1]:], width=self.cfg.width)
         self.button_render()
 
     def region(self, button, x, y):
@@ -256,7 +271,7 @@ class Canvas():
             return True
         return False
 
-    def select(self, x, y, r=10):
+    def select_left(self, x, y, r=10):
         if self.cfg.edit_mode:
             can_add = True
             if self.region(self.add_button, x, y):
@@ -275,10 +290,31 @@ class Canvas():
                 if self.selected:
                     self.ctrl_points.pop(self.selected)
                     self.count -= 1
-                    self.selected = None
+                    self.selected -= 1
                     can_add = False
                     if self.count >= self.curve.curve.degree+1:
                         self.draw(self.ctrl_points)
+
+            elif len(self.lineselection) == 2:
+                if self.region(self.free_type_button, x, y):
+                    self.rail_type = "FREE"
+                    self.selected = None
+                    can_add = False
+                    print("FREE")
+                elif self.region(self.brake_type_button, x, y):
+                    self.rail_type = "BRAKE"
+                    self.selected = None
+                    can_add = False
+                    print("BRAKE")
+                elif self.region(self.prop_type_button, x, y):
+                    self.rail_type = "PROP"
+                    self.selected = None
+                    can_add = False
+                elif self.region(self.pull_type_button, x, y):
+                    self.rail_type = "PULL"
+                    self.selected = None
+                    can_add = False
+
             elif self.count:
                 for i, points in enumerate(self.ctrl_points):
                     px, py = points
@@ -287,6 +323,7 @@ class Canvas():
                         self.move_point = True
                         can_add = False
                         break
+
             if self.add_mode and can_add:
                 self.count += 1
                 if self.selected != None:
@@ -295,27 +332,35 @@ class Canvas():
                         self.ctrl_points.insert(self.selected, (x, y))
                     else:
                         self.ctrl_points.insert(self.selected+1, (x, y))
-
                 else:
                     self.ctrl_points.append((x, y))
                 if self.count >= self.curve.curve.degree+1:
                     self.draw(self.ctrl_points)
 
-            if self.selected is not None:
-                if self.region(self.free_type_button, x, y):
-                    self.rail_type = "FREE"
-                elif self.region(self.brake_type_button, x, y):
-                    self.rail_type = "BRAKE"
-                elif self.region(self.prop_type_button, x, y):
-                    self.rail_type = "PROP"
-                elif self.region(self.pull_type_button, x, y):
-                    self.rail_type = "PULL"
             else:
                 self.rail_type = None
         else:
             if self.region(self.edit_button, x, y):
                 # self.physics = Rail()
                 self.cfg.edit_mode = True
+
+    def closest_point(self, x, y):
+        closest_i = 0
+        for i in range(len(self.curve.curvePts)):
+            if (x-self.curve.curvePts[i][0])**2 + (y-self.curve.curvePts[i][1])**2 < (x-self.curve.curvePts[closest_i][0])**2 + (y-self.curve.curvePts[closest_i][1])**2:
+                closest_i = i
+        return closest_i
+
+    def select_right(self, x, y):
+        if self.presel == True and self.closest_point(x, y) != self.lineselection[0]:
+            if self.closest_point(x, y) > self.lineselection[0]:
+                self.lineselection.append(self.closest_point(x, y))
+            else:
+                self.lineselection = [self.closest_point(
+                    x, y), self.lineselection[0]]
+        else:
+            self.lineselection = [self.closest_point(x, y)]
+        self.presel = not self.presel
 
     def move(self, xy):
         if self.move_point:

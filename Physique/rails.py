@@ -28,7 +28,7 @@ class Rail():
     def __init__(self, degree=2) -> None:
         self.curvePts = []
         self.curve = BSpline.Curve(degree=degree)
-        self.curve.delta = 0.05
+        self.curve.delta = 1e-3
         self.curve.degree = degree
         self.width = 1
         self.segments = []
