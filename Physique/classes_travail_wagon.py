@@ -104,13 +104,21 @@ class DampedSpring:
     def __init__(self, space, b, b2, anchor_b, anchor_b2, rest_length, stiffness, damping):
         joint = pymunk.DampedSpring(
             b, b2, anchor_b, anchor_b2, rest_length, stiffness, damping)
-
         space.add(joint)
 
 
 class GrooveJoint:
+    """Classe GrooveJoint: ajoute une liaison Groove entre a et b avec l'ancrage anchor_b sur b (coordonées locales),
+     avec une glissière entre groove_a et groove_b"""
+
     def __init__(self, space, a, b, groove_a, groove_b, anchor_b):
         joint = pymunk.GrooveJoint(
             a, b, groove_a, groove_b, anchor_b)
         joint.collide_bodies = False
+        space.add(joint)
+
+
+class PinJoint:
+    def __init__(self, space, b, b2, a=(0, 0), a2=(0, 0)):
+        joint = pymunk.PinJoint(b, b2, a, a2)
         space.add(joint)
