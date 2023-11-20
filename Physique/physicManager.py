@@ -193,7 +193,7 @@ class physicManager(object):
     def reinit(self):
         self._clear_screen()
         self._space = pymunk.Space()
-        self.createWagon()
+        self.createTrain()
         self._createSampleRail()
 
         # réglages autres
