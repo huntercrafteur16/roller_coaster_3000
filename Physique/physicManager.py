@@ -67,12 +67,12 @@ class physicManager(object):
         self.time = 0
         self.pausedTime = 0
 
-    def createTrain(self):  # va être bientôt supprimée servait pour le premier MVP
-
-        self.wagon = Wagon(self._space, 5, 50, 30, (330, 130), 800)
+    # va être bientôt supprimée servait pour le premier MVP
+    def createTrain(self, mass=5, l=50, h=20, N=3):
+        self.wagon = Wagon(self._space, mass, l, h, (330, 130), 800)
         wagon_handler = self._space.add_collision_handler(2, 1)
         wagon_handler.pre_solve = self._onRailCollision
-        self.Train = Train(self._space, self.wagon, 3)
+        self.Train = Train(self._space, self.wagon, N)
 
     def getWagon(self):
         "retoure le wagon"
@@ -190,10 +190,14 @@ class physicManager(object):
         self.isPaused = False
         self.time = self.pausedTime
 
-    def reinit(self):
+    def reinit(self, param=None):
 
         self._space = pymunk.Space()
-        self.createTrain()
+        if param is None:
+            self.createTrain()
+        else:
+            self.createTrain(param["mass"], 50,
+                             20, param["nbr_wagon"])
         self._createSampleRail()
 
         # réglages autres

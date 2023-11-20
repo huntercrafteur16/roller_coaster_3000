@@ -1,4 +1,5 @@
 
+from ast import Call
 from tkinter import *
 # from GUI.graphiques import AnimatedGraph
 import time
@@ -16,6 +17,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 class Interface():
     play_pause_button_function: Callable
     start_reset_button_function: Callable
+    apply_button_function: Callable
 
     isRunning: bool
 
@@ -40,16 +42,18 @@ class Interface():
 
         self.start_reset_button_function = button_functions["start_reset"]
         self.play_pause_button_function = button_functions["play_pause"]
+        self.apply_button_function = button_functions["apply"]
         # Variables
-        self.applied_m, self.applied_f, self.applied_c = 1, 10, 0.1
-        m, f, c, nbr_wagon = DoubleVar(value=1), DoubleVar(
-            value=10), DoubleVar(value=0.1), IntVar(value=3)
+        self.applied_m, self.applied_f, self.applied_nbr_wagon = 1, 10, 3
+        m, f, nbr_wagon = DoubleVar(value=1), DoubleVar(
+            value=10),  IntVar(value=3)
 
         def apply_values():
             self.applied_m = float(m.get())
             self.applied_f = float(f.get())
-            self.applied_c = float(c.get())
+
             self.applied_nbr_wagon = int(nbr_wagon.get())
+            self.apply_button_function()
         # Boutons Start/Reset
         buttons = Frame(toolbar, bg="lightgray", height=100, padx=5)
         buttons.grid(row=0, column=0)
@@ -92,7 +96,7 @@ class Interface():
                                 width=25, height=1)
         entry_nbr_wagon = Entry(
             param_nbr_wagon, textvariable=nbr_wagon, width=5)
-        scale_nbr_wagon = Scale(param_nbr_wagon, from_=0, to=10, showvalue=False, variable=c,
+        scale_nbr_wagon = Scale(param_nbr_wagon, from_=0, to=10, showvalue=False, variable=nbr_wagon,
                                 tickinterval=2, orient=HORIZONTAL, width=10)
 
         # On affiche tout
@@ -164,7 +168,7 @@ class Interface():
 
     # Rend les valeurs choisies
     def get_param(self):
-        return {'mass': self.applied_m, 'force': self.applied_f, 'nbr_wagon': self.applied_c}
+        return {'mass': self.applied_m, 'force': self.applied_f, 'nbr_wagon': self.applied_nbr_wagon}
 
     def render_GUI(self) -> bool:
         self.root.update()

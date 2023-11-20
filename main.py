@@ -1,4 +1,5 @@
 """Fichier principal du programme"""
+from turtle import update
 from GUI.interface import Interface
 from GUI.graphiques import AnimatedGraph
 from Physique.physicManager import physicManager
@@ -6,7 +7,7 @@ from Physique.physicManager import physicManager
 
 global manager
 global graphs
-global Interface
+global interface
 manager: physicManager
 graphs: list[AnimatedGraph]
 
@@ -35,7 +36,8 @@ def update_sim():
 # dictionnaire qui connecte les fonctions des boutons de l'affichade tkinter
 dict_func = {
     "start_reset": reset_sim,
-    "play_pause": play_pause_sim
+    "play_pause": play_pause_sim,
+    "apply": update_sim
 }
 # génération de l'objet générant l'interface principal
 interface = Interface(dict_func)
