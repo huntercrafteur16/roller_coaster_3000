@@ -193,13 +193,6 @@ class Canvas():
                 self.screen.blit(
                     text_surface, (self.del_button[0], self.del_button[1]+20))
 
-                pygame.draw.rect(self.screen, self.cfg.bright,
-                                 self.save_open_button)
-                text_surface = self.my_font.render(
-                    'save/open', False, (0, 0, 0))
-                self.screen.blit(
-                    text_surface, (self.save_open_button[0], self.save_open_button[1]+20))
-
             if len(self.lineselection) == 2:
                 pygame.draw.rect(
                     self.screen, self.cfg.bright, self.free_type_button)
@@ -234,6 +227,13 @@ class Canvas():
                 'montrer/cacher', False, (0, 0, 0))
             self.screen.blit(
                 text_surface, (self.hide_button[0], self.hide_button[1]+20))
+
+            pygame.draw.rect(self.screen, self.cfg.dark, self.save_open_button)
+            text_surface = self.my_font.render(
+                'enregistrer', False, (0, 0, 0))
+            self.screen.blit(
+                text_surface, (self.save_open_button[0], self.save_open_button[1]+20))
+
             pygame.draw.rect(self.screen, self.cfg.dark, self.confirm_button)
             text_surface = self.my_font.render(
                 'valider', False, (0, 0, 0))
