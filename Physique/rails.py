@@ -1,4 +1,5 @@
-# Montagnes Russes
+"""Module qui définit les classes relatives aux rails"""
+
 from geomdl import BSpline
 from geomdl import utilities
 import pymunk.pygame_util
