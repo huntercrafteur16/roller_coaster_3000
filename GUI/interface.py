@@ -167,9 +167,27 @@ class Interface():
         self.Energie_button.grid(row=4, column=1, sticky=E)
         Label(Radiobuttons, text='Énergie mécanique(t)',
               width=15, height=1).grid(row=4, column=0, sticky=E)
-
+    
+    # fonction qui affiche ou non la frame en fonction de la valeur du radio button
+    def affiche_frame_voulue(self):
+        if self.choice.get() == 'none':
+            self.get_graph_frame("vitesse").forget()
+            self.get_graph_frame("acceleration").forget()
+            self.get_graph_frame("energie").forget()
+        elif self.choice.get() == 'vitesse':
+            self.get_graph_frame("acceleration").forget()
+            self.get_graph_frame("energie").forget()
+            self.get_graph_frame("vitesse").pack()
+        elif self.choice.get() == 'energie':
+            self.get_graph_frame("acceleration").forget()
+            self.get_graph_frame("vitesse").forget()
+            self.get_graph_frame("energie").pack()
+        else:
+            self.get_graph_frame("energie").forget()
+            self.get_graph_frame("vitesse").forget()
+            self.get_graph_frame("acceleration").pack()
+            
     # Donne la frame qui doit contenir un graphe et le choix de graphe associé
-
     def get_graph_frame(self, name):
         if name == "vitesse":
             return self.frame_graph[0]
