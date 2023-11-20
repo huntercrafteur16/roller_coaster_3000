@@ -42,13 +42,14 @@ class Interface():
         self.play_pause_button_function = button_functions["play_pause"]
         # Variables
         self.applied_m, self.applied_f, self.applied_c = 1, 10, 0.1
-        m, f, c = DoubleVar(value=1), DoubleVar(value=10), DoubleVar(value=0.1)
+        m, f, c, nbr_wagon = DoubleVar(value=1), DoubleVar(
+            value=10), DoubleVar(value=0.1), IntVar(value=3)
 
         def apply_values():
             self.applied_m = float(m.get())
             self.applied_f = float(f.get())
             self.applied_c = float(c.get())
-
+            self.applied_nbr_wagon = int(nbr_wagon.get())
         # Boutons Start/Reset
         buttons = Frame(toolbar, bg="lightgray", height=100, padx=5)
         buttons.grid(row=0, column=0)
@@ -86,12 +87,13 @@ class Interface():
         scale_F = Scale(param_F, from_=0, to=100, showvalue=False, variable=f,
                         tickinterval=25, orient=HORIZONTAL, width=10)
         # coef de frottement
-        param_f = Frame(param)
-        label_f = Label(param_f, text='Coef. de frottement (kg/m)',
-                        width=25, height=1)
-        entry_f = Entry(param_f, textvariable=c, width=5)
-        scale_f = Scale(param_f, from_=0, to=10, showvalue=False, variable=c,
-                        tickinterval=2, orient=HORIZONTAL, width=10)
+        param_nbr_wagon = Frame(param)
+        label_nbr_wagon = Label(param_nbr_wagon, text='nombre de wagons',
+                                width=25, height=1)
+        entry_nbr_wagon = Entry(
+            param_nbr_wagon, textvariable=nbr_wagon, width=5)
+        scale_nbr_wagon = Scale(param_nbr_wagon, from_=0, to=10, showvalue=False, variable=c,
+                                tickinterval=2, orient=HORIZONTAL, width=10)
 
         # On affiche tout
         label_m.grid(row=0, column=1, columnspan=2)
@@ -104,10 +106,10 @@ class Interface():
         scale_F.grid(row=1, column=2)
         param_F.grid(row=0, column=2, padx=10, pady=5)
 
-        label_f.grid(row=0, column=1, columnspan=2)
-        entry_f.grid(row=1, column=1, padx=3)
-        scale_f.grid(row=1, column=2)
-        param_f.grid(row=0, column=3, padx=10, pady=5)
+        label_nbr_wagon.grid(row=0, column=1, columnspan=2)
+        entry_nbr_wagon.grid(row=1, column=1, padx=3)
+        scale_nbr_wagon.grid(row=1, column=2)
+        param_nbr_wagon.grid(row=0, column=3, padx=10, pady=5)
 
         # A l'intérieur de simu : roller coaster et graphe
         self.roller_coaster = Frame(
@@ -162,7 +164,7 @@ class Interface():
 
     # Rend les valeurs choisies
     def get_param(self):
-        return {'mass': self.applied_m, 'force': self.applied_f, 'frict': self.applied_c}
+        return {'mass': self.applied_m, 'force': self.applied_f, 'nbr_wagon': self.applied_c}
 
     def render_GUI(self) -> bool:
         self.root.update()

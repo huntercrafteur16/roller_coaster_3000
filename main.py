@@ -6,6 +6,7 @@ from Physique.physicManager import physicManager
 
 global manager
 global graphs
+global Interface
 manager: physicManager
 graphs: list[AnimatedGraph]
 
@@ -23,6 +24,12 @@ def play_pause_sim():
         manager.play()
     else:
         manager.pause()
+
+
+def update_sim():
+    global interface
+    param = interface.get_param()
+    manager.reinit(param)
 
 
 # dictionnaire qui connecte les fonctions des boutons de l'affichade tkinter
