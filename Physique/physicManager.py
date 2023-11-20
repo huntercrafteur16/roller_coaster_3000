@@ -191,7 +191,7 @@ class physicManager(object):
         self.time = self.pausedTime
 
     def reinit(self):
-        self._clear_screen()
+
         self._space = pymunk.Space()
         self.createTrain()
         self._createSampleRail()
@@ -202,3 +202,4 @@ class physicManager(object):
         self.isPaused = True
         self.time = 0
         self.pausedTime = 0
+        self._screen.fill(pygame.Color("white"))
