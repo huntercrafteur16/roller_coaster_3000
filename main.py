@@ -33,7 +33,10 @@ def update_sim():
 
 
 def open_file():
-    fd.askopenfile()
+
+    filename = fd.askopenfile()
+
+    manager.import_rails_from_file(filename.name, 50)
 
 
 # dictionnaire qui connecte les fonctions des boutons de l'affichade tkinter

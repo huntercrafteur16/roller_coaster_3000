@@ -98,8 +98,9 @@ class Rail():
         self.add_premier_rail(space, L, nb_wagon)
 
         for i, p in enumerate(self.data_points[:-1]):
-
+            print("ok", p[2], "ok")
             if p[2] == "FREE":
+                print("yoyo")
                 self._addFreeRail(
                     self.data_points[i][:2], self.data_points[i+1][:2], space)
             if p[2] == "PROP":

@@ -44,6 +44,7 @@ class physicManager(object):
         # instanciation et réglage des paramètres physiques
         self._space = pymunk.Space()
         self._space.gravity = (0.0, gravity)
+        self.N = 3
 
         # Number of physics steps per screen frame
 
@@ -57,7 +58,7 @@ class physicManager(object):
 
         # scénario test
         self.createTrain()
-        self._createSampleRail()
+        # self._createSampleRail()
 
         pygame.display.init()
         # réglages autres
@@ -67,14 +68,14 @@ class physicManager(object):
         self.time = 0
         self.pausedTime = 0
 
-    def createTrain(self, mass=5, l=50, h=20, N=3):
+    def createTrain(self, mass=5, l=50, h=20):
         """
         Crée le premier wagon et le reste du train
         """
         self.wagon = Wagon(self._space, mass, l, h, (330, 130), 800)
         wagon_handler = self._space.add_collision_handler(2, 1)
         wagon_handler.pre_solve = self._onRailCollision
-        self.Train = Train(self._space, self.wagon, N)
+        self.Train = Train(self._space, self.wagon, self.N)
 
     def getWagon(self):
         "retoure le wagon"
@@ -198,9 +199,10 @@ class physicManager(object):
         if param is None:
             self.createTrain()
         else:
+            self.N = param["nbr_wagon"]
             self.createTrain(param["mass"], 50,
                              20, param["nbr_wagon"])
-        self._createSampleRail()
+        # self._createSampleRail()
 
         # réglages autres
         # fonction qui sera exécutée après chaque actualisation
@@ -210,14 +212,14 @@ class physicManager(object):
         self.pausedTime = 0
         self._screen.fill(pygame.Color("white"))
 
-    def import_rails_from_file(self, chemin: str, L: float, nb_wagon: int):
+    def import_rails_from_file(self, chemin: str, L: float):
         """crée un rail à partir d'un fichier"""
         file = open(chemin, "r")
         lines = file.readlines()
         file.close()
         self.rail = Rail()
         for line in lines:
-            L_point = line.split(';')
+            L_point = line.split(',')
             point = (float(L_point[0]), float(L_point[1]))
-            self.rail.addPoint(point, L_point[2])
-            self.rail.renderRail(self._space, L, nb_wagon)
+            self.rail.addPoint(point, L_point[2].strip())
+        self.rail.renderRail(self._space, L, self.N)
