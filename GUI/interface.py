@@ -19,7 +19,8 @@ class Interface():
 
     isRunning: bool
 
-    def __init__(self):
+    def __init__(self, button_functions: dict):
+
         # dimensions de la fenetre pymunk en px
         roller_coaster_width = 1600
         roller_coaster_height = 550
@@ -37,6 +38,8 @@ class Interface():
         simu.pack(expand=True, fill=BOTH)
         graphbar.pack(side=BOTTOM, fill=X, expand=False)
 
+        self.start_reset_button_function = button_functions["start_reset"]
+        self.play_pause_button_function = button_functions["play_pause"]
         # Variables
         self.applied_m, self.applied_f, self.applied_c = 1, 10, 0.1
         m, f, c = DoubleVar(value=1), DoubleVar(value=10), DoubleVar(value=0.1)
