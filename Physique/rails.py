@@ -20,30 +20,33 @@ class Rail():
     - rails "BRAKE": collision_type = 3 TODO actuellement c'est celui des wagons
     TODO modifier collision_type des wagons
     """
-    curvePts: list[tuple[float, float, str]]
-    # liste des intervalles contenant les points [(0,5),(10,100)] ******___****************
 
     segments: list[pymunk.Segment]
+    # coordonnés des points et type de liaison
+    data_points: list[tuple[int, int, str]]
+    color_free_rail = (125, 125, 125, 255)
+    color_pull_rail = (255, 255, 0, 255)
+    color_prop_rail = (255, 0, 255, 255)
+    color_brake_rail = (255, 0, 0, 255)
 
     def __init__(self, degree=2) -> None:
-        self.curvePts = []
-        self.curve = BSpline.Curve(degree=degree)
-        self.curve.delta = 1e-3
-        self.curve.degree = degree
+        self.data_points = []  # courbe qui sera lue du fichier enregistré
+        # self.curve = BSpline.Curve(degree=degree)
+        # self.curve.delta = 1e-3
+        # self.curve.degree = degree
         self.width = 1
         self.segments = []
-        self.pullingPts_int = []
 
     def addPoint(self, point: tuple, rail_type="FREE"):
         """Ajoute un point à l'objet rail choisi
         rail_type: "FREE","PULL","PROP","BRAKE"
         """
         p = (point[0], point[1], rail_type)
-        self.curvePts.append(p)
+        self.data_points.append(p)
 
     def _addFreeRail(self, c_deb, c_fin, space: pymunk.Space):
         railseg = pymunk.Segment(space.static_body, c_deb, c_fin, self.width)
-        railseg.color = (125, 125, 125, 255)
+        railseg.color = Rail.color_free_rail
         railseg.elasticity = 0
         railseg.collision_type = 0  # la collision d'un rail non tractant sera 0
         self.segments.append(railseg)
@@ -52,42 +55,51 @@ class Rail():
 
     def _addPropRail(self, c_deb, c_fin, space: pymunk.Space):
         railseg = pymunk.Segment(space.static_body, c_deb, c_fin, self.width)
-        railseg.color = (255, 0, 0, 255)
+        railseg.color = Rail.color_prop_rail
         railseg.elasticity = 0
-        railseg.collision_type = 1  # la collision d'un rail  tractant sera 1
+        railseg.collision_type = 1  # la collision d'un rail prop sera 1
         self.segments.append(railseg)
         space.add(railseg)
 
     def _addBrakeRail(self, c_deb, c_fin, space: pymunk.Space):
-        pass
+        railseg = pymunk.Segment(space.static_body, c_deb, c_fin, self.width)
+        railseg.color = Rail.color_brake_rail
+        railseg.elasticity = 0
+        railseg.collision_type = 1  # la collision d'un rail brake sera 2
+        self.segments.append(railseg)
+        space.add(railseg)
 
     def _addPullRail(self, c_deb, c_fin, space: pymunk.Space):
-        pass
+        railseg = pymunk.Segment(space.static_body, c_deb, c_fin, self.width)
+        railseg.color = Rail.color_pull_rail
+        railseg.elasticity = 0
+        railseg.collision_type = 1  # la collision d'un rail  tractant sera 3
+        self.segments.append(railseg)
+        space.add(railseg)
 
     def renderRail(self, space):
         """Permet d'ajouter le rail dans l'espace pymunk indiqué
         options: liste des coordonnées a_deb,a_fin et type du segment en question
         """
 
-        self.curve.ctrlpts = [(x[0], x[1]) for x in self.curvePts]
-        self.curve.knotvector = utilities.generate_knot_vector(
-            self.curve.degree, len(self.curve.ctrlpts))
-        bspline = self.curve.evalpts
-        if self.options is None:
-            for i, p in enumerate(bspline[:-1]):
-                if i < len(bspline)/2:
-                    self._addFreeRail(p, bspline[i+1], space)
-                else:
-                    self._addPropRail(p, bspline[i+1], space)
-        else:
-            for i in self.options:
-                if i[2] == "FREE":
-                    self._addFreeRail(i[0], i[1], space)
-                if i[2] == "PROP":
-                    self._addPropRail(i[0], i[1], space)
+        # self.curve.ctrlpts = [(x[0], x[1]) for x in self.curvePts]
+        # self.curve.knotvector = utilities.generate_knot_vector(
+        #     self.curve.degree, len(self.curve.ctrlpts))
+        # bspline = self.curve.evalpts
 
-                if i[2] == "PULL":
-                    self._addPullRail(i[0], i[1], space)
+        for i, p in enumerate(self.data_points[:-1]):
 
-                if i[2] == "BRAKE":
-                    self._addBrakeRail(i[0], i[1], space)
+            if p[2] == "FREE":
+                self._addFreeRail(
+                    self.data_points[i][:2], self.data_points[i+1][:2], space)
+            if p[2] == "PROP":
+                self._addPropRail(
+                    self.data_points[i][:2], self.data_points[i+1][:2], space)
+
+            if p[2] == "PULL":
+                self._addPullRail(
+                    self.data_points[i][:2], self.data_points[i+1][:2], space)
+
+            if p[2] == "BRAKE":
+                self._addBrakeRail(
+                    self.data_points[i][:2], self.data_points[i+1][:2], space)
