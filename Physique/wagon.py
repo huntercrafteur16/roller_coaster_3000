@@ -1,3 +1,5 @@
+"""Classe Wagon qui ajoute un wagon à un space pymunk """
+
 from pymunk.vec2d import Vec2d
 import pymunk
 from Physique.classes_travail_wagon import Start_line, Poly

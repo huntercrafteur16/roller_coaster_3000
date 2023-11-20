@@ -1,3 +1,6 @@
+"""Classe train qui ajoute un train a un space pymunk """
+
+
 from Physique.wagon import Wagon
 from Physique.classes_travail_wagon import PinJoint
 
