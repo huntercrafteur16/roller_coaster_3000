@@ -23,3 +23,4 @@ class Train:
             self.liste_wagon.append(Wagon(space, wagon.m, wagon.L, wagon.h, (
                 self.liste_wagon[i-1].c.position[0]-(4*(wagon.L)/3)-(wagon.L/3), wagon.c.position[1]), wagon.tension, wagon.StartingLine))
             Lien(space, self.liste_wagon[i-1], self.liste_wagon[i])
+            Segment(space, )

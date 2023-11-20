@@ -12,6 +12,7 @@ import pymunk.pygame_util
 import pygame
 from Physique.wagon import Wagon
 from Physique.rails import Rail
+from Physique.ClasseTrain import *
 
 
 class physicManager(object):
@@ -50,18 +51,19 @@ class physicManager(object):
         self._draw_options.flags ^= pymunk.pygame_util.DrawOptions.DRAW_CONSTRAINTS
 
         # scénario test
-        self.createWagon()
+        self.createTrain()
         self._createSampleRail()
 
         # réglages autres
         # fonction qui sera exécutée après chaque actualisation
         self.update_func = lambda: None
 
-    def createWagon(self):  # va être bientôt supprimée servait pour le premier MVP
+    def createTrain(self):  # va être bientôt supprimée servait pour le premier MVP
 
-        self.wagon = Wagon(self._space, 5, 150, 50, (300, 100), 800)
+        self.wagon = Wagon(self._space, 5, 50, 30, (330, 130), 800)
         wagon_handler = self._space.add_collision_handler(2, 1)
         wagon_handler.pre_solve = self._onRailCollision
+        self.Train = Train(self._space, self.wagon, 3)
 
     def getWagon(self):
         "retoure le wagon"
