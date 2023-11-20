@@ -209,3 +209,15 @@ class physicManager(object):
         self.time = 0
         self.pausedTime = 0
         self._screen.fill(pygame.Color("white"))
+
+    def import_rails_from_file(self, chemin: str, L: float, nb_wagon: int):
+        """crée un rail à partir d'un fichier"""
+        file = open(chemin, "r")
+        lines = file.readlines()
+        file.close()
+        self.rail = Rail()
+        for line in lines:
+            L_point = line.split(';')
+            point = (float(L_point[0]), float(L_point[1]))
+            self.rail.addPoint(point, L_point[2])
+            self.rail.renderRail(self._space, L, nb_wagon)
