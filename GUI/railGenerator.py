@@ -1,3 +1,4 @@
+import sys
 from geomdl import BSpline
 from geomdl import utilities
 from math import *
@@ -22,107 +23,6 @@ class Config():
         self.restrict_zone = (160, 200, 560, 600)
         self.show_points = True
         self.edit_mode = True
-
-
-'''
-class RailGenerator():
-    """
-    Classe permettant le paramètrage et l'affichage de rails sous forme 
-    de spline dans pymunk
-    """
-
-    def __init__(self, screen, degree: int = 2) -> None:
-        curvePts = []
-        pullingPts = []
-        constantSpeedPts = []
-        self.screen = screen
-        self.degree = degree
-        self.curve = BSpline.Curve(degree=int(degree))
-        self.curve.delta = 1e-3
-        self.curve.degree = int(degree)
-        self.count = 0
-
-    def addPoint(self, point: tuple):
-        self.curvePts.append(point)
-
-    def set_degree(self, degree=2):
-        self.curve.degree = degree
-        self.degree = degree
-
-    def renderRail(self, space):
-        self.curve.ctrlpts = self.curvePts
-        self.curve.knotvector = utilities.generate_knot_vector(
-            self.curve.degree, len(self.curve.ctrlpts))
-        bspline = self.curve.evalpts
-        for i, p in enumerate(bspline[:-1]):
-            railseg = pymunk.Segment(
-                space.static_body, p, bspline[i+1], 1)
-            railseg.elasticity = 0
-
-            def constantSpeed_parts(bspline):
-                """
-                le but ici est de mettre en mouvement le wagon au début
-                si celui-ci est en pente montante
-                """
-                def calculate_derivatives(bspline):
-                    derivatives = []
-                    for k in range(1, len(bspline)-1):
-                        slope = (bspline[k+1]-bspline[k])/self.curve.delta
-                        derivatives.append(slope)
-                    return slope
-                derivatives = calculate_derivatives(bspline)
-                first_descendant_ind = 0
-                while derivatives[k] >= 0:
-                    k += 1
-                first_descendant_ind = k
-                if i < first_descendant_ind:
-                    railseg.color = (255, 0, 0, 255)
-                    constantSpeedPts.append(i)
-                """
-                le but ici est de faire choisir à l'utilisateur les parties à vitesse
-                constantes (en plus de la partie pas défaut si elle existe)
-                """
-                for i in range(bspline):
-                    if bspline[i].desc[1]:
-                        railseg.color = (255, 0, 0, 255)
-                        constantSpeedPts.append(i)
-                return
-
-            def pulling_parts(bspline):
-                """
-                Le but ici est de faire choisir à l'utilisateur des parties du circuit
-                ou le wagon est accéléré par une force
-                """
-                for i in range(len(bspline)):
-                    if bspline[i].desc[0]:
-                        railseg.color = (0, 0, 255, 255)
-                        pullingPts.append(i)
-            constantSpeed_parts(bspline)
-            pulling_parts(bspline)
-            space.add(railseg)
-
-    def draw(self, curvePts):
-        self.curve.degree = self.degree  # Set the degree first
-        self.curve.ctrlpts = curvePts
-        self.curve.knotvector = utilities.generate_knot_vector(
-            self.curve.degree, len(self.curve.ctrlpts))
-        self.curvePts = self.curve.evalpts
-
-    def render(self):
-        if self.count >= 2:
-            pygame.draw.lines(
-                self.screen, (100, 100, 100), 0, self.curvePts)
-        for i, point in enumerate(self.curvePts):
-            if i == 0:
-                pygame.draw.circle(
-                    self.screen, (0, 140, 200), point, 5)
-            else:
-                pygame.draw.circle(
-                    self.screen, (140, 140, 140), point, 5)
-        if self.count >= self.degree + 1:
-            pygame.draw.lines(self.screen, (255, 0, 0, 255), 0,
-                              self.curvePts, width=5)
-    '''
 
 
 class Canvas():
@@ -325,6 +225,9 @@ class Canvas():
                     can_add = False
                     if self.count >= 3:
                         self.draw(self.ctrl_points)
+            elif self.region(self.save_open_button, x, y):
+                print("souvegarde")
+                self.save_file()
 
             elif len(self.lineselection) == 2:
                 if self.region(self.free_type_button, x, y):
@@ -379,31 +282,17 @@ class Canvas():
 
         elif self.region(self.edit_button, x, y):
             self.cfg.edit_mode = True
-        elif self.region(self.save_open_button, x, y):
-            file_path = filedialogIasksaveasfilename(defaultextension='.txt', filetypes=[
-                                                     ("Text files", "*.txt"), ("All files", "*.*")])
-            if file_path:
-                with open(file_path, 'w') as file:
-                    content = "\n".join(
-                        [f"{point[0]},{point[1]}" for point in self.ctrl_points])
-                    file.write(content)
 
-            elif self.region(self.save_open_button, x, y):
-                file_path = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[
-                    ("Text files", "*.txt"), ("All files", "*.*")])
+            # file_path = filedialog.asksaveasfilename(defaultextension='.txt', filetypes=[
+            #                                          ("Text files", "*.txt"), ("All files", "*.*")])
+            # if file_path:
+            #     with open(file_path, 'w') as file:
+            #         content = "\n".join(
+            #             [f"{point[0]},{point[1]}" for point in self.ctrl_points])
+            #         file.write(content)
 
-                if file_path:
-                    with open(file_path, 'w') as file:
-                        content = text.get("1.0", tk.END)
-                        file.write(content)
-                root = tk.Tk()
-                root.title("Save File Example")
-                text = tk.Text(root, wrap="word")
-                text.pack(expand=True, fill="both")
-                save_button = tk.Button(
-                    root, text="Save File", command=save_file)
-                save_button.pack()
-                root.mainloop()
+            # elif self.region(self.save_open_button, x, y):
+            #     self.save_file()
 
     def closest_point(self, x, y):
         closest_i = 0
@@ -445,3 +334,18 @@ class Canvas():
                 self.maindata[i][0] = (self.curve_points[i])
         for i in range(len(self.maindata)+1, len(self.curve_points)):
             self.maindata.append([(self.curve_points[i]), "FREE"])
+
+    def save_file(self):
+        file_path = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[
+            ("Text files", "*.txt"), ("All files", "*.*")])
+
+        if file_path:
+            with open(file_path, 'w') as file:
+                lines = []
+                for i in range(len(self.maindata)):
+
+                    line = str(
+                        self.maindata[i][0][0])+","+str(self.maindata[i][0][1])+","+str(self.maindata[i][1])+"\n"
+                    lines.append(line)
+                file.writelines(lines)
+            sys.exit()
