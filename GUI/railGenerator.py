@@ -197,7 +197,7 @@ class Canvas():
                 pygame.draw.rect(
                     self.screen, self.cfg.bright, self.free_type_button)
                 text_surface = self.my_font.render(
-                    'libre', False, (0, 0, 0))
+                    'rail libre', False, (0, 0, 0))
                 self.screen.blit(
                     text_surface, (self.free_type_button[0], self.free_type_button[1]+20))
 
@@ -218,7 +218,7 @@ class Canvas():
                 pygame.draw.rect(
                     self.screen, self.cfg.bright, self.prop_type_button)
                 text_surface = self.my_font.render(
-                    'entraîner', False, (0, 0, 0))
+                    'accélérateur', False, (0, 0, 0))
                 self.screen.blit(
                     text_surface, (self.prop_type_button[0], self.prop_type_button[1]+20))
 
@@ -242,7 +242,7 @@ class Canvas():
             if self.cfg.show_points:
                 if self.count >= 2:
                     pygame.draw.lines(
-                        self.screen, (100, 100, 100), 0, self.ctrl_points)
+                        self.screen, (100, 100, 100), False, self.ctrl_points)
 
                 # cette ligne trace les segments entre les points
                 for i, point in enumerate(self.ctrl_points):
@@ -263,37 +263,21 @@ class Canvas():
                     pt1 = self.maindata[i]
                     pt2 = self.maindata[i+1]
                     if len(self.lineselection) == 2 and i > self.lineselection[0] and i < self.lineselection[1]:
-                        pygame.draw.lines(self.screen, (0, 255, 255), 0, [
+                        pygame.draw.lines(self.screen, (0, 255, 255), False, [
                                           pt1[0], pt2[0]], width=self.cfg.width)
 
                     elif pt2[1] == "FREE":
-                        pygame.draw.lines(self.screen, (50, 50, 50), 0, [
+                        pygame.draw.lines(self.screen, (50, 50, 50), False, [
                                           pt1[0], pt2[0]], width=self.cfg.width)
                     elif pt2[1] == "PROP":
-                        pygame.draw.lines(self.screen, (0, 255, 0), 0, [
+                        pygame.draw.lines(self.screen, (0, 255, 0), False, [
                                           pt1[0], pt2[0]], width=self.cfg.width)
                     elif pt2[1] == "PULL":
-                        pygame.draw.lines(self.screen, (255, 150, 0), 0, [
+                        pygame.draw.lines(self.screen, (255, 150, 0), False, [
                                           pt1[0], pt2[0]], width=self.cfg.width)
                     elif pt2[1] == "BRAKE":
-                        pygame.draw.lines(self.screen, (255, 0, 0), 0, [
+                        pygame.draw.lines(self.screen, (255, 0, 0), False, [
                                           pt1[0], pt2[0]], width=self.cfg.width)
-
-                # la courbe calculée, sans zone sélectionnée
-                # if len(self.lineselection) < 2:
-                #    pygame.draw.lines(self.screen, self.cfg.color,
-                #                      0, self.curve_points, width=self.cfg.width)
-
-                # la courbe calculée, avec une zone de sélection bleue
-                # else:
-                #    if self.lineselection[0] != 0:
-                #        pygame.draw.lines(
-                #            self.screen, self.cfg.color, 0, self.curve_points[:self.lineselection[0]+1], width=self.cfg.width)
-                #    pygame.draw.lines(
-                #        self.screen, self.cfg.sea, 0, self.curve_points[self.lineselection[0]:self.lineselection[1]+1], width=self.cfg.width)
-                #    if self.lineselection[1] != len(self.curve_points)-1:
-                #        pygame.draw.lines(
-                #            self.screen, self.cfg.color, 0, self.curve_points[self.lineselection[1]:], width=self.cfg.width)
         self.button_render()
 
     def region(self, button, x, y):
@@ -302,55 +286,47 @@ class Canvas():
             return True
         return False
 
-    def select_left(self, x, y, r=10):
+    def select_left(self, x, y, r=30):
         if self.cfg.edit_mode:
             can_add = True
             if self.region(self.add_button, x, y):
                 self.add_mode = not self.add_mode
                 can_add = False
             elif self.region(self.sel_button, x, y):
-                self.selected = None
                 can_add = False
 
             elif self.region(self.hide_button, x, y):
                 self.cfg.show_points = not self.cfg.show_points
-                self.selected = None
                 can_add = False
 
             elif self.region(self.del_button, x, y):
+                can_add = False
                 if self.selected:
                     self.ctrl_points.pop(self.selected)
                     self.count -= 1
                     self.selected -= 1
-                    can_add = False
                     if self.count >= 3:
                         self.draw(self.ctrl_points)
 
             elif len(self.lineselection) == 2:
+                self.selected = None
+                can_add = False
                 if self.region(self.free_type_button, x, y):
-                    self.selected = None
-                    can_add = False
                     for point in self.maindata[self.lineselection[0]:(self.lineselection[1]+1)]:
                         point[1] = "FREE"
                     print("FREE")
 
                 elif self.region(self.brake_type_button, x, y):
-                    self.selected = None
-                    can_add = False
                     for point in self.maindata[self.lineselection[0]:(self.lineselection[1]+1)]:
                         point[1] = "BRAKE"
                     print("BRAKE")
 
                 elif self.region(self.prop_type_button, x, y):
-                    self.selected = None
-                    can_add = False
                     for point in self.maindata[self.lineselection[0]:(self.lineselection[1]+1)]:
                         point[1] = "PROP"
                     print("PROP")
 
                 elif self.region(self.pull_type_button, x, y):
-                    self.selected = None
-                    can_add = False
                     for point in self.maindata[self.lineselection[0]:(self.lineselection[1]+1)]:
                         point[1] = "PULL"
                     print("PULL")
@@ -380,30 +356,24 @@ class Canvas():
         elif self.region(self.edit_button, x, y):
             self.cfg.edit_mode = True
         elif self.region(self.save_open_button, x, y):
-            file_path = filedialogIasksaveasfilename(defaultextension='.txt', filetypes=[
-                                                     ("Text files", "*.txt"), ("All files", "*.*")])
+            self.selected = None
+            can_add = False
+            file_path = filedialog.asksaveasfilename(defaultextension='.txt', filetypes=[
+                ("Text files", "*.txt"), ("All files", "*.*")])
             if file_path:
                 with open(file_path, 'w') as file:
                     content = "\n".join(
-                        [f"{point[0]},{point[1]}" for point in self.ctrl_points])
+                        [f"{point[0]},{point[1]}" for point in self.maindata])
                     file.write(content)
+                    file.close()
 
-            elif self.region(self.save_open_button, x, y):
-                file_path = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[
-                    ("Text files", "*.txt"), ("All files", "*.*")])
-
-                if file_path:
-                    with open(file_path, 'w') as file:
-                        content = text.get("1.0", tk.END)
-                        file.write(content)
-                root = tk.Tk()
-                root.title("Save File Example")
-                text = tk.Text(root, wrap="word")
-                text.pack(expand=True, fill="both")
-                save_button = tk.Button(
-                    root, text="Save File", command=save_file)
-                save_button.pack()
-                root.mainloop()
+                # root = tk.Tk()
+                # .title("Save File Example")
+                # text = tk.Text(root, wrap="word")
+                # text.pack(expand=True, fill="both")
+                # save_button = tk.Button(root, text="Save File", command=save_file)
+                # save_button.pack()
+                # root.mainloop()
 
     def closest_point(self, x, y):
         closest_i = 0
