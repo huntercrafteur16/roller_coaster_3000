@@ -4,6 +4,7 @@ from math import *
 
 import pygame
 from Physique.rails import Rail
+from geomdl import BSpline
 
 
 class Config():
@@ -126,19 +127,21 @@ class Canvas():
     """
     Classe d'affichage et de création d'un objet rail pour physic manager
     """
-    rail_type_list = ["PROP", "PULL", "BRAKE", "FREE"]
 
     def __init__(self, screen: pygame.Surface):
         self.cfg = Config()
         self.screen = screen
-        self.curve = Rail()
+        self.spline = BSpline.Curve()
+        self.spline.degree = 2
+        self.spline.delta = 1e-3
+
         # self.physics = Rail()
         self.ctrl_points = []
+        self.curve_points = []
         self.count = 0
         self.selected = None
         self.move_point = False
         self.add_mode = 0
-        self.rail_type = None
         self.presel = False
         self.lineselection = []
         # affichage graphique
@@ -188,28 +191,28 @@ class Canvas():
 
             if len(self.lineselection) == 2:
                 pygame.draw.rect(
-                    self.screen, self.cfg.bright if self.rail_type == "FREE" else self.cfg.bright, self.free_type_button)
+                    self.screen, self.cfg.bright, self.free_type_button)
                 text_surface = self.my_font.render(
                     'libre', False, (0, 0, 0))
                 self.screen.blit(
                     text_surface, (self.free_type_button[0], self.free_type_button[1]+20))
 
                 pygame.draw.rect(
-                    self.screen, self.cfg.bright if self.rail_type == "BRAKE" else self.cfg.bright, self.brake_type_button)
+                    self.screen, self.cfg.bright, self.brake_type_button)
                 text_surface = self.my_font.render(
                     'frein', False, (0, 0, 0))
                 self.screen.blit(
                     text_surface, (self.brake_type_button[0], self.brake_type_button[1]+20))
 
                 pygame.draw.rect(
-                    self.screen, self.cfg.bright if self.rail_type == "PULL" else self.cfg.bright, self.pull_type_button)
+                    self.screen, self.cfg.bright, self.pull_type_button)
                 text_surface = self.my_font.render(
                     'treuil', False, (0, 0, 0))
                 self.screen.blit(
                     text_surface, (self.pull_type_button[0], self.pull_type_button[1]+20))
 
                 pygame.draw.rect(
-                    self.screen, self.cfg.bright if self.rail_type == "PROP" else self.cfg.bright, self.prop_type_button)
+                    self.screen, self.cfg.bright, self.prop_type_button)
                 text_surface = self.my_font.render(
                     'entraîner', False, (0, 0, 0))
                 self.screen.blit(
@@ -249,20 +252,21 @@ class Canvas():
                         pygame.draw.circle(
                             self.screen, (140, 140, 140), point, 5)
                         # les autres points
-            if self.count >= self.curve.curve.degree+1:
+            if self.count >= self.spline.degree+1:
+                # la courbe calculée, sans zone sélectionnée
                 if len(self.lineselection) < 2:
                     pygame.draw.lines(self.screen, self.cfg.color,
-                                      0, self.curve.curvePts, width=self.cfg.width)
-                # la courbe calculée
+                                      0, self.curve_points, width=self.cfg.width)
+
                 else:
                     if self.lineselection[0] != 0:
                         pygame.draw.lines(
-                            self.screen, self.cfg.color, 0, self.curve.curvePts[:self.lineselection[0]+1], width=self.cfg.width)
+                            self.screen, self.cfg.color, 0, self.curve_points[:self.lineselection[0]+1], width=self.cfg.width)
                     pygame.draw.lines(
-                        self.screen, self.cfg.sea, 0, self.curve.curvePts[self.lineselection[0]:self.lineselection[1]+1], width=self.cfg.width)
-                    if self.lineselection[1] != len(self.curve.curvePts)-1:
+                        self.screen, self.cfg.sea, 0, self.curve_points[self.lineselection[0]:self.lineselection[1]+1], width=self.cfg.width)
+                    if self.lineselection[1] != len(self.curve_points)-1:
                         pygame.draw.lines(
-                            self.screen, self.cfg.color, 0, self.curve.curvePts[self.lineselection[1]:], width=self.cfg.width)
+                            self.screen, self.cfg.color, 0, self.curve_points[self.lineselection[1]:], width=self.cfg.width)
         self.button_render()
 
     def region(self, button, x, y):
@@ -292,7 +296,7 @@ class Canvas():
                     self.count -= 1
                     self.selected -= 1
                     can_add = False
-                    if self.count >= self.curve.curve.degree+1:
+                    if self.count >= 3:
                         self.draw(self.ctrl_points)
 
             elif len(self.lineselection) == 2:
@@ -334,11 +338,9 @@ class Canvas():
                         self.ctrl_points.insert(self.selected+1, (x, y))
                 else:
                     self.ctrl_points.append((x, y))
-                if self.count >= self.curve.curve.degree+1:
+                if self.count >= 3:
                     self.draw(self.ctrl_points)
 
-            else:
-                self.rail_type = None
         else:
             if self.region(self.edit_button, x, y):
                 # self.physics = Rail()
@@ -346,8 +348,8 @@ class Canvas():
 
     def closest_point(self, x, y):
         closest_i = 0
-        for i in range(len(self.curve.curvePts)):
-            if (x-self.curve.curvePts[i][0])**2 + (y-self.curve.curvePts[i][1])**2 < (x-self.curve.curvePts[closest_i][0])**2 + (y-self.curve.curvePts[closest_i][1])**2:
+        for i in range(len(self.curve_points)):
+            if (x-self.curve_points[i][0])**2 + (y-self.curve_points[i][1])**2 < (x-self.curve_points[closest_i][0])**2 + (y-self.curve_points[closest_i][1])**2:
                 closest_i = i
         return closest_i
 
@@ -366,14 +368,16 @@ class Canvas():
         if self.move_point:
             self.ctrl_points.pop(self.selected)
             self.ctrl_points.insert(self.selected, xy)
-            if self.count >= self.curve.curve.degree+1:
+            if self.count >= 3:
                 self.draw(self.ctrl_points)
 
             return True
 
     def draw(self, curvePts):
-        self.curve.curve.degree = self.curve.curve.degree  # Set the degree first
-        self.curve.curve.ctrlpts = curvePts
-        self.curve.curve.knotvector = utilities.generate_knot_vector(
-            self.curve.curve.degree, len(self.curve.curve.ctrlpts))
-        self.curve.curvePts = self.curve.curve.evalpts
+        p0x, p0y = curvePts[0]
+        L = [(p0x-40, p0y), (p0x-39, p0y)]
+        self.spline.degree = self.spline.degree  # Set the degree first
+        self.spline.ctrlpts = L+curvePts
+        self.spline.knotvector = utilities.generate_knot_vector(
+            self.spline.degree, len(self.spline.ctrlpts))
+        self.curve_points = self.spline.evalpts
