@@ -13,12 +13,12 @@ pygame.init()
 
 class Config():
     def __init__(self):
-        self.fill = (20, 20, 30)
+        self.fill = (255, 255, 255)
         self.width = 2
         self.color = (255, 180, 0)
-        self.dark = (50, 50, 60)
-        self.bright = (70, 90, 80)
-        self.brightdanger = (80, 70, 70)
+        self.dark = (0, 0, 0)
+        self.bright = (0, 255, 0)
+        self.brightdanger = (255, 0, 0)
         self.restrict = False
         self.restrict_zone = (160, 200, 560, 600)
         self.show_points = True
@@ -28,62 +28,110 @@ class Config():
 cfg = Config()
 
 
-class Physics():
-    def __init__(self, screen):
-        self.draw_option = pymunk.pygame_util.DrawOptions(screen)
-        self.space = None
-        self.new()
+class Rail():
+    """
+    Classe permettant le paramètrage et l'affichage de rails sous forme 
+    de spline dans pymunk
+    """
+    curvePts = []
+    pullingPts = []
+    constantSpeedPts = []
 
-    def new(self):
-        self.space = pymunk.Space()
-        self.space.gravity = 0, 200
+    def __init__(self, screen, degree=2) -> None:
+        self.screen = screen
+        self.degree = int(degree)
+        self.curve = BSpline.Curve(degree=int(degree))
+        self.curve.delta = 0.05
+        self.curve.degree = int(degree)
+        self.count = 0
 
-    def add_seg(self, bspline):
-        for i, p in enumerate(bspline[:-1]):
-            segment = pymunk.Segment(
-                self.space.static_body, p, bspline[i+1], 1)
-            segment.elasticity = 1
-            self.space.add(segment)
+    def addPoint(self, point: tuple, desc: tuple):
+        self.curvePts.append(point)
 
-    def add_circle(self, x, y):
-        body = pymunk.Body(mass=randint(1, 10), moment=10)
-        body.position = x, y
-        circle = pymunk.Circle(body, radius=randint(10, 50))
-        circle.elasticity = randint(1, 9)/10
-        circle.color = (randint(0, 255), randint(0, 255), randint(0, 255), 255)
-        self.space.add(body, circle)
-
-    def run(self):
-        self.space.debug_draw(self.draw_option)
-        self.space.step(0.01)
-
-
-class Spline():
-    def __init__(self, degree=2):
-        self.degree = degree
-        self.curve = BSpline.Curve()
+    def set_degree(self, degree=2):
         self.curve.degree = degree
+        self.degree = degree
 
-        self.points = []
-
-    def draw(self, points):
-        self.curve.ctrlpts = points
+    def renderRail(self, space):
+        self.curve.ctrlpts = self.curvePts
         self.curve.knotvector = utilities.generate_knot_vector(
             self.curve.degree, len(self.curve.ctrlpts))
-        # self.curve.vis = VisMPL.VisCurve3D()
-        self.points = self.curve.evalpts
+        bspline = self.curve.evalpts
+        for i, p in enumerate(bspline[:-1]):
+            railseg = pymunk.Segment(
+                space.static_body, p, bspline[i+1], 1)
+            railseg.elasticity = 0
 
-    def set_degree(self, d):
-        self.curve.degree = d
-        self.degree = d
+            def constantSpeed_parts(bspline):
+                """
+                le but ici est de mettre en mouvement le wagon au début
+                si celui-ci est en pente montante
+                """
+                def calculate_derivatives(bspline):
+                    derivatives = []
+                    for k in range(1, len(bspline)-1):
+                        slope = (bspline[k+1]-bspline[k])/self.curve.delta
+                        derivatives.append(slope)
+                    return slope
+                derivatives = calculate_derivatives(bspline)
+                first_descendant_ind = 0
+                while derivatives[k] >= 0:
+                    k += 1
+                first_descendant_ind = k
+                if i < first_descendant_ind:
+                    railseg.color = (255, 0, 0, 255)
+                    constantSpeedPts.append(i)
+                """
+                le but ici est de faire choisir à l'utilisateur les parties à vitesse
+                constantes (en plus de la partie pas défaut si elle existe)
+                """
+                for i in range(bspline):
+                    if bspline[i].desc[1]:
+                        railseg.color = (255, 0, 0, 255)
+                        constantSpeedPts.append(i)
+                return
+
+            def pulling_parts(bspline):
+                """
+                Le but ici est de faire choisir à l'utilisateur des parties du circuit
+                ou le wagon est accéléré par une force
+                """
+                for i in range(len(bspline)):
+                    if bspline[i].desc[0]:
+                        railseg.color = (0, 0, 255, 255)
+                        pullingPts.append(i)
+            constantSpeed_parts(bspline)
+            pulling_parts(bspline)
+            space.add(railseg)
+
+    def draw(self, curvePts):
+        self.curve.degree = self.degree  # Set the degree first
+        self.curve.ctrlpts = curvePts
+        self.curve.knotvector = utilities.generate_knot_vector(
+            self.curve.degree, len(self.curve.ctrlpts))
+        self.curvePts = self.curve.evalpts
+
+    def render(self):
+        if self.count >= 2:
+            pygame.draw.lines(
+                self.screen, (100, 100, 100), 0, self.curvePts)
+        for i, point in enumerate(self.curvePts):
+            if i == 0:
+                pygame.draw.circle(
+                    self.screen, (0, 140, 200), point, 5)
+            else:
+                pygame.draw.circle(
+                    self.screen, (140, 140, 140), point, 5)
+        if self.count >= self.degree + 1:
+            pygame.draw.lines(self.screen, (255, 0, 0, 255), 0,
+                              self.curvePts, width=5)
 
 
 class Canvas():
     def __init__(self, screen):
         self.screen = screen
-        self.curve = Spline()
-        self.physics = Physics(self.screen)
-        # self.physics.add_circle(400,700)
+        self.curve = Rail(screen)
+        self.physics = Rail(screen)
         self.ctrl_points = []
         self.count = 0
         self.selected = None
@@ -94,12 +142,15 @@ class Canvas():
         self.del_button = (90, 460, 50, 20)
         self.sel_button = (160, 460, 50, 20)
         self.hide_button = (230, 460, 50, 20)
-        self.play_button = (300, 460, 50, 20)
 
         self.edit_button = (20, 460, 50, 20)
 
-    def add_points(self, xy):
-        self.ctrl_points.append(xy)
+    def add_point(self, xy):
+        self.curve.curvePts.append(xy)
+        self.count += 1
+
+        if self.count >= self.curve.degree + 1:
+            self.curve.draw(self.curve.curvePts)
 
     def button_render(self):
         if cfg.edit_mode:
@@ -112,7 +163,6 @@ class Canvas():
                 pygame.draw.rect(
                     self.screen, cfg.brightdanger, self.del_button)
             pygame.draw.rect(self.screen, cfg.dark, self.hide_button)
-            pygame.draw.rect(self.screen, cfg.dark, self.play_button)
         else:
             pygame.draw.rect(self.screen, cfg.dark, self.edit_button)
 
@@ -122,19 +172,24 @@ class Canvas():
                 if self.count >= 2:
                     pygame.draw.lines(
                         self.screen, (100, 100, 100), 0, self.ctrl_points)
+                    # cette ligne trace les segments entre les points
                 for i, point in enumerate(self.ctrl_points):
                     if i == 0:
                         pygame.draw.circle(
-                            self.screen, (0, 140, 200), point, 5)
+                            self.screen, (0, 0, 200), point, 5)
+                        # le premier point du tracé
                     elif i == self.selected:
                         pygame.draw.circle(
-                            self.screen, (20, 200, 80), point, 5)
+                            self.screen, (0, 200, 0), point, 5)
+                        # le point séléctionné (pour le bouger)
                     else:
                         pygame.draw.circle(
                             self.screen, (140, 140, 140), point, 5)
+                        # les autres points
             if self.count >= self.curve.degree+1:
                 pygame.draw.lines(self.screen, cfg.color, 0,
-                                  self.curve.points, width=cfg.width)
+                                  self.curve.curvePts, width=cfg.width)
+                # la courbe calculée
         self.button_render()
 
     def region(self, button, x, y):
@@ -157,14 +212,6 @@ class Canvas():
                 cfg.show_points = not cfg.show_points
                 self.selected = None
                 can_add = False
-
-            elif self.region(self.play_button, x, y):
-                cfg.show_points = False
-                self.selected = None
-                self.add_mode = False
-                can_add = False
-                cfg.edit_mode = False
-                self.physics.add_seg(self.curve.points)
 
             elif self.region(self.del_button, x, y):
                 if self.selected:
@@ -200,8 +247,6 @@ class Canvas():
             if self.region(self.edit_button, x, y):
                 self.physics.new()
                 cfg.edit_mode = True
-            else:
-                self.physics.add_circle(x, y)
 
     def move(self, xy):
         if self.move_point:
@@ -212,9 +257,6 @@ class Canvas():
 
             return True
 
-    def simulate(self):
-        self.physics.run()
-
 
 if __name__ == "__main__":
     screen = pygame.display.set_mode((500, 500))
@@ -222,7 +264,6 @@ if __name__ == "__main__":
 
     def update():
         screen.fill(cfg.fill)
-        canvas.simulate()
         canvas.render()
         pygame.display.update()
 

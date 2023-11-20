@@ -13,162 +13,81 @@ random.seed(1)  # make the simulation the same each time, easier to debug
 class Rail():
     """
     Classe permettant le paramètrage et l'affichage de rails sous forme de spline dans pymunsk
+
+    - rails "FREE": collision_type = 0
+    - rails "PROP": collision_type = 1
+    - rails "PULL": collision_type = 2
+    - rails "BRAKE": collision_type = 3 TODO actuellement c'est celui des wagons
+    TODO modifier collision_type des wagons
     """
-    curvePts = []
+    curvePts: list[tuple[float, float, str]]
     # liste des intervalles contenant les points [(0,5),(10,100)] ******___****************
-    pullingPts_int = []
+
+    segments: list[pymunk.Segment]
 
     def __init__(self, degree=2) -> None:
+        self.curvePts = []
         self.curve = BSpline.Curve(degree=degree)
         self.curve.delta = 0.05
         self.curve.degree = degree
         self.width = 1
+        self.segments = []
+        self.pullingPts_int = []
 
-    def addPoint(self, point: tuple, isPulling: bool):
-        self.curvePts.append(point)
+    def addPoint(self, point: tuple, rail_type="FREE"):
+        """Ajoute un point à l'objet rail choisi
+        rail_type: "FREE","PULL","PROP","BRAKE"
+        """
+        p = (point[0], point[1], rail_type)
+        self.curvePts.append(p)
 
     def _addFreeRail(self, c_deb, c_fin, space: pymunk.Space):
         railseg = pymunk.Segment(space.static_body, c_deb, c_fin, self.width)
         railseg.color = (125, 125, 125, 255)
         railseg.elasticity = 0
         railseg.collision_type = 0  # la collision d'un rail non tractant sera 0
+        self.segments.append(railseg)
+
         space.add(railseg)
 
-    def _addPullRail(self, c_deb, c_fin, space: pymunk.Space):
+    def _addPropRail(self, c_deb, c_fin, space: pymunk.Space):
         railseg = pymunk.Segment(space.static_body, c_deb, c_fin, self.width)
         railseg.color = (255, 0, 0, 255)
         railseg.elasticity = 0
         railseg.collision_type = 1  # la collision d'un rail  tractant sera 1
+        self.segments.append(railseg)
         space.add(railseg)
 
+    def _addBrakeRail(self, c_deb, c_fin, space: pymunk.Space):
+        pass
+
+    def _addPullRail(self, c_deb, c_fin, space: pymunk.Space):
+        pass
+
     def renderRail(self, space):
-        self.curve.ctrlpts = self.curvePts
+        """Permet d'ajouter le rail dans l'espace pymunk indiqué
+        options: liste des coordonnées a_deb,a_fin et type du segment en question
+        """
+
+        self.curve.ctrlpts = [(x[0], x[1]) for x in self.curvePts]
         self.curve.knotvector = utilities.generate_knot_vector(
             self.curve.degree, len(self.curve.ctrlpts))
         bspline = self.curve.evalpts
+        if self.options is None:
+            for i, p in enumerate(bspline[:-1]):
+                if i < len(bspline)/2:
+                    self._addFreeRail(p, bspline[i+1], space)
+                else:
+                    self._addPropRail(p, bspline[i+1], space)
+        else:
+            for i in self.options:
+                if i[2] == "FREE":
+                    self._addFreeRail(i[0], i[1], space)
+                if i[2] == "PROP":
+                    self._addPropRail(i[0], i[1], space)
 
-        for i, p in enumerate(bspline[:-1]):
-            if i < len(bspline)/2:
-                self._addFreeRail(p, bspline[i+1], space)
-            else:
-                self._addPullRail(p, bspline[i+1], space)
+                if i[2] == "PULL":
+                    self._addPullRail(i[0], i[1], space)
 
-
-class Physique():
-    def __init__(self, screen):
-        self.draw_option = pymunk.pygame_util.DrawOptions(screen)
-        self.space = None
-        self.new()
-
-    def new(self):
-        self.space = pymunk.Space()
-        self.space.gravity = 0, 200
-
-    def add_rails(self, bspline):
-        rails = pymunk.Body(body_type=pymunk.Body.STATIC)
-        rails.position = (300, 300)
-        for i, p in enumerate(bspline[:-1]):
-            rail = pymunk.Segment(rails, p, bspline[i+1], 1)
-            rail.elasticity = 0
-        self.space.add(rails)
-
-    def run(self):
-        self.space.debug_draw(self.draw_option)
-        self.space.step(0.01)
-
-
-class Spline():
-    def __init__(self, screen, degree=2):
-        self.screen = screen
-        self.degree = degree
-        self.curve = BSpline.Curve()
-        self.curve.degree = degree
-        self.curvePts = []
-        self.count = 0
-
-    def draw(self, curvePts):
-        self.curve.ctrlpts = curvePts
-        self.curve.knotvector = utilities.generate_knot_vector(
-            self.curve.degree, len(self.curve.ctrlpts))
-        self.curvePts = self.curve.evalpts
-
-    def set_degree(self, d):
-        self.curve.degree = d
-        self.degree = d
-
-    def add_point(self, xy):
-        self.curvePts.append(xy)
-
-    def render(self):
-        if self.count >= 2:
-            pygame.draw.lines(
-                self.screen, (100, 100, 100), 0, self.curvePts)
-        for i, point in enumerate(self.curvePts):
-            if i == 0:
-                pygame.draw.circle(
-                    self.screen, (0, 140, 200), point, 5)
-            else:
-                pygame.draw.circle(
-                    self.screen, (140, 140, 140), point, 5)
-        if self.count >= self.curve.degree + 1:
-            pygame.draw.lines(self.screen, (255, 0, 0, 255), 0,
-                              self.curvePts, width=5)
-
-
-class Canvas():
-    def __init__(self, screen):
-        self.screen = screen
-        self.curve = Spline(screen)
-        self.physics = Physique(self.screen)
-        self.curvePts = []
-        self.count = 0
-        self.selected = None
-        self.move_point = False
-        self.add_mode = 0
-
-    def add_point(self, xy):
-        self.curve.add_point(xy)
-
-    def render(self):
-        if self.count >= 2:
-            pygame.draw.lines(
-                self.screen, (100, 100, 100), 0, self.curvePts)
-        for i, point in enumerate(self.curvePts):
-            if i == 0:
-                pygame.draw.circle(
-                    self.screen, (0, 140, 200), point, 5)
-            else:
-                pygame.draw.circle(
-                    self.screen, (140, 140, 140), point, 5)
-        if self.count >= self.curve.degree + 1:
-            pygame.draw.lines(self.screen, (255, 0, 0, 255), 0,
-                              self.curvePts, width=5)
-
-    def simulate(self):
-        self.physics.run()
-
-
-if __name__ == "__main__":
-    screen = pygame.display.set_mode((500, 500))
-    canvas = Canvas(screen)
-
-    def update():
-        screen.fill(color=(255, 255, 255, 255))
-        canvas.simulate()
-        canvas.render()
-        pygame.display.update()
-
-    update()
-
-    # Add points to the curve
-    canvas.add_point((100, 100))
-    canvas.add_point((200, 300))
-    canvas.add_point((400, 200))
-    canvas.render()
-
-    while True:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-        update()
+                if i[2] == "BRAKE":
+                    self._addBrakeRail(i[0], i[1], space)
