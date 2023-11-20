@@ -28,6 +28,7 @@ class physicManager(object):
         self.height = height
         self.frame = frame
         self.gravity = gravity
+
         # code pour contenir la fenetre dans la frame tkinter indiquée #
         if frame is not None:
             os.environ['SDL_WINDOWID'] = str(frame.winfo_id())
@@ -42,9 +43,6 @@ class physicManager(object):
         self._physics_steps_per_frame = 10
 
         # instanciation et réglage des paramètres physiques
-        self._space = pymunk.Space()
-        self._space.gravity = (0.0, gravity)
-        self.N = 3
 
         # Number of physics steps per screen frame
 
@@ -57,9 +55,6 @@ class physicManager(object):
         self._draw_options.flags ^= pymunk.pygame_util.DrawOptions.DRAW_CONSTRAINTS
 
         # scénario test
-        self.createTrain()
-        # self._createSampleRail()
-
         pygame.display.init()
         # réglages autres
         # fonction qui sera exécutée après chaque actualisation
@@ -67,6 +62,7 @@ class physicManager(object):
         self.isPaused = True
         self.time = 0
         self.pausedTime = 0
+        self.reinit()
 
     def createTrain(self, mass=5, l=50, h=20):
         """
@@ -195,13 +191,18 @@ class physicManager(object):
 
     def reinit(self, param=None):
         """reinitialise la simulation"""
+        # self._createSampleRail()
+
         self._space = pymunk.Space()
+        self._space.gravity = (0.0, self.gravity)
         if param is None:
+            self.N = 3
             self.createTrain()
         else:
             self.N = param["nbr_wagon"]
+
             self.createTrain(param["mass"], 50,
-                             20, param["nbr_wagon"])
+                             20)
         # self._createSampleRail()
 
         # réglages autres
