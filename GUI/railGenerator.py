@@ -13,7 +13,6 @@ class Config():
         self.width = 2
         self.color = (255, 180, 0)
         self.dark = (0, 0, 0)
-        self.sea = (0, 255, 255)
         self.bright = (0, 255, 0)
         self.brightdanger = (255, 0, 0)
         self.restrict = False
@@ -138,6 +137,8 @@ class Canvas():
         # self.physics = Rail()
         self.ctrl_points = []
         self.curve_points = []
+        # Liste de tuples de 3 variables : (x, y, "type de tracé")
+        self.maindata = []
         self.count = 0
         self.selected = None
         self.move_point = False
@@ -253,20 +254,41 @@ class Canvas():
                             self.screen, (140, 140, 140), point, 5)
                         # les autres points
             if self.count >= self.spline.degree+1:
-                # la courbe calculée, sans zone sélectionnée
-                if len(self.lineselection) < 2:
-                    pygame.draw.lines(self.screen, self.cfg.color,
-                                      0, self.curve_points, width=self.cfg.width)
+                for i in range(len(self.maindata)-1):
+                    pt1 = self.maindata[i]
+                    pt2 = self.maindata[i+1]
+                    if len(self.lineselection) == 2 and i > self.lineselection[0] and i < self.lineselection[1]:
+                        pygame.draw.lines(self.screen, (0, 255, 255), 0, [
+                                          pt1[0], pt2[0]], width=self.cfg.width)
 
-                else:
-                    if self.lineselection[0] != 0:
-                        pygame.draw.lines(
-                            self.screen, self.cfg.color, 0, self.curve_points[:self.lineselection[0]+1], width=self.cfg.width)
-                    pygame.draw.lines(
-                        self.screen, self.cfg.sea, 0, self.curve_points[self.lineselection[0]:self.lineselection[1]+1], width=self.cfg.width)
-                    if self.lineselection[1] != len(self.curve_points)-1:
-                        pygame.draw.lines(
-                            self.screen, self.cfg.color, 0, self.curve_points[self.lineselection[1]:], width=self.cfg.width)
+                    elif pt2[1] == "FREE":
+                        pygame.draw.lines(self.screen, (50, 50, 50), 0, [
+                                          pt1[0], pt2[0]], width=self.cfg.width)
+                    elif pt2[1] == "PROP":
+                        pygame.draw.lines(self.screen, (0, 255, 0), 0, [
+                                          pt1[0], pt2[0]], width=self.cfg.width)
+                    elif pt2[1] == "PULL":
+                        pygame.draw.lines(self.screen, (255, 150, 0), 0, [
+                                          pt1[0], pt2[0]], width=self.cfg.width)
+                    elif pt2[1] == "BRAKE":
+                        pygame.draw.lines(self.screen, (255, 0, 0), 0, [
+                                          pt1[0], pt2[0]], width=self.cfg.width)
+
+                # la courbe calculée, sans zone sélectionnée
+                # if len(self.lineselection) < 2:
+                #    pygame.draw.lines(self.screen, self.cfg.color,
+                #                      0, self.curve_points, width=self.cfg.width)
+
+                # la courbe calculée, avec une zone de sélection bleue
+                # else:
+                #    if self.lineselection[0] != 0:
+                #        pygame.draw.lines(
+                #            self.screen, self.cfg.color, 0, self.curve_points[:self.lineselection[0]+1], width=self.cfg.width)
+                #    pygame.draw.lines(
+                #        self.screen, self.cfg.sea, 0, self.curve_points[self.lineselection[0]:self.lineselection[1]+1], width=self.cfg.width)
+                #    if self.lineselection[1] != len(self.curve_points)-1:
+                #        pygame.draw.lines(
+                #            self.screen, self.cfg.color, 0, self.curve_points[self.lineselection[1]:], width=self.cfg.width)
         self.button_render()
 
     def region(self, button, x, y):
@@ -301,23 +323,32 @@ class Canvas():
 
             elif len(self.lineselection) == 2:
                 if self.region(self.free_type_button, x, y):
-                    self.rail_type = "FREE"
                     self.selected = None
                     can_add = False
+                    for point in self.maindata[self.lineselection[0]:(self.lineselection[1]+1)]:
+                        point[1] = "FREE"
                     print("FREE")
+
                 elif self.region(self.brake_type_button, x, y):
-                    self.rail_type = "BRAKE"
                     self.selected = None
                     can_add = False
+                    for point in self.maindata[self.lineselection[0]:(self.lineselection[1]+1)]:
+                        point[1] = "BRAKE"
                     print("BRAKE")
+
                 elif self.region(self.prop_type_button, x, y):
-                    self.rail_type = "PROP"
                     self.selected = None
                     can_add = False
+                    for point in self.maindata[self.lineselection[0]:(self.lineselection[1]+1)]:
+                        point[1] = "PROP"
+                    print("PROP")
+
                 elif self.region(self.pull_type_button, x, y):
-                    self.rail_type = "PULL"
                     self.selected = None
                     can_add = False
+                    for point in self.maindata[self.lineselection[0]:(self.lineselection[1]+1)]:
+                        point[1] = "PULL"
+                    print("PULL")
 
             elif self.count:
                 for i, points in enumerate(self.ctrl_points):
@@ -341,10 +372,16 @@ class Canvas():
                 if self.count >= 3:
                     self.draw(self.ctrl_points)
 
-        else:
-            if self.region(self.edit_button, x, y):
-                # self.physics = Rail()
-                self.cfg.edit_mode = True
+        elif self.region(self.edit_button, x, y):
+            self.cfg.edit_mode = True
+        elif self.region(self.save_open_button, x, y):
+            file_path = filedialogIasksaveasfilename(defaultextension='.txt', filetypes=[
+                                                     ("Text files", "*.txt"), ("All files", "*.*")])
+            if file_path:
+                with open(file_path, 'w') as file:
+                    content = "\n".join(
+                        [f"{point[0]},{point[1]}" for point in self.ctrl_points])
+                    file.write(content)
 
     def closest_point(self, x, y):
         closest_i = 0
@@ -381,3 +418,8 @@ class Canvas():
         self.spline.knotvector = utilities.generate_knot_vector(
             self.spline.degree, len(self.spline.ctrlpts))
         self.curve_points = self.spline.evalpts
+        if self.maindata != []:
+            for i in range(len(self.maindata)):
+                self.maindata[i][0] = (self.curve_points[i])
+        for i in range(len(self.maindata)+1, len(self.curve_points)):
+            self.maindata.append([(self.curve_points[i]), "FREE"])
