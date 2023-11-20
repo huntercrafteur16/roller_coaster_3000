@@ -12,7 +12,7 @@ import pymunk.pygame_util
 import pygame
 from Physique.wagon import Wagon
 from Physique.rails import Rail
-from Physique.ClasseTrain import *
+from Physique.ClasseTrain import Train
 
 
 class physicManager(object):
