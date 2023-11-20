@@ -5,6 +5,12 @@ from GUI.graphiques import AnimatedGraph
 from Physique.physicManager import physicManager
 
 
+def reset_sim(manager: physicManager, graphs: list[AnimatedGraph]):
+    manager.reinit()
+    for graph in graphs:
+        graph.reset()
+
+
 interface = Interface()  # génération de l'objet génrant l'interface principal
 
 # génération du physicManager
@@ -37,7 +43,7 @@ while cont:
     if i == 100:
         i = 0
 
-        manager.reinit()
+        reset_sim(manager, [vitesse_graph])
         manager.play()
 
     vitesse_graph.drawNext(
