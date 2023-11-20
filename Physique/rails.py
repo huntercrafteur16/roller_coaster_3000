@@ -77,7 +77,15 @@ class Rail():
         self.segments.append(railseg)
         space.add(railseg)
 
-    def renderRail(self, space):
+    def add_premier_rail(self, space, L, nb_wagon):
+        """ajoute le premier rail, qui permet de poser le train"""
+        premier_point = (self.data_points[0][0], self.data_points[0][1])
+        railseg = pymunk.Segment(space.static_body, premier_point, (
+            premier_point[0]-1.5*L*nb_wagon, premier_point[1]), self.width)
+        railseg.elasticity = 0
+        space.add(railseg)
+
+    def renderRail(self, space, L, nb_wagon):
         """Permet d'ajouter le rail dans l'espace pymunk indiqué
         options: liste des coordonnées a_deb,a_fin et type du segment en question
         """
@@ -86,6 +94,7 @@ class Rail():
         # self.curve.knotvector = utilities.generate_knot_vector(
         #     self.curve.degree, len(self.curve.ctrlpts))
         # bspline = self.curve.evalpts
+        self.add_premier_rail(space, L, nb_wagon)
 
         for i, p in enumerate(self.data_points[:-1]):
 

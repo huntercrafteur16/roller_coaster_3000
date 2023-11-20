@@ -161,7 +161,7 @@ class physicManager(object):
         self.rail.addPoint((800, 400), "FREE")
         self.rail.addPoint((1000, 300), "FREE")
 
-        self.rail.renderRail(self._space)
+        self.rail.renderRail(self._space, 50, 3)  # TODO à modifier
 
     def _pull_wagon(self, wagon: Wagon):
         wagon.get_chassis_body().apply_force_at_local_point((1000, 0), (0, 0))
