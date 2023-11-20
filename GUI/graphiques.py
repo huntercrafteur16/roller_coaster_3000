@@ -51,6 +51,7 @@ class AnimatedGraph():
 
         if self._ymax <= abs(data):
             ylim((-abs(data), abs(data)))
+            self._ymax = abs(data)
         self.t.append(t)  # type: ignore
         self.data.append(data)  # type: ignore
         self.curve.set_xdata(self.t)
