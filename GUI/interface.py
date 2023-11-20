@@ -1,6 +1,8 @@
+
 from tkinter import *
 # from GUI.graphiques import AnimatedGraph
 import time
+from typing import Callable
 
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
@@ -12,6 +14,9 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 
 class Interface():
+    play_pause_button_function: Callable
+    start_reset_button_function: Callable
+
     def __init__(self):
 
         # Fenêtre principale
@@ -42,9 +47,9 @@ class Interface():
         def doNothing():
             pass
 
-        self.start_reset = Button(buttons, command=doNothing, width=10, height=2,
+        self.start_reset = Button(buttons, command=self.start_reset_button_function, width=10, height=2,
                                   text='Start/Reset', fg='#30b000', activebackground='#30b000')
-        self.play_pause = Button(buttons, command=doNothing, width=10, height=2,
+        self.play_pause = Button(buttons, command=self.play_pause_button_function, width=10, height=2,
                                  text='Play/Pause', fg='#0080ff', activebackground='#0080ff')
         self.start_reset.grid(row=0, column=0, padx=3, pady=3)
         self.play_pause.grid(row=0, column=1, padx=3, pady=3)
@@ -59,14 +64,14 @@ class Interface():
 
         # masse
         param_m = Frame(param)
-        label_m = Label(param_m, text='Masse du wagon (kg)',
+        label_m = Label(param_m, text='Masse des wagons (kg)',
                         width=25, height=1)
         entry_m = Entry(param_m, textvariable=m, width=5)
         scale_m = Scale(param_m, from_=0, to=100, showvalue=False, variable=m,
                         tickinterval=25, orient=HORIZONTAL, width=10)
         # vitesse
         param_F = Frame(param)
-        label_F = Label(param_F, text='Force des treuils (N)',
+        label_F = Label(param_F, text='Force des propulseurs (N)',
                         width=25, height=1)
         entry_F = Entry(param_F, textvariable=f, width=5)
         scale_F = Scale(param_F, from_=0, to=100, showvalue=False, variable=f,
