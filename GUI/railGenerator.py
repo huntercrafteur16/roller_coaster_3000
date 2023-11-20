@@ -6,6 +6,9 @@ import pygame
 from Physique.rails import Rail
 from geomdl import BSpline
 
+import tkinter as tk
+from tkinter import filedialog
+
 
 class Config():
     def __init__(self):
@@ -159,6 +162,7 @@ class Canvas():
         self.pull_type_button = ((7*width/8, height - 150, 50, 20))
         self.prop_type_button = ((7*width/8, height - 100, 50, 20))
         self.brake_type_button = ((7*width/8, height - 50, 50, 20))
+        self.save_open_button = ((9*width/8, height - 10, 10, 10))
 
     def button_render(self):
         if self.cfg.edit_mode:
@@ -188,6 +192,13 @@ class Canvas():
                     'supprimer', False, (0, 0, 0))
                 self.screen.blit(
                     text_surface, (self.del_button[0], self.del_button[1]+20))
+
+                pygame.draw.rect(self.screen, self.cfg.bright,
+                                 self.save_open_button)
+                text_surface = self.my_font.render(
+                    'save/open', False, (0, 0, 0))
+                self.screen.blit(
+                    text_surface, (self.save_open_button[0], self.save_open_button[1]+20))
 
             if len(self.lineselection) == 2:
                 pygame.draw.rect(
@@ -345,6 +356,15 @@ class Canvas():
             if self.region(self.edit_button, x, y):
                 # self.physics = Rail()
                 self.cfg.edit_mode = True
+
+            elif self.region(self.save_open_button, x, y):
+                file_path = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[
+                    ("Text files", "*.txt"), ("All files", "*.*")])
+
+                if file_path:
+                    with open(file_path, 'w') as file:
+                        content = text.get("1.0", tk.END)
+                        file.write(content)
 
     def closest_point(self, x, y):
         closest_i = 0
