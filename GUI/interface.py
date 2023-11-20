@@ -1,14 +1,8 @@
 
-from ast import Call
-from tkinter import *
+from tkinter import E, N, X, Frame, Button, Tk, DoubleVar, BOTTOM, TOP, BOTH, IntVar, Entry, Scale, Label, HORIZONTAL, LEFT, Radiobutton
 # from GUI.graphiques import AnimatedGraph
-import time
-from typing import Callable
 
-import matplotlib.pyplot as plt
-from matplotlib.figure import Figure
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from GUI.musique import Musique
+from typing import Callable
 
 
 # On définit une classe "Interface" qui prend en argument deux dictionnaires,
@@ -16,6 +10,9 @@ from GUI.musique import Musique
 
 
 class Interface():
+    """
+    Classe interface pour l'affichage GUI
+    """
     play_pause_button_function: Callable
     start_reset_button_function: Callable
     apply_button_function: Callable
@@ -58,9 +55,6 @@ class Interface():
         # Boutons Start/Reset
         buttons = Frame(toolbar, bg="lightgray", height=100, padx=5)
         buttons.grid(row=0, column=0)
-
-        def doNothing():
-            pass
 
         self.start_reset = Button(buttons, command=self.start_reset_button_function, width=10, height=2,
                                   text='Start/Reset', fg='#30b000', activebackground='#30b000')
@@ -161,14 +155,22 @@ class Interface():
 
     # Donne la frame qui doit contenir un graphe et le choix de graphe associé
     def get_graph_frame(self):
+        "renvoie la frame où afficher le graphe dynamique"
         return (self.frame_graph, self.choice.get())
 
     # Donne la frame dans laquelle
     def get_pymunk_frame(self):
+        "retourne le frame contenant la simulation physique pymunk"
         return self.roller_coaster
 
     # Rend les valeurs choisies
     def get_param(self):
+        """renvoie les paramètres des boutons modifiant le comportement
+        - 'mass'
+        - 'force'
+        - 'nbr_wagon'
+        """
+
         return {'mass': self.applied_m, 'force': self.applied_f, 'nbr_wagon': self.applied_nbr_wagon}
 
     def render_GUI(self) -> bool:
