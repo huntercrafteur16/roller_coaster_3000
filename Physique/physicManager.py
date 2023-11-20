@@ -12,7 +12,7 @@ import pymunk.pygame_util
 import pygame
 from Physique.wagon import Wagon
 from Physique.rails import Rail
-from Physique.ClasseTrain import *
+from Physique.ClasseTrain import Train
 
 
 class physicManager(object):
@@ -67,12 +67,12 @@ class physicManager(object):
         self.time = 0
         self.pausedTime = 0
 
-    def createTrain(self):  # va être bientôt supprimée servait pour le premier MVP
-
-        self.wagon = Wagon(self._space, 5, 50, 30, (330, 130), 800)
+    # va être bientôt supprimée servait pour le premier MVP
+    def createTrain(self, mass=5, l=50, h=20, N=3):
+        self.wagon = Wagon(self._space, mass, l, h, (330, 130), 800)
         wagon_handler = self._space.add_collision_handler(2, 1)
         wagon_handler.pre_solve = self._onRailCollision
-        self.Train = Train(self._space, self.wagon, 3)
+        self.Train = Train(self._space, self.wagon, N)
 
     def getWagon(self):
         "retoure le wagon"
@@ -154,12 +154,12 @@ class physicManager(object):
 
     def _createSampleRail(self):
         self.rail = Rail()
-        self.rail.addPoint((50, 200), False)
-        self.rail.addPoint((250, 100), True)
-        self.rail.addPoint((450, 300), True)
-        self.rail.addPoint((600, 400), False)
-        self.rail.addPoint((800, 400), False)
-        self.rail.addPoint((1000, 300), False)
+        self.rail.addPoint((50, 200), "FREE")
+        self.rail.addPoint((250, 100), "FREE")
+        self.rail.addPoint((450, 300), "PROP")
+        self.rail.addPoint((600, 400), "FREE")
+        self.rail.addPoint((800, 400), "FREE")
+        self.rail.addPoint((1000, 300), "FREE")
 
         self.rail.renderRail(self._space)
 
@@ -190,10 +190,14 @@ class physicManager(object):
         self.isPaused = False
         self.time = self.pausedTime
 
-    def reinit(self):
-        self._clear_screen()
+    def reinit(self, param=None):
+
         self._space = pymunk.Space()
-        self.createTrain()
+        if param is None:
+            self.createTrain()
+        else:
+            self.createTrain(param["mass"], 50,
+                             20, param["nbr_wagon"])
         self._createSampleRail()
 
         # réglages autres
@@ -202,3 +206,4 @@ class physicManager(object):
         self.isPaused = True
         self.time = 0
         self.pausedTime = 0
+        self._screen.fill(pygame.Color("white"))
