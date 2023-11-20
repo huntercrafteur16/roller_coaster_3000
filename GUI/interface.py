@@ -1,7 +1,7 @@
 
-from tkinter import E, N, X, Frame, Button, Tk, DoubleVar, BOTTOM, TOP, BOTH, IntVar, Entry, Scale, Label, HORIZONTAL, LEFT, Radiobutton
+from tkinter import E, N, X, Frame, Button, Tk, DoubleVar, BOTTOM, TOP, BOTH, IntVar, Entry, Scale, Label, HORIZONTAL, LEFT, Radiobutton, StringVar
 # from GUI.graphiques import AnimatedGraph
-
+from tkinter import filedialog as fd
 from typing import Callable
 from functools import partial
 import matplotlib.pyplot as plt
@@ -21,11 +21,15 @@ class Interface():
     play_pause_button_function: Callable
     start_reset_button_function: Callable
     apply_button_function: Callable
+    open_file_function: Callable
 
     isRunning: bool
 
     def __init__(self, button_functions: dict):
-
+        self.start_reset_button_function = button_functions["start_reset"]
+        self.play_pause_button_function = button_functions["play_pause"]
+        self.apply_button_function = button_functions["apply"]
+        self.open_file_function = button_functions["open"]
         # dimensions de la fenetre pymunk en px
         roller_coaster_width = 1600
         roller_coaster_height = 550
@@ -39,13 +43,11 @@ class Interface():
         simu = Frame(self.root, borderwidth=5, bg="white")
         self.simu = simu
         graphbar = Frame(self.root, bg="lightgray")
+
         toolbar.pack(side=TOP, expand=False, fill=X)
         simu.pack(expand=True, fill=BOTH)
         graphbar.pack(side=BOTTOM, fill=X, expand=False)
 
-        self.start_reset_button_function = button_functions["start_reset"]
-        self.play_pause_button_function = button_functions["play_pause"]
-        self.apply_button_function = button_functions["apply"]
         # Variables
         self.applied_m, self.applied_f, self.applied_nbr_wagon = 1, 10, 3
         m, f, nbr_wagon = DoubleVar(value=1), DoubleVar(
@@ -58,6 +60,7 @@ class Interface():
             self.applied_nbr_wagon = int(nbr_wagon.get())
             self.apply_button_function()
         # Boutons Start/Reset
+
         buttons = Frame(toolbar, bg="lightgray", height=100, padx=5)
         buttons.grid(row=0, column=0)
 
@@ -67,6 +70,9 @@ class Interface():
                                  text='Play/Pause', fg='#0080ff', activebackground='#0080ff')
         self.start_reset.grid(row=0, column=0, padx=3, pady=3)
         self.play_pause.grid(row=0, column=1, padx=3, pady=3)
+        open_filebutton = Button(buttons, command=self.open_file_function, width=10, height=2,
+                                 text='ouvrir le tracé', fg='#30b000', activebackground='#30b000')
+        open_filebutton.grid(row=0, column=2, padx=3, pady=3)
 
         # Paramètres
         param = Frame(toolbar, bg="lightgray", width=200, padx=5, pady=5)
@@ -120,8 +126,7 @@ class Interface():
             simu, bg='white', height=roller_coaster_height, width=roller_coaster_width)
         self.frame_graph = [Frame(graphbar, bg='blue', width=100, height=50),
                             Frame(graphbar, bg='blue', width=100, height=50),
-                            Frame(graphbar, bg='blue', width=100, height=50)] 
-        self.frame_graph[0].pack()
+                            Frame(graphbar, bg='blue', width=100, height=50)]
         self.roller_coaster.grid(
             row=1, column=1, rowspan=3, columnspan=3, sticky=N)
 
@@ -131,7 +136,7 @@ class Interface():
         graph_choice = Frame(graphbar, height=80)
         graph_choice.pack(side=LEFT, expand=False, padx=5, pady=5)
 
-        self.choice = IntVar(value=0)
+        self.choice = StringVar(value='none')
         label_graph_choice = Label(
             graph_choice, text="Choix du graphe à afficher", height=2)
         label_graph_choice.grid(row=0, column=0, padx=5, pady=5)
@@ -139,34 +144,39 @@ class Interface():
         Radiobuttons = Frame(graph_choice, borderwidth=5)
         Radiobuttons.grid(row=1, column=0)
 
-        None_button = Radiobutton(Radiobuttons, variable=self.choice, value='none',
-                    height=1)
-        None_button.grid(row=1, column=1, sticky=E)
+        self.None_button = Radiobutton(Radiobuttons, variable=self.choice, value='none',
+                                       height=1)
+        self.None_button.grid(row=1, column=1, sticky=E)
         Label(Radiobuttons, text='Aucun graphe', width=15,
               height=1).grid(row=1, column=0, sticky=E)
 
-        Speeds_button = Radiobutton(Radiobuttons, variable=self.choice, value='speeds',
-                    height=1)
-        Speeds_button.grid(row=2, column=1, sticky=E)
+        self.Speeds_button = Radiobutton(Radiobuttons, variable=self.choice, value='vitesse',
+                                         height=1)
+        self.Speeds_button.grid(row=2, column=1, sticky=E)
         Label(Radiobuttons, text='Vitesse(t)',
               width=15, height=1).grid(row=2, column=0, sticky=E)
 
-        Accels_button = Radiobutton(Radiobuttons, variable=self.choice, value='accels',
-                    height=1)
-        Accels_button.grid(row=3, column=1, sticky=E)
+        self.Accels_button = Radiobutton(Radiobuttons, variable=self.choice, value='acceleration',
+                                         height=1)
+        self.Accels_button.grid(row=3, column=1, sticky=E)
         Label(Radiobuttons, text='Accélération(t)',
               width=15, height=1).grid(row=3, column=0, sticky=E)
 
-        self.t_graph = DoubleVar(value=10)
-        Label(Radiobuttons, text='Durée de mesure (s): ', width=15,
-              height=1).grid(row=4, column=0, sticky=E)
-        Entry(Radiobuttons, textvariable=self.t_graph, width=4).grid(
-            row=4, column=1, sticky=E)
+        self.Energie_button = Radiobutton(Radiobuttons, variable=self.choice, value='energie',
+                                          height=1)
+        self.Energie_button.grid(row=4, column=1, sticky=E)
+        Label(Radiobuttons, text='Énergie mécanique(t)',
+              width=15, height=1).grid(row=4, column=0, sticky=E)
 
     # Donne la frame qui doit contenir un graphe et le choix de graphe associé
-    def get_graph_frame(self,name):
-        if name
-        return (self.frame_graph, self.choice.get())
+
+    def get_graph_frame(self, name):
+        if name == "vitesse":
+            return self.frame_graph[0]
+        elif name == "acceleration":
+            return self.frame_graph[1]
+        else:
+            return self.frame_graph[2]
 
     # Donne la frame dans laquelle
     def get_pymunk_frame(self):
