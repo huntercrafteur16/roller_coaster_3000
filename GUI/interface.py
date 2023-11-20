@@ -4,7 +4,7 @@ from tkinter import *
 # from GUI.graphiques import AnimatedGraph
 import time
 from typing import Callable
-
+from functools import partial
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
@@ -61,7 +61,7 @@ class Interface():
 
         def doNothing():
             pass
-
+        
         self.start_reset = Button(buttons, command=self.start_reset_button_function, width=10, height=2,
                                   text='Start/Reset', fg='#30b000', activebackground='#30b000')
         self.play_pause = Button(buttons, command=self.play_pause_button_function, width=10, height=2,
@@ -119,8 +119,10 @@ class Interface():
         # A l'intérieur de simu : roller coaster et graphe
         self.roller_coaster = Frame(
             simu, bg='white', height=roller_coaster_height, width=roller_coaster_width)
-        self.frame_graph = Frame(graphbar, bg='blue', width=100, height=50)
-        self.frame_graph.pack()
+        self.frame_graph = [Frame(graphbar, bg='blue', width=100, height=50),
+                            Frame(graphbar, bg='blue', width=100, height=50),
+                            Frame(graphbar, bg='blue', width=100, height=50)] 
+        self.frame_graph[0].pack()
         self.roller_coaster.grid(
             row=1, column=1, rowspan=3, columnspan=3, sticky=N)
 
@@ -138,18 +140,21 @@ class Interface():
         Radiobuttons = Frame(graph_choice, borderwidth=5)
         Radiobuttons.grid(row=1, column=0)
 
-        Radiobutton(Radiobuttons, variable=self.choice, value='none',
-                    height=1).grid(row=1, column=1, sticky=E)
+        None_button = Radiobutton(Radiobuttons, variable=self.choice, value='none',
+                    height=1)
+        None_button.grid(row=1, column=1, sticky=E)
         Label(Radiobuttons, text='Aucun graphe', width=15,
               height=1).grid(row=1, column=0, sticky=E)
 
-        Radiobutton(Radiobuttons, variable=self.choice, value='speeds',
-                    height=1).grid(row=2, column=1, sticky=E)
+        Speeds_button = Radiobutton(Radiobuttons, variable=self.choice, value='speeds',
+                    height=1)
+        Speeds_button.grid(row=2, column=1, sticky=E)
         Label(Radiobuttons, text='Vitesse(t)',
               width=15, height=1).grid(row=2, column=0, sticky=E)
 
-        Radiobutton(Radiobuttons, variable=self.choice, value='accels',
-                    height=1).grid(row=3, column=1, sticky=E)
+        Accels_button = Radiobutton(Radiobuttons, variable=self.choice, value='accels',
+                    height=1)
+        Accels_button.grid(row=3, column=1, sticky=E)
         Label(Radiobuttons, text='Accélération(t)',
               width=15, height=1).grid(row=3, column=0, sticky=E)
 
@@ -160,7 +165,8 @@ class Interface():
             row=4, column=1, sticky=E)
 
     # Donne la frame qui doit contenir un graphe et le choix de graphe associé
-    def get_graph_frame(self):
+    def get_graph_frame(self,name):
+        if name
         return (self.frame_graph, self.choice.get())
 
     # Donne la frame dans laquelle

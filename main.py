@@ -50,10 +50,11 @@ manager = physicManager(interface.get_pymunk_frame().winfo_width(),
 
 # graphe de représentation de vitesse
 vitesse_graph = AnimatedGraph("vitesse")
+acceleration_graph = AnimatedGraph("accéleration")
 
-graphs = [vitesse_graph]
+graphs = [vitesse_graph,acceleration_graph]
 # on le connecte à la frame tkinter voulue
-vitesse_graph.attach_to_frame(interface.get_graph_frame()[0])
+vitesse_graph.attach_to_frame(interface.get_graph_frame("vitesse")[0])
 
 
 manager.play()
