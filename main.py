@@ -34,7 +34,7 @@ def open_file():
 
     filename = fd.askopenfile()
 
-    manager.import_rails_from_file(filename.name, 50)
+    manager.import_rails_from_file(filename.name)
 
 
 # dictionnaire qui connecte les fonctions des boutons de l'affichade tkinter
@@ -63,12 +63,11 @@ dyn_graphs.add_subplot("accel")
 dyn_graphs.add_subplot("energie")
 '''
 
-manager.play()
 cont = True  # continuer l'exécution du programme
 
 while cont:
     dyn_graphs.update_data(manager.getTime(), [abs(
-        manager.getWagon().get_chassis_velocity())])
+        manager.getWagon().get_chassis_velocity()[0])])
 
     GUI_cont = interface.render_GUI()
     phys_cont = manager.process()

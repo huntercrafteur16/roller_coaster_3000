@@ -66,7 +66,7 @@ class Rail():
         railseg = pymunk.Segment(space.static_body, c_deb, c_fin, self.width)
         railseg.color = Rail.color_brake_rail
         railseg.elasticity = 0
-        railseg.collision_type = 1  # la collision d'un rail brake sera 2
+        railseg.collision_type = 3  # la collision d'un rail brake sera 3
         self.segments.append(railseg)
         space.add(railseg)
 
@@ -74,7 +74,7 @@ class Rail():
         railseg = pymunk.Segment(space.static_body, c_deb, c_fin, self.width)
         railseg.color = Rail.color_pull_rail
         railseg.elasticity = 0
-        railseg.collision_type = 1  # la collision d'un rail  tractant sera 3
+        railseg.collision_type = 2  # la collision d'un rail  tractant sera 2
         self.segments.append(railseg)
         space.add(railseg)
 
@@ -84,6 +84,7 @@ class Rail():
         railseg = pymunk.Segment(space.static_body, premier_point, (
             premier_point[0]-1.5*L*nb_wagon, premier_point[1]), self.width)
         railseg.elasticity = 0
+        railseg.collision_type = 1
         space.add(railseg)
 
     def renderRail(self, space, L, nb_wagon):
@@ -98,9 +99,9 @@ class Rail():
         self.add_premier_rail(space, L, nb_wagon)
 
         for i, p in enumerate(self.data_points[:-1]):
-            print("ok", p[2], "ok")
+
             if p[2] == "FREE":
-                print("yoyo")
+
                 self._addFreeRail(
                     self.data_points[i][:2], self.data_points[i+1][:2], space)
             if p[2] == "PROP":

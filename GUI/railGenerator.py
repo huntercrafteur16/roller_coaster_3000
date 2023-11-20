@@ -226,7 +226,7 @@ class Canvas():
                     if self.count >= 3:
                         self.draw(self.ctrl_points)
             elif self.region(self.save_open_button, x, y):
-                print("souvegarde")
+
                 self.save_file()
 
             elif len(self.lineselection) == 2:
@@ -235,28 +235,24 @@ class Canvas():
                     can_add = False
                     for point in self.maindata[self.lineselection[0]:(self.lineselection[1]+1)]:
                         point[1] = "FREE"
-                    print("FREE")
 
                 elif self.region(self.brake_type_button, x, y):
                     self.selected = None
                     can_add = False
                     for point in self.maindata[self.lineselection[0]:(self.lineselection[1]+1)]:
                         point[1] = "BRAKE"
-                    print("BRAKE")
 
                 elif self.region(self.prop_type_button, x, y):
                     self.selected = None
                     can_add = False
                     for point in self.maindata[self.lineselection[0]:(self.lineselection[1]+1)]:
                         point[1] = "PROP"
-                    print("PROP")
 
                 elif self.region(self.pull_type_button, x, y):
                     self.selected = None
                     can_add = False
                     for point in self.maindata[self.lineselection[0]:(self.lineselection[1]+1)]:
                         point[1] = "PULL"
-                    print("PULL")
 
             elif self.count:
                 for i, points in enumerate(self.ctrl_points):

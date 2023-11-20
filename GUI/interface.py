@@ -31,7 +31,7 @@ class Interface():
         self.apply_button_function = button_functions["apply"]
         self.open_file_function = button_functions["open"]
         # dimensions de la fenetre pymunk en px
-        roller_coaster_width = 1600
+        roller_coaster_width = 1800
         roller_coaster_height = 550
         # Fenêtre principale
         self.root = Tk()

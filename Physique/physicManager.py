@@ -22,12 +22,15 @@ class physicManager(object):
     update_func: Callable  # fonction qui sera appelée à chaque boucle
     isPaused: bool
     time: int  # temps de la simulation en millisecondes
+    wagon_height = 20
+    wagon_length = 35
 
     def __init__(self, width, height, root=None, frame=None, gravity=980, fps=60) -> None:
         self.width = width
         self.height = height
         self.frame = frame
         self.gravity = gravity
+        self.rail = None  # type: ignore
 
         # code pour contenir la fenetre dans la frame tkinter indiquée #
         if frame is not None:
@@ -40,7 +43,7 @@ class physicManager(object):
         # Réglage des paramètres temporels
         self._fps = fps
         self._dt = 1.0 / fps
-        self._physics_steps_per_frame = 10
+        self._physics_steps_per_frame = 1000
 
         # instanciation et réglage des paramètres physiques
 
@@ -64,13 +67,28 @@ class physicManager(object):
         self.pausedTime = 0
         self.reinit()
 
-    def createTrain(self, mass=5, l=50, h=20):
+    def createTrain(self, startpos: tuple[float, float], mass=5):
         """
         Crée le premier wagon et le reste du train
         """
-        self.wagon = Wagon(self._space, mass, l, h, (330, 130), 800)
-        wagon_handler = self._space.add_collision_handler(2, 1)
-        wagon_handler.pre_solve = self._onRailCollision
+        l = physicManager.wagon_length
+        h = physicManager.wagon_height
+        self.wagon = Wagon(self._space, mass, l, h, startpos, 8000, True)
+        wagon_handler_prop = self._space.add_collision_handler(4, 1)
+        wagon_handler_prop.pre_solve = self._on_prop_rail_Collision
+
+        wagon_handler_prop = self._space.add_collision_handler(5, 1)
+        wagon_handler_prop.pre_solve = self._on_prop_rail_Collision
+
+        wagon_handler_pull = self._space.add_collision_handler(5, 2)
+        wagon_handler_pull.pre_solve = self._on_pull_rail_Collision
+
+        wagon_handler_brake = self._space.add_collision_handler(4, 3)
+        wagon_handler_brake.pre_solve = self._on_brake_rail_Collision
+
+        wagon_handler_brake = self._space.add_collision_handler(5, 3)
+        wagon_handler_brake.pre_solve = self._on_brake_rail_Collision
+
         self.Train = Train(self._space, self.wagon, self.N)
 
     def getWagon(self):
@@ -85,6 +103,15 @@ class physicManager(object):
         # on court circuit le process si on pause le temps
         if self.isPaused:
             self._clock.tick_busy_loop(self._fps)
+            self._clear_screen()
+            self._draw_objects()
+
+        # fonction externe envoyée lors de l'exécution de process
+            self.update_func()
+
+        # actualisation du rendu pygame
+
+            pygame.display.flip()
             return True
 
         # frames de simulation physique pour 1 frame d'affichage (physics oversampling)
@@ -102,10 +129,8 @@ class physicManager(object):
         self.update_func()
 
         # actualisation du rendu pygame
-        try:
-            pygame.display.flip()
-        except:
-            pass
+
+        pygame.display.flip()
 
         # On pause la simulation selon les fps voulus
         self.time += self._clock.tick_busy_loop(self._fps)
@@ -126,9 +151,6 @@ class physicManager(object):
                 return "QUIT"
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_p:
                 pygame.image.save(self._screen, "bouncing_balls.png")
-            elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-                self._pull_wagon(self.wagon)
-                return "NOTHING"
         return "NOTHING"
 
     def _clear_screen(self) -> None:
@@ -151,26 +173,30 @@ class physicManager(object):
         """
         self._space.debug_draw(self._draw_options)
 
-    def _createSampleRail(self):
-        self.rail = Rail()
-        self.rail.addPoint((50, 200), "FREE")
-        self.rail.addPoint((250, 100), "FREE")
-        self.rail.addPoint((450, 300), "PROP")
-        self.rail.addPoint((600, 400), "FREE")
-        self.rail.addPoint((800, 400), "PULL")
-        self.rail.addPoint((1000, 300), "FREE")
-        self.rail.renderRail(self._space, 50, 3)  # TODO à modifier
+    def _prop_loco(self, force):
+        """exerce la force de traction sur la locomotive"""
 
-    def _pull_wagon(self, wagon: Wagon):
-        """exerce la force de traction au wagon"""
-        wagon.get_chassis_body().apply_force_at_local_point((1000, 0), (0, 0))
+        self.wagon.get_chassis_body().apply_force_at_local_point((force, 0))
+        # body.apply_force_at_local_point((force, 0), (0, 0))
 
-    def _pull_body(self, body: pymunk.Body):
-        """exerce la force de traction à un body"""
-        body.apply_force_at_local_point((10000, 0), (0, 0))
+    def _pull_loco(self, speed_cons, K=3000):
+        cur_speed = self.wagon.get_chassis_body(
+        ).velocity.rotated(-self.wagon.get_chassis_body().angle)
 
-    def _onRailCollision(self, arbiter, space, data):
-        self._pull_body(arbiter.shapes[0].body)
+        self._prop_loco((speed_cons-cur_speed[0])*K)
+
+    def _on_brake_rail_Collision(self, arbiter, space, data):
+
+        self._pull_loco(0, 200)
+        return True
+
+    def _on_prop_rail_Collision(self, arbiter, space, data):
+        self._prop_loco(6000)
+        return True
+
+    def _on_pull_rail_Collision(self, arbiter, space, data):
+        self._pull_loco(200)
+
         return True
 
     def getTime(self) -> int:
@@ -195,14 +221,24 @@ class physicManager(object):
 
         self._space = pymunk.Space()
         self._space.gravity = (0.0, self.gravity)
+        if self.rail:
+            startpos = (self.rail.data_points[0]
+                        [0], self.rail.data_points[0][1]-20)
+            self.rail.renderRail(
+                self._space, physicManager.wagon_length, self.N)
+
+        else:
+            startpos = (0, 0)
+
         if param is None:
             self.N = 3
-            self.createTrain()
+            self.createTrain(startpos)
         else:
             self.N = param["nbr_wagon"]
 
-            self.createTrain(param["mass"], 50,
-                             20)
+            self.createTrain(startpos, param["mass"])
+
+        self.process()
         # self._createSampleRail()
 
         # réglages autres
@@ -213,7 +249,8 @@ class physicManager(object):
         self.pausedTime = 0
         self._screen.fill(pygame.Color("white"))
 
-    def import_rails_from_file(self, chemin: str, L: float):
+    def import_rails_from_file(self, chemin: str):
+        L = physicManager.wagon_length
         """crée un rail à partir d'un fichier"""
         file = open(chemin, "r")
         lines = file.readlines()

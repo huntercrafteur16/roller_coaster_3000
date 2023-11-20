@@ -15,19 +15,15 @@ class Wagon:
        Example: wagon(space, 5, 100, 50, (300, 150)) will add a wagon to space"""
 
     def __init__(self, space: pymunk.Space, Mass: float, L: float, h: float, position_init: tuple,
-                 tension_ressort=500, StartingLine=False):
+                 tension_ressort=8000, loco=False, StartingLine=False):
 
         assert L >= 20, 'la longueur minimale est 20'
         assert h <= L, 'la hauteur doit être inférieure à la largeur'
-
-        # creation faculatative d'une ligne de départ sous le wagon
-
+        self.is_loco = loco
+        # repartition des masses
         if StartingLine:
             Start_line(space, (position_init[0]-(L/2+10)-50, position_init[1]+50),
                        (position_init[0]+L/2+10+50, position_init[1]+50))
-
-        # repartition des masses
-
         Mass_roues, Mass_chassis = (1/3)*Mass, (2/3)*Mass
 
         # Ajout des objets
@@ -42,10 +38,15 @@ class Wagon:
         v7 = (+L/2, h/2)
 
         chassis = Poly(space, p, vs, Mass_chassis, L, h)
-        wheel1 = Circle(space, p+v2, Mass_roues/4, 2, L/6)
-        wheel2 = Circle(space, p+v3,  Mass_roues/4, 2, L/6)
+
         wheel3 = Circle(space, p+v4, Mass_roues/4, 0, L/6)
         wheel4 = Circle(space, p+v6, Mass_roues/4, 0, L/6)
+        if self.is_loco:
+            wheel1 = Circle(space, p+v2, Mass_roues/4, 5, L/6)
+            wheel2 = Circle(space, p+v3,  Mass_roues/4, 5, L/6)
+        else:
+            wheel1 = Circle(space, p+v2, Mass_roues/4, 4, L/6)
+            wheel2 = Circle(space, p+v3,  Mass_roues/4, 4, L/6)
 
         # Ajout des liaisons
 
@@ -88,7 +89,8 @@ class Wagon:
 
     def get_chassis_velocity(self):
         """renvoie la vitesse de self"""
-        return self.c.velocity
+        return self.get_chassis_body(
+        ).velocity.rotated(-self.get_chassis_body().angle)
 
     def get_kinetic(self):
         """renvoie l'energie cinétique de self"""
