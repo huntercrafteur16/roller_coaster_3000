@@ -6,6 +6,9 @@ import pygame
 from Physique.rails import Rail
 from geomdl import BSpline
 
+import tkinter as tk
+from tkinter import filedialog
+
 
 class Config():
     def __init__(self):
@@ -155,7 +158,7 @@ class Canvas():
         self.sel_button = (3*width/8, height - 50, dl, dh)
         self.hide_button = (4*width/8, height - 50, dl, dh)
         self.edit_button = (5*width/8, height - 50, 50, 20)
-        self.confirm_button = (6*width/8, height - 50, 50, 20)
+        self.save_open_button = (6*width/8, height - 50, 50, 20)
         self.free_type_button = ((7*width/8, height - 200, 50, 20))
         self.pull_type_button = ((7*width/8, height - 150, 50, 20))
         self.prop_type_button = ((7*width/8, height - 100, 50, 20))
@@ -224,11 +227,13 @@ class Canvas():
                 'montrer/cacher', False, (0, 0, 0))
             self.screen.blit(
                 text_surface, (self.hide_button[0], self.hide_button[1]+20))
-            pygame.draw.rect(self.screen, self.cfg.dark, self.confirm_button)
+
+            pygame.draw.rect(self.screen, self.cfg.dark, self.save_open_button)
             text_surface = self.my_font.render(
-                'valider', False, (0, 0, 0))
+                'enregistrer', False, (0, 0, 0))
             self.screen.blit(
-                text_surface, (self.confirm_button[0], self.confirm_button[1]+20))
+                text_surface, (self.save_open_button[0], self.save_open_button[1]+20))
+
         else:
             pygame.draw.rect(self.screen, self.cfg.dark, self.edit_button)
 
@@ -382,6 +387,23 @@ class Canvas():
                     content = "\n".join(
                         [f"{point[0]},{point[1]}" for point in self.ctrl_points])
                     file.write(content)
+
+            elif self.region(self.save_open_button, x, y):
+                file_path = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[
+                    ("Text files", "*.txt"), ("All files", "*.*")])
+
+                if file_path:
+                    with open(file_path, 'w') as file:
+                        content = text.get("1.0", tk.END)
+                        file.write(content)
+                root = tk.Tk()
+                root.title("Save File Example")
+                text = tk.Text(root, wrap="word")
+                text.pack(expand=True, fill="both")
+                save_button = tk.Button(
+                    root, text="Save File", command=save_file)
+                save_button.pack()
+                root.mainloop()
 
     def closest_point(self, x, y):
         closest_i = 0
