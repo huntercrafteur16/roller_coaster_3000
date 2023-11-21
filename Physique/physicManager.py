@@ -57,6 +57,7 @@ class physicManager(object):
         self._draw_options = pymunk.pygame_util.DrawOptions(self._screen)
         self._draw_options.constraint_color = (255, 255, 255, 255)
         self._draw_options.flags ^= pymunk.pygame_util.DrawOptions.DRAW_CONSTRAINTS
+        self._draw_options.flags ^= pymunk.pygame_util.DrawOptions.DRAW_COLLISION_POINTS
 
         # scénario test
         pygame.display.init()

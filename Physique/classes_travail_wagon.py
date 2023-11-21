@@ -50,6 +50,7 @@ class Circle:
         shape.color = (175, 175, 175, 0)
         shape.shape_outline_color = (0, 0, 0, 0)
         self.shape = shape
+        shape.filter = pymunk.ShapeFilter(group=1)
         space.add(self.body, shape)
 
 
