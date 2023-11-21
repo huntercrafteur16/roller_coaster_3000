@@ -16,7 +16,7 @@ class Wagon:
 
     def __init__(self, space: pymunk.Space, Mass: float, L: float, h: float, position_init: tuple,
                  tension_ressort=8000, loco=False, StartingLine=False):
-
+        self.gravity = space.gravity
         assert L >= 20, 'la longueur minimale est 20'
         assert h <= L, 'la hauteur doit être inférieure à la largeur'
         self.is_loco = loco
@@ -96,9 +96,9 @@ class Wagon:
         """renvoie l'energie cinétique de self"""
         return (0.5*self.m*(self.get_chassis_velocity()[0])**2)
 
-    def get_potential(self):
+    def get_potential(self, ref_point=600):
         """renvoie l'energie potentielle de self"""
-        return self.m*800*(600-self.c.position[1])
+        return self.m*self.gravity[1]*(ref_point-self.c.position[1])
 
     def get_total_energy(self):
         """renvoie l'energie mécanique de self"""

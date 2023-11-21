@@ -5,19 +5,18 @@ from GUI.graphiques import AnimatedGraph, DynamicGraph
 from Physique.physicManager import physicManager
 
 global manager
-global graphs
+global dyn_graphs
 global interface
 manager: physicManager
-graphs: list[AnimatedGraph]
+dyn_graphs: DynamicGraph
 
 
 def reset_sim():
+    global dyn_graphs
+    dyn_graphs.clear()
     global manager
-    global graphs
     manager.reinit()
     manager.play()
-    for graph in graphs:
-        graph.reset()
 
 
 def play_pause_sim():
@@ -28,6 +27,8 @@ def play_pause_sim():
 
 
 def update_sim():
+    global dyn_graphs
+    dyn_graphs.clear()
     global interface
     param = interface.get_param()
     manager.reinit(param)

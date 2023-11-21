@@ -12,29 +12,6 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 # et on bidouille
 
 
-def graphe_vitesse(List_speeds, tf):
-    ion()  # début animation
-    # axe des temps discrétisé comme la liste des vitesses
-    t = linspace(0, tf, len(List_speeds))
-    # une reference a la courbe est mise dans line
-    line, = plot(t, List_speeds)
-
-    xlim(-0.5, tf+0.5)
-    xlabel('temps')
-    ylim(-1, 5)                          # mise en forme
-    ylabel('vitesse')
-    plt.grid()
-    plt.title("Graphe des vitesses")
-
-    for i in range(len(List_speeds)):
-        line.set_xdata(t[:i])  # actualise les valeurs de t
-        line.set_ydata(List_speeds[:i])  # actualise les valeurs de v
-        draw()  # force le dessin de la figure
-        pause(0.5)
-    ioff()
-    show()
-
-
 class AnimatedGraph():
     """
     Classe qui permet de réaliser des graphes à animer sous tkinter avec des données envoyées en temps réel
@@ -145,6 +122,20 @@ class DynamicGraph:
 
     def show(self):
         plt.show()
+
+    def clear(self):
+        try:
+            self.x_data = []  # Clear x-data
+
+            for i, line in enumerate(self.lines):
+                line.set_ydata([])  # Clear y-data for each line
+                self.y_datas[i] = []  # Clear y-data in the y_datas list
+
+            for ax in self.axes:
+                ax.relim()
+                ax.autoscale_view()
+        except:
+            pass
 
 
 # graphe_vitesse([0.02*x**4-x**2+3*x for x in linspace(0, 5, 50)], 5)
