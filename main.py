@@ -16,6 +16,8 @@ def reset_sim():
     global graphs
     manager.reinit()
     manager.play()
+    for graph in graphs:
+        graph.reset()
 
 
 def play_pause_sim():
