@@ -56,7 +56,7 @@ class AnimatedGraph():
         
         if self._ymax < data:
             self._ymax = data
-            ylim((self._ymin, abs(data)))
+            ylim((self._ymin, data))
         if self._ymin > data:
             self._ymin = data
             ylim((data, self._ymax))
