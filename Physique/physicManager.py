@@ -32,7 +32,8 @@ class physicManager(object):
         self.frame = frame
         self.gravity = gravity
         self.rail = None  # type: ignore
-
+        self.wagon_is_braking = False
+        self.simulation_ended = False
         # code pour contenir la fenetre dans la frame tkinter indiquée #
         if frame is not None:
             os.environ['SDL_WINDOWID'] = str(frame.winfo_id())
@@ -117,7 +118,9 @@ class physicManager(object):
 
             pygame.display.flip()
             return True
-
+        if self.simulation_ended:
+            print("end")
+            return False
         # frames de simulation physique pour 1 frame d'affichage (physics oversampling)
         for _ in range(self._physics_steps_per_frame):
             self._space.step(self._dt/self._physics_steps_per_frame)
@@ -193,6 +196,8 @@ class physicManager(object):
     def _on_brake_rail_Collision(self, arbiter, space, data):
 
         self._pull_loco(0, 200)
+        if self.getWagon().get_chassis_velocity()[0] < 2e-2:
+            self.simulation_ended = True
         return True
 
     def _on_drag_rail_Collision(self, arbiter, space, data):
@@ -257,6 +262,7 @@ class physicManager(object):
         # réglages autres
         # fonction qui sera exécutée après chaque actualisation
         self.update_func = lambda: None
+        self.simulation_ended = False
         self.isPaused = True
         self.time = 0
         self.pausedTime = 0
