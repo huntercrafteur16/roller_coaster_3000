@@ -70,8 +70,9 @@ dyn_graphs.add_subplot("energie")
 cont = True  # continuer l'exécution du programme
 
 while cont:
+    velocity = manager.getWagon().get_chassis_velocity()[0]
     dyn_graphs.update_data(manager.getTime(), [
-        manager.getWagon().get_chassis_velocity()[0]])
+        manager.get_length_from_pixel(velocity, 10)])
 
     GUI_cont = interface.render_GUI()
     phys_cont = manager.process()
