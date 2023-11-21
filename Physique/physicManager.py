@@ -4,6 +4,7 @@ Class physicManager qui gère la physique Pymunk
 -on peut effectuer scénario standart
 """
 # Python imports
+from logging import ERROR
 import os
 import platform
 from typing import Callable
@@ -96,7 +97,9 @@ class physicManager(object):
         self.Train = Train(self._space, self.wagon, self.N)
 
     def getWagon(self):
-        "retoure le wagon"
+        """
+        retoure le wagon
+        """
         return self.wagon
 
     def process(self) -> bool:
@@ -139,7 +142,8 @@ class physicManager(object):
         # On pause la simulation selon les fps voulus
         self.time += self._clock.tick_busy_loop(self._fps)
 
-        # pygame.display.set_caption("fps: " + str(self._clock.get_fps())) #affichage du nombre de fps sur le titre de la fenêtre
+        # pygame.display.set_caption("fps: " + str(self._clock.get_fps())) #affichage du nombre
+        #  de fps sur le titre de la fenêtre
         return True  # aucun problème ni arrêt
 
     def _process_events(self) -> str:
@@ -178,36 +182,50 @@ class physicManager(object):
         self._space.debug_draw(self._draw_options)
 
     def _prop_loco(self, force):
-        """exerce la force de traction sur la locomotive"""
-
+        """
+        exerce la force de traction sur la locomotive
+        """
         self.wagon.get_chassis_body().apply_force_at_local_point((force, 0))
         # body.apply_force_at_local_point((force, 0), (0, 0))
 
     def _pull_loco(self, speed_cons, K=3000):
-        """exerce la force de traction sur la locomotive"""
+        """
+        exerce la force de traction sur la locomotive permettant 
+        l'avancée a vitesse constante
+        """
+
         cur_speed = self.wagon.get_chassis_body(
         ).velocity.rotated(-self.wagon.get_chassis_body().angle)
 
         self._prop_loco((speed_cons-cur_speed[0])*K)
 
     def _on_brake_rail_Collision(self, arbiter, space, data):
-
+        """
+        définit l'action lorsqu'on rencontre un rail de type Brake
+        """
         self._pull_loco(0, 200)
         return True
 
     def _on_drag_rail_Collision(self, arbiter, space, data):
+        """définit les frotements quadratiques avec un coeficient arbitraire"""
         coef = 0.001
         vitesse = self.wagon.get_chassis_velocity()[0]
         signe = np.sign(vitesse)
         force = -signe*coef*vitesse**2
         self._prop_loco(force)
-        return (True)
+        return True
 
     def _on_prop_rail_Collision(self, arbiter, space, data):
+        """
+        définit l'action lorsqu'on rencontre un rail de type Propulsion
+        """
         self._prop_loco(6000)
         return True
 
     def _on_pull_rail_Collision(self, arbiter, space, data):
+        """
+        définit l'action lorsqu'on rencontre un rail de type Treuil
+        """
         self._pull_loco(200)
         return True
 
@@ -218,17 +236,23 @@ class physicManager(object):
         return self.time
 
     def pause(self) -> None:
-        """Pause le temps de la simulation"""
+        """
+        Pause le temps de la simulation
+        """
         self.isPaused = True
         self.pausedTime = self.getTime()
 
     def play(self) -> None:
-        """redémarre le temps de la simulation"""
+        """
+        redémarre le temps de la simulation
+        """
         self.isPaused = False
         self.time = self.pausedTime
 
     def reinit(self, param=None):
-        """reinitialise la simulation"""
+        """
+        reinitialise la simulation
+        """
         # self._createSampleRail()
 
         self._space = pymunk.Space()
@@ -263,7 +287,9 @@ class physicManager(object):
         self._screen.fill(pygame.Color("white"))
 
     def import_rails_from_file(self, chemin: str):
-        """crée un rail à partir d'un fichier"""
+        """
+        crée un rail à partir d'un fichier
+        """
         L = physicManager.wagon_length
         with open(chemin, "r") as file:
             # file = open(chemin, "r")
@@ -277,7 +303,9 @@ class physicManager(object):
             self.rail.renderRail(self._space, L, self.N)
 
     def get_length_from_pixel(self, pixel, ratio):
-        'ratio est le nombre de pixel pour un mètre'
+        """
+        ratio est le nombre de pixel pour un mètre
+        """
         return pixel/ratio
 
     def get_pixel_from_length(self, length, ratio):
