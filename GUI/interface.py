@@ -1,6 +1,10 @@
+"""
+Module qui gère l'interface
+"""
 
 from pydoc import text
-from tkinter import E, N, X, Frame, Button, Text, Tk, DoubleVar, BOTTOM, TOP, BOTH, IntVar, Entry, Scale, Label, HORIZONTAL, LEFT, Radiobutton, StringVar
+from tkinter import E, N, X, Frame, Button, Text, Tk, DoubleVar, BOTTOM, TOP
+from tkinter import BOTH, IntVar, Entry, Scale, Label, HORIZONTAL, LEFT, Radiobutton, StringVar
 # from GUI.graphiques import AnimatedGraph
 from tkinter import filedialog as fd
 from typing import Callable
@@ -69,10 +73,12 @@ class Interface():
         buttons = Frame(toolbar, bg="lightgray", height=100, padx=5)
         buttons.grid(row=0, column=0)
 
-        self.start_reset = Button(buttons, command=self.start_reset_button_function, width=10, height=2,
-                                  text='Start/Reset', fg='#30b000', activebackground='#30b000')
-        self.play_pause = Button(buttons, command=self.play_pause_button_function, width=10, height=2,
-                                 text='Play/Pause', fg='#0080ff', activebackground='#0080ff')
+        self.start_reset = Button(buttons, command=self.start_reset_button_function,
+                                  width=10, height=2, text='Start/Reset',
+                                  fg='#30b000', activebackground='#30b000')
+        self.play_pause = Button(buttons, command=self.play_pause_button_function,
+                                 width=10, height=2, text='Play/Pause', fg='#0080ff',
+                                 activebackground='#0080ff')
         self.start_reset.grid(row=0, column=0, padx=3, pady=3)
         self.play_pause.grid(row=0, column=1, padx=3, pady=3)
         open_filebutton = Button(buttons, command=self.open_file_function, width=10, height=2,
@@ -107,8 +113,8 @@ class Interface():
                                 width=25, height=1)
         entry_nbr_wagon = Entry(
             param_nbr_wagon, textvariable=nbr_wagon, width=5)
-        scale_nbr_wagon = Scale(param_nbr_wagon, from_=0, to=10, showvalue=False, variable=nbr_wagon,
-                                tickinterval=2, orient=HORIZONTAL, width=10)
+        scale_nbr_wagon = Scale(param_nbr_wagon, from_=0, to=10, showvalue=False,
+                                variable=nbr_wagon, tickinterval=2, orient=HORIZONTAL, width=10)
 
         # On affiche tout
         label_m.grid(row=0, column=1, columnspan=2)
@@ -183,6 +189,7 @@ class Interface():
 
     # Donne la frame qui doit contenir un graphe et le choix de graphe associé
     def get_graph_frame(self):
+        """return self.graphbar"""
         return self.graphbar
 
     # Donne la frame dans laquelle
@@ -198,11 +205,14 @@ class Interface():
         - 'nbr_wagon'
         """
 
-        return {'mass': self.applied_m, 'force': self.applied_f, 'nbr_wagon': self.applied_nbr_wagon}
+        return {'mass': self.applied_m, 'force': self.applied_f,
+                'nbr_wagon': self.applied_nbr_wagon}
 
     def render_GUI(self) -> bool:
+        """met à jour l'interface"""
         self.root.update()
         return self.isRunning
 
     def killInterface(self):
+        """arrete l'interface """
         self.isRunning = False

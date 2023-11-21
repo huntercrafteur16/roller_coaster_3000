@@ -1,4 +1,6 @@
-"""Module gérant les classes animate graph et dynamic graph pour l'affichage des graphiques tkinter"""
+"""Module gérant les classes animate graph et dynamic graph pour l'affichage
+ des graphiques tkinter"""
+
 from tkinter import Frame
 import numpy as np
 from pylab import xlim, ylim, draw, ioff, show
@@ -11,7 +13,8 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 class AnimatedGraph():
     """
-    Classe qui permet de réaliser des graphes à animer sous tkinter avec des données envoyées en temps réel
+    Classe qui permet de réaliser des graphes à animer sous 
+    tkinter avec des données envoyées en temps réel
     """
 
     def __init__(self, title) -> None:
@@ -50,10 +53,12 @@ class AnimatedGraph():
         draw()
 
     def fixDisplay(self):
+        """fix the display"""
         ioff()
         show()
 
     def attach_to_frame(self, frame: Frame):
+        """attach figure to frame"""
         FigureCanvasTkAgg(
             self.fig, frame).get_tk_widget().pack()
 
@@ -93,8 +98,8 @@ class DynamicGraph:
     def add_subplot(self, title="New Plot"):
         "ajoute un nouveau subplot au plot principal"
         if len(self.axes) < 3:
-            ax = self.fig.add_subplot(1,
-                                      len(self.axes) + 1, len(self.axes) + 1, sharex=self.axes[0], title=title)
+            ax = self.fig.add_subplot(1, len(self.axes) + 1, len(self.axes)
+                                      + 1, sharex=self.axes[0], title=title)
             self.axes = np.append(self.axes, ax)
 
             self.plot_titles.append(title)
