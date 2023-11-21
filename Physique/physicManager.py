@@ -10,6 +10,7 @@ from typing import Callable
 import pymunk
 import pymunk.pygame_util
 import pygame
+import numpy as np
 from Physique.wagon import Wagon
 from Physique.rails import Rail
 from Physique.ClasseTrain import Train
@@ -89,6 +90,8 @@ class physicManager(object):
         wagon_handler_brake = self._space.add_collision_handler(5, 3)
         wagon_handler_brake.pre_solve = self._on_brake_rail_Collision
 
+        wagon_handler_drag = self._space.add_collision_handler(4, 0)
+        wagon_handler_drag.pre_solve = self._on_drag_rail_Collision
         self.Train = Train(self._space, self.wagon, self.N)
 
     def getWagon(self):
@@ -180,6 +183,7 @@ class physicManager(object):
         # body.apply_force_at_local_point((force, 0), (0, 0))
 
     def _pull_loco(self, speed_cons, K=3000):
+        """exerce la force de traction sur la locomotive"""
         cur_speed = self.wagon.get_chassis_body(
         ).velocity.rotated(-self.wagon.get_chassis_body().angle)
 
@@ -190,13 +194,20 @@ class physicManager(object):
         self._pull_loco(0, 200)
         return True
 
+    def _on_drag_rail_Collision(self, arbiter, space, data):
+        coef = 0.001
+        vitesse = self.wagon.get_chassis_velocity()[0]
+        signe = np.sign(vitesse)
+        force = -signe*coef*vitesse**2
+        self._prop_loco(force)
+        return (True)
+
     def _on_prop_rail_Collision(self, arbiter, space, data):
         self._prop_loco(6000)
         return True
 
     def _on_pull_rail_Collision(self, arbiter, space, data):
         self._pull_loco(200)
-
         return True
 
     def getTime(self) -> int:
@@ -250,8 +261,8 @@ class physicManager(object):
         self._screen.fill(pygame.Color("white"))
 
     def import_rails_from_file(self, chemin: str):
-        L = physicManager.wagon_length
         """crée un rail à partir d'un fichier"""
+        L = physicManager.wagon_length
         file = open(chemin, "r")
         lines = file.readlines()
         file.close()
