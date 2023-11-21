@@ -21,10 +21,10 @@ class Rail():
     segments: list[pymunk.Segment]
     # coordonnés des points et type de liaison
     data_points: list[tuple[int, int, str]]
-    color_free_rail = (125, 125, 125, 255)
-    color_pull_rail = (255, 255, 0, 255)
-    color_prop_rail = (255, 0, 255, 255)
-    color_brake_rail = (255, 0, 0, 255)
+    color_free_rail = (60, 60, 60, 255)
+    color_pull_rail = (250, 150, 0, 255)
+    color_prop_rail = (220, 220, 0, 255)
+    color_brake_rail = (250, 0, 0, 255)
 
     def __init__(self) -> None:
         self.data_points = []  # courbe qui sera lue du fichier enregistré

@@ -47,8 +47,8 @@ def open_file():
     """
     Donne le fichier à ouvrir à physicManager
     """
-    filename = fd.askopenfile()
-    manager.import_rails_from_file(filename.name)
+    filename = fd.askopenfilename()
+    manager.import_rails_from_file(filename)
     global dyn_graphs
     dyn_graphs.clear()
     global logger

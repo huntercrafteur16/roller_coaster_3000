@@ -1,12 +1,9 @@
 """
 Module permetant la création et sauvegarde dans un fichier d'un parcours
 """
-
 import sys
 import pygame
-from GUI.railGenerator import Canvas
-
-
+from GUI.rail_generator import Canvas
 if __name__ == "__main__":
     pygame.init()
     pygame.font.init()

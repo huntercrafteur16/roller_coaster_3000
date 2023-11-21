@@ -304,8 +304,9 @@ class physicManager(object):
             self.rail = Rail()
             for line in lines:
                 L_point = line.split(',')
-                point = (float(L_point[0]), float(L_point[1]))
-                self.rail.addPoint(point, L_point[2].strip())
+                if len(L_point) == 3:
+                    point = (float(L_point[0]), float(L_point[1]))
+                    self.rail.addPoint(point, L_point[2].strip())
             self.rail.renderRail(self._space, L, self.N)
 
     def get_length_from_pixel(self, pixel, ratio):
