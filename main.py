@@ -16,6 +16,9 @@ def reset_sim():
     global graphs
     manager.reinit()
     manager.play()
+    for graph in graphs:
+        graph.reset()
+    
 
 
 def play_pause_sim():
@@ -56,9 +59,12 @@ manager = physicManager(interface.get_pymunk_frame().winfo_width(),
                         interface.simu, interface.get_pymunk_frame())
 
 # graphe de représentation de vitesse
-
-dyn_graphs = DynamicGraph(interface.get_graph_frame(), plot_titles=["vitesse"])
+vitesse_graph = AnimatedGraph("Vitesse")
+graphs=[vitesse_graph]
+vitesse_graph.attach_to_frame(interface.get_graph_frame())
 '''
+dyn_graphs = DynamicGraph(interface.get_graph_frame(), plot_titles=["vitesse"])
+
 dyn_graphs.add_subplot("accel")
 
 dyn_graphs.add_subplot("energie")
@@ -67,8 +73,8 @@ dyn_graphs.add_subplot("energie")
 cont = True  # continuer l'exécution du programme
 
 while cont:
-    dyn_graphs.update_data(manager.getTime(), [abs(
-        manager.getWagon().get_chassis_velocity()[0])])
+    vitesse_graph.drawNext(manager.getTime(), 
+        manager.getWagon().get_chassis_velocity()[0])
 
     GUI_cont = interface.render_GUI()
     phys_cont = manager.process()
