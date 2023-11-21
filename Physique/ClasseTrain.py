@@ -28,6 +28,6 @@ class Train:
         for i in range(1, nb_wagon):
             self.liste_wagon.append(Wagon(space, wagon.m, wagon.L, wagon.h, (
                 self.liste_wagon[i-1].c.position[0] -
-                (4*(wagon.L)/3)-(wagon.L/3),
+                (4*(wagon.L)/3)-(wagon.L*(1/2)),
                 wagon.c.position[1]), wagon.tension, wagon.StartingLine))
             Lien(space, self.liste_wagon[i-1], self.liste_wagon[i])
