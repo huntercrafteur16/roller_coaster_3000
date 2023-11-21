@@ -37,6 +37,7 @@ class Interface():
         # Fenêtre principale
         self.root = Tk()
         self.root.title("Bienvenue dans le Roller Coaster 3000, visiteur !")
+        self.root.state('zoomed')
         self.isRunning = True
         self.root.protocol('WM_DELETE_WINDOW', self.killInterface)
         # Trois frames : barre d'outils, simulation, barre des graphes

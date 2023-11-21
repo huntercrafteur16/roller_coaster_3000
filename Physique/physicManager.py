@@ -151,9 +151,9 @@ class physicManager(object):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return "QUIT"
-            elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 return "QUIT"
-            elif event.type == pygame.KEYDOWN and event.key == pygame.K_p:
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_p:
                 pygame.image.save(self._screen, "bouncing_balls.png")
         return "NOTHING"
 
@@ -265,15 +265,16 @@ class physicManager(object):
     def import_rails_from_file(self, chemin: str):
         """crée un rail à partir d'un fichier"""
         L = physicManager.wagon_length
-        file = open(chemin, "r")
-        lines = file.readlines()
-        file.close()
-        self.rail = Rail()
-        for line in lines:
-            L_point = line.split(',')
-            point = (float(L_point[0]), float(L_point[1]))
-            self.rail.addPoint(point, L_point[2].strip())
-        self.rail.renderRail(self._space, L, self.N)
+        with open(chemin, "r") as file:
+            # file = open(chemin, "r")
+            lines = file.readlines()
+            file.close()
+            self.rail = Rail()
+            for line in lines:
+                L_point = line.split(',')
+                point = (float(L_point[0]), float(L_point[1]))
+                self.rail.addPoint(point, L_point[2].strip())
+            self.rail.renderRail(self._space, L, self.N)
 
     def get_length_from_pixel(self, pixel, ratio):
         'ratio est le nombre de pixel pour un mètre'

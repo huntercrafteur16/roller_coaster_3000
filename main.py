@@ -1,17 +1,15 @@
 """Fichier principal du programme"""
 from tkinter import filedialog as fd
 from GUI.interface import Interface
-from GUI.graphiques import AnimatedGraph, DynamicGraph
+from GUI.graphiques import DynamicGraph
 from Physique.physicManager import physicManager
 
-global manager
-global dyn_graphs
-global interface
 manager: physicManager
 dyn_graphs: DynamicGraph
 
 
 def reset_sim():
+    "dit à physicmanager de se réinitialiser et réinitialise les graphiques"
     global dyn_graphs
     dyn_graphs.clear()
     global manager
@@ -20,6 +18,7 @@ def reset_sim():
 
 
 def play_pause_sim():
+    "pause ou reactive physicmanger selon son état précédent "
     if manager.isPaused:
         manager.play()
     else:
@@ -27,6 +26,7 @@ def play_pause_sim():
 
 
 def update_sim():
+    "reinitialise physicmanager avec les nouveaux paramètres"
     global dyn_graphs
     dyn_graphs.clear()
     global interface
