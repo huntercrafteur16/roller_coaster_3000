@@ -261,3 +261,11 @@ class physicManager(object):
             point = (float(L_point[0]), float(L_point[1]))
             self.rail.addPoint(point, L_point[2].strip())
         self.rail.renderRail(self._space, L, self.N)
+
+    def get_length_from_pixel(self, pixel, ratio):
+        'ratio est le nombre de pixel pour un mètre'
+        return pixel/ratio
+
+    def get_pixel_from_length(self, length, ratio):
+        'ratio est le nombre de pixel pour un nombre'
+        return length*ratio
