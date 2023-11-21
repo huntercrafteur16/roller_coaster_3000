@@ -32,9 +32,9 @@ class Wagon:
         vs = [(-L/2, -h/2), (L/2, -h/2), (L/2, h/2),
               (-L/2, h/2), ((2*L/3), 0), ((-2*L/3), 0)]
         v2, v3 = vs[2], vs[3]
-        v4 = (-L/2, h+L)
+        v4 = (-L/2, h+L/6+10)
         v5 = (-L/2, h/2)
-        v6 = (L/2, h+L)
+        v6 = (L/2, h+L/6+10)
         v7 = (+L/2, h/2)
 
         chassis = Poly(space, p, vs, Mass_chassis, L, h)
@@ -60,9 +60,9 @@ class Wagon:
                      v7, (0, 0), L/6, tension_ressort, 60)
 
         GrooveJoint(space, chassis.body, wheel3.body,
-                    (-L/2, h/2), (-L/2, h/2+10), (0, 0))
+                    (-L/2, h/2), (-L/2, h/2+100), (0, 0))
         GrooveJoint(space, chassis.body, wheel4.body,
-                    (L/2, h/2), (L/2, h/2+10), (0, 0))
+                    (L/2, h/2), (L/2, h/2+100), (0, 0))
 
         # Ajout des attributs utiles
 
