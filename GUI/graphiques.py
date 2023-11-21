@@ -53,7 +53,7 @@ class AnimatedGraph():
 
     def drawNext(self, t, data) -> None:  # actualise les données du graphiques à l'instant t
         xlim((0, t))
-        
+
         if self._ymax < data:
             self._ymax = data
             ylim((self._ymin, data))
@@ -87,7 +87,8 @@ class DynamicGraph:
         self.nbr_frames_before_show = 100
         self.curr_frames_before_show = self.nbr_frames_before_show
         self.master = master
-        self.fig, self.axes = plt.subplots(num_subplots, 1, sharex=True)
+
+        self.fig, self.axes = plt.subplots(1, num_subplots, sharex=True)
         # Ensure self.axes is a numpy array even if num_subplots is 1
         if not isinstance(self.axes, np.ndarray):
             self.axes = np.array([self.axes])

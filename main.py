@@ -62,18 +62,15 @@ manager = physicManager(1800, 550,
 
 # graphe de représentation de vitesse
 
-dyn_graphs = DynamicGraph(interface.get_graph_frame(), plot_titles=["energie"])
-"""
-dyn_graphs.add_subplot("vitesse")
+dyn_graphs = DynamicGraph(interface.get_graph_frame(), 2,
+                          plot_titles=["energie", "vitesse"])
 
-dyn_graphs.add_subplot("energie")
-"""
 
 cont = True  # continuer l'exécution du programme
 
 while cont:
     dyn_graphs.update_data(manager.getTime(), [
-        manager.getWagon().get_total_energy()])
+        manager.getWagon().get_total_energy(), manager.getWagon().get_chassis_velocity()[0]])
 
     GUI_cont = interface.render_GUI()
     phys_cont = manager.process()

@@ -1,5 +1,6 @@
 
-from tkinter import E, N, X, Frame, Button, Tk, DoubleVar, BOTTOM, TOP, BOTH, IntVar, Entry, Scale, Label, HORIZONTAL, LEFT, Radiobutton, StringVar
+from pydoc import text
+from tkinter import E, N, X, Frame, Button, Text, Tk, DoubleVar, BOTTOM, TOP, BOTH, IntVar, Entry, Scale, Label, HORIZONTAL, LEFT, Radiobutton, StringVar
 # from GUI.graphiques import AnimatedGraph
 from tkinter import filedialog as fd
 from typing import Callable
@@ -42,20 +43,20 @@ class Interface():
         toolbar = Frame(self.root, bg="lightgray")
         simu = Frame(self.root, borderwidth=5, bg="white")
         self.simu = simu
-        graphbar = Frame(self.root, bg="lightgray")
+        self.graphbar = Frame(self.root, bg="lightgray")
 
         toolbar.pack(side=TOP, expand=False, fill=X)
         simu.pack(expand=True, fill=BOTH)
-        graphbar.pack(side=BOTTOM, fill=X, expand=True)
+        self.graphbar.pack(side=BOTTOM, fill=X, expand=True)
 
         # Variables
         self.applied_m, self.applied_f, self.applied_nbr_wagon = 1, 10, 3
         m, f, nbr_wagon = DoubleVar(value=1), DoubleVar(
             value=10),  IntVar(value=3)
-        
+
         # Musique
         self.music = Musique()
-        
+
         def apply_values():
             self.applied_m = float(m.get())
             self.applied_f = float(f.get())
@@ -127,16 +128,21 @@ class Interface():
         # A l'intérieur de simu : roller coaster et graphe
         self.roller_coaster = Frame(
             simu, bg='white', height=roller_coaster_height, width=roller_coaster_width)
-        self.frame_graph = Frame(graphbar, bg='blue', width=50, height=50)
+        self.frame_graph = Frame(
+            self.graphbar, width=1800, height=50)
+        Vitesse = Label(self.frame_graph, text="Vitesse", justify="center")
+        Vitesse.grid(row=0, column=1, sticky="nsew", padx=400)
 
-        self.frame_graph.pack()
+        Energie = Label(self.frame_graph, text="Energie", justify="center")
+        Energie.grid(row=0, column=0, sticky="nsew", padx=400)
+        self.frame_graph.pack(expand=1)
         self.roller_coaster.grid(
             row=1, column=1, rowspan=3, columnspan=3, sticky=N)
 
         # A l'intérieur de graphbar, choix des graphes.
-
+        """
         # Boutons radio pour voir ou non un des graphes proposés
-        graph_choice = Frame(graphbar, height=80)
+        graph_choice = Frame(self.graphbar, height=80)
         # graph_choice.pack(side=LEFT, expand=False, padx=5, pady=5)
 
         self.choice = StringVar(value='none')
@@ -144,6 +150,7 @@ class Interface():
             graph_choice, text="Choix du graphe à afficher", height=2)
         label_graph_choice.grid(row=0, column=0, padx=5, pady=5)
 
+        # graph_choice.grid(row=0, column=0)
         Radiobuttons = Frame(graph_choice, borderwidth=5)
         Radiobuttons.grid(row=1, column=0)
 
@@ -170,12 +177,12 @@ class Interface():
         self.Energie_button.grid(row=4, column=1, sticky=E)
         Label(Radiobuttons, text='Énergie mécanique(t)',
               width=15, height=1).grid(row=4, column=0, sticky=E)
-
+        """
     # fonction qui affiche ou non la frame en fonction de la valeur du radio button
 
     # Donne la frame qui doit contenir un graphe et le choix de graphe associé
     def get_graph_frame(self):
-        return self.frame_graph
+        return self.graphbar
 
     # Donne la frame dans laquelle
     def get_pymunk_frame(self):
