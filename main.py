@@ -77,7 +77,7 @@ cont = True  # continuer l'exécution du programme
 
 while cont:
     vitesse_graph.drawNext(manager.getTime(), 
-        manager.getWagon().get_chassis_velocity()[0])
+        manager.getWagon().get_chassis_acceleration()[0])
 
     GUI_cont = interface.render_GUI()
     phys_cont = manager.process()
