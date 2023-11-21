@@ -60,9 +60,9 @@ class Wagon:
                      v7, (0, 0), L/6, tension_ressort, 60)
 
         GrooveJoint(space, chassis.body, wheel3.body,
-                    (-L/2, h/2), (-L/2, h/2+100), (0, 0))
+                    (-L/2, h/2), (-L/2, h/2+10), (0, 0))
         GrooveJoint(space, chassis.body, wheel4.body,
-                    (L/2, h/2), (L/2, h/2+100), (0, 0))
+                    (L/2, h/2), (L/2, h/2+10), (0, 0))
 
         # Ajout des attributs utiles
 
@@ -110,7 +110,7 @@ class Wagon:
 
     def get_starting_position(self, pos_rail: tuple[float, float]):
         """renvoie la position à laquelle appeler le wagon en fonction de la position du rail"""
-        return (pos_rail[0], pos_rail[1]-(self.L/4))
+        return (pos_rail[0], pos_rail[1]-(self.L/3))
 
     def get_puissance(self):
         """renvoie la puissance lorsqu'il est tracté"""
