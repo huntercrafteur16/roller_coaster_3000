@@ -1,23 +1,30 @@
 """Fichier principal du programme"""
-from GUI.interface import Interface
-from GUI.graphiques import AnimatedGraph, DynamicGraph
-from Physique.physicManager import physicManager
 from tkinter import filedialog as fd
 
-global manager
-global graphs
-global interface
+from scipy.__config__ import show
+from GUI.interface import Interface
+from GUI.graphiques import DynamicGraph
+from Physique.physicManager import physicManager
+from dataLogger import dataLogger
+
 manager: physicManager
-graphs: list[AnimatedGraph]
+dyn_graphs: DynamicGraph
+logger: dataLogger
 
 
 def reset_sim():
+    "dit à physicmanager de se réinitialiser et réinitialise les graphiques"
+    global dyn_graphs
+    dyn_graphs.clear()
+    global logger
+    logger.reset()
     global manager
-    global graphs
     manager.reinit()
+    manager.play()
 
 
 def play_pause_sim():
+    "pause ou reactive physicmanger selon son état précédent "
     if manager.isPaused:
         manager.play()
     else:
@@ -25,16 +32,34 @@ def play_pause_sim():
 
 
 def update_sim():
+    "reinitialise physicmanager avec les nouveaux paramètres"
+    global dyn_graphs
+    dyn_graphs.clear()
+    global logger
+    logger.reset()
     global interface
     param = interface.get_param()
     manager.reinit(param)
+    manager.play()
 
 
 def open_file():
-
+    """
+    Donne le fichier à ouvrir à physicManager
+    """
     filename = fd.askopenfile()
-
     manager.import_rails_from_file(filename.name)
+    global dyn_graphs
+    dyn_graphs.clear()
+    global logger
+    logger.reset()
+    manager.reinit()
+    manager.play()
+
+
+def show_results():
+    global logger
+    logger.render_result()
 
 
 # dictionnaire qui connecte les fonctions des boutons de l'affichade tkinter
@@ -42,7 +67,8 @@ dict_func = {
     "start_reset": reset_sim,
     "play_pause": play_pause_sim,
     "apply": update_sim,
-    "open": open_file
+    "open": open_file,
+    "show_results": show_results
 }
 # génération de l'objet générant l'interface principal
 interface = Interface(dict_func)
@@ -50,25 +76,32 @@ interface.start_reset_button_function = reset_sim
 
 
 # génération du physicManager
-manager = physicManager(interface.get_pymunk_frame().winfo_width(),
-                        interface.get_pymunk_frame().winfo_height(),
+manager = physicManager(1800, 550,
                         interface.simu, interface.get_pymunk_frame())
 
 # graphe de représentation de vitesse
 
-dyn_graphs = DynamicGraph(interface.get_graph_frame(), plot_titles=["vitesse"])
-'''
-dyn_graphs.add_subplot("accel")
+dyn_graphs = DynamicGraph(interface.get_graph_frame(), 2,
+                          plot_titles=["energie", "vitesse"])
 
-dyn_graphs.add_subplot("energie")
-'''
+# continuer l'exécution du programme
+logger = dataLogger(manager)
+GUI_cont, phys_cont = True, True
 
-cont = True  # continuer l'exécution du programme
+while True:
+    while phys_cont and GUI_cont:
+        dyn_graphs.update_data(manager.getTime(), [
+            manager.getWagon().get_total_energy(), manager.getWagon().get_chassis_velocity()[0]])
+        if not manager.isPaused:
+            logger.record()
 
-while cont:
-    dyn_graphs.update_data(manager.getTime(), [abs(
-        manager.getWagon().get_chassis_velocity()[0])])
+        GUI_cont = interface.render_GUI()
+        phys_cont = manager.process()
 
-    GUI_cont = interface.render_GUI()
-    phys_cont = manager.process()
-    cont = GUI_cont and phys_cont
+    if not GUI_cont:
+        break
+    if not phys_cont:
+        show_results()
+        reset_sim()
+        phys_cont = True
+        manager.pause()

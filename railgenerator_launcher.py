@@ -1,3 +1,7 @@
+"""
+Module permetant la création et sauvegarde dans un fichier d'un parcours
+"""
+
 import sys
 import pygame
 from GUI.railGenerator import Canvas
@@ -10,6 +14,9 @@ if __name__ == "__main__":
     canvas = Canvas(screen)
 
     def update():
+        """
+        Met à jour l'affichage
+        """
         screen.fill((200, 255, 255))
         canvas.render()
         pygame.display.update()

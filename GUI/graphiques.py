@@ -1,10 +1,9 @@
-from cProfile import label
-import numpy as np
-from matplotlib.figure import Figure
-import tkinter as tk
-from time import sleep
+"""Module gérant les classes animate graph et dynamic graph pour l'affichage
+ des graphiques tkinter"""
+
 from tkinter import Frame
-from pylab import *
+import numpy as np
+from pylab import xlim, ylim, draw, ioff, show
 from matplotlib import pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 # On veut afficher le graphe en temps réel, pendant l'animation du wagon.
@@ -12,32 +11,10 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 # et on bidouille
 
 
-def graphe_vitesse(List_speeds, tf):
-    ion()  # début animation
-    # axe des temps discrétisé comme la liste des vitesses
-    t = linspace(0, tf, len(List_speeds))
-    # une reference a la courbe est mise dans line
-    line, = plot(t, List_speeds)
-
-    xlim(-0.5, tf+0.5)
-    xlabel('temps')
-    ylim(-1, 5)                          # mise en forme
-    ylabel('vitesse')
-    plt.grid()
-    plt.title("Graphe des vitesses")
-
-    for i in range(len(List_speeds)):
-        line.set_xdata(t[:i])  # actualise les valeurs de t
-        line.set_ydata(List_speeds[:i])  # actualise les valeurs de v
-        draw()  # force le dessin de la figure
-        pause(0.5)
-    ioff()
-    show()
-
-
 class AnimatedGraph():
     """
-    Classe qui permet de réaliser des graphes à animer sous tkinter avec des données envoyées en temps réel
+    Classe qui permet de réaliser des graphes à animer sous 
+    tkinter avec des données envoyées en temps réel
     """
 
     def __init__(self, title) -> None:
@@ -45,17 +22,22 @@ class AnimatedGraph():
         self.data = []
         self.fig = plt.figure()
         self._ymax = 0
+        self._ymin = 0
         xlim(0, 0)
         plt.title(title)
-
+        plt.ion()
         self.curve, = plt.plot(self.t, self.data)
 
-    def drawNext(self, t, data) -> None:  # actualise les données du graphiques à l'instant t
+    def drawNext(self, t, data) -> None:
+        """actualise les données du graphiques à l'instant t"""
         xlim((0, t))
 
-        if self._ymax <= abs(data):
-            ylim((-abs(data), abs(data)))
-            self._ymax = abs(data)
+        if self._ymax < data:
+            self._ymax = data
+            ylim((self._ymin, data))
+        if self._ymin > data:
+            self._ymin = data
+            ylim((data, self._ymax))
         self.t.append(t)  # type: ignore
         self.data.append(data)  # type: ignore
         self.curve.set_xdata(self.t)
@@ -63,6 +45,7 @@ class AnimatedGraph():
         draw()
 
     def reset(self):
+        """reset l'affichage du graphique"""
         self.t = []
         self.data = []
         self.curve.set_xdata([])
@@ -70,20 +53,26 @@ class AnimatedGraph():
         draw()
 
     def fixDisplay(self):
+        """fix the display"""
         ioff()
         show()
 
     def attach_to_frame(self, frame: Frame):
+        """attach figure to frame"""
         FigureCanvasTkAgg(
             self.fig, frame).get_tk_widget().pack()
 
 
 class DynamicGraph:
+    """Affichage dynamique des graphes dans tkinter"""
+
     def __init__(self, master, num_subplots=1, plot_titles=None):
+        "intialise le dynamic graph qui prend des subplots en argument et leur nom"
         self.nbr_frames_before_show = 100
         self.curr_frames_before_show = self.nbr_frames_before_show
         self.master = master
-        self.fig, self.axes = plt.subplots(num_subplots, 1, sharex=True)
+
+        self.fig, self.axes = plt.subplots(1, num_subplots, sharex=True)
         # Ensure self.axes is a numpy array even if num_subplots is 1
         if not isinstance(self.axes, np.ndarray):
             self.axes = np.array([self.axes])
@@ -107,9 +96,10 @@ class DynamicGraph:
         plt.ion()
 
     def add_subplot(self, title="New Plot"):
+        "ajoute un nouveau subplot au plot principal"
         if len(self.axes) < 3:
-            ax = self.fig.add_subplot(1,
-                                      len(self.axes) + 1, len(self.axes) + 1, sharex=self.axes[0], title=title)
+            ax = self.fig.add_subplot(1, len(self.axes) + 1, len(self.axes)
+                                      + 1, sharex=self.axes[0], title=title)
             self.axes = np.append(self.axes, ax)
 
             self.plot_titles.append(title)
@@ -117,7 +107,8 @@ class DynamicGraph:
             self.fig.tight_layout()
             self.update_legend()
 
-    def update_data(self, time, y_data):
+    def update_data(self, time: float, y_data: list[float]):
+        "rajoute les données fournis"
         self.x_data.append(time)
         for line in self.lines:
             line.set_xdata(self.x_data)
@@ -134,24 +125,25 @@ class DynamicGraph:
             ax.autoscale_view()
 
     def update_legend(self):
+        "met à jour la légende"
         for ax in self.axes:
             ax.legend(self.lines, self.plot_titles,
                       loc='upper left', bbox_to_anchor=(1, 1))
 
-    def show(self):
-        plt.show()
+    # def show(self):
+    #     plt.show()
 
+    def clear(self):
+        "reset l'affichage"
+        try:
+            self.x_data = []  # Clear x-data
 
-# graphe_vitesse([0.02*x**4-x**2+3*x for x in linspace(0, 5, 50)], 5)
+            for i, line in enumerate(self.lines):
+                line.set_ydata([])  # Clear y-data for each line
+                self.y_datas[i] = []  # Clear y-data in the y_datas list
 
-
-# def animated_graph(List_speeds, xfinal):
-#     graph_test = AnimatedGraph(
-#         (0, xfinal), (-1, max(List_speeds)+0.5), "test")  # mise en forme
-#     for x in range(0, len(List_speeds)):
-#         # dessine point par point la courbe
-#         graph_test.drawNext(xfinal*x/len(List_speeds), List_speeds[x])
-#         pause(0.05)
-#     graph_test.fixDisplay()  # affiche le graphe
-
-# animated_graph(Courbe1,durée_exp)
+            for ax in self.axes:
+                ax.relim()
+                ax.autoscale_view()
+        except:
+            pass

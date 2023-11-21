@@ -16,7 +16,7 @@ class Wagon:
 
     def __init__(self, space: pymunk.Space, Mass: float, L: float, h: float, position_init: tuple,
                  tension_ressort=8000, loco=False, StartingLine=False):
-
+        self.gravity = space.gravity
         assert L >= 20, 'la longueur minimale est 20'
         assert h <= L, 'la hauteur doit être inférieure à la largeur'
         self.is_loco = loco
@@ -32,9 +32,9 @@ class Wagon:
         vs = [(-L/2, -h/2), (L/2, -h/2), (L/2, h/2),
               (-L/2, h/2), ((2*L/3), 0), ((-2*L/3), 0)]
         v2, v3 = vs[2], vs[3]
-        v4 = (-L/2, h+L)
+        v4 = (-L/2, h+L/6+3)
         v5 = (-L/2, h/2)
-        v6 = (L/2, h+L)
+        v6 = (L/2, h+L/6+3)
         v7 = (+L/2, h/2)
 
         chassis = Poly(space, p, vs, Mass_chassis, L, h)
@@ -60,9 +60,9 @@ class Wagon:
                      v7, (0, 0), L/6, tension_ressort, 60)
 
         GrooveJoint(space, chassis.body, wheel3.body,
-                    (-L/2, h/2), (-L/2, h/2+10), (0, 0))
+                    (-L/2, h/2), (-L/2, h/2+100), (0, 0))
         GrooveJoint(space, chassis.body, wheel4.body,
-                    (L/2, h/2), (L/2, h/2+10), (0, 0))
+                    (L/2, h/2), (L/2, h/2+100), (0, 0))
 
         # Ajout des attributs utiles
 
@@ -94,15 +94,15 @@ class Wagon:
 
     def get_kinetic(self):
         """renvoie l'energie cinétique de self"""
-        return self.c.kinetic_energy
+        return (0.5*self.m*(self.get_chassis_velocity()[0])**2)
 
-    def get_potential(self):
+    def get_potential(self, ref_point=600):
         """renvoie l'energie potentielle de self"""
-        return self.m*981*(600-self.c.position[1])
+        return self.m*self.gravity[1]*(ref_point-self.c.position[1])
 
     def get_total_energy(self):
         """renvoie l'energie mécanique de self"""
-        return self.get_kinetic() + self.get_potential()
+        return (self.get_kinetic() + self.get_potential())
 
     def get_chassis_acceleration(self):
         """renvoie l'accélération de self"""

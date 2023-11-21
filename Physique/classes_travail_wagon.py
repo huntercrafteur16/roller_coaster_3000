@@ -21,16 +21,17 @@ class PivotJoint:
 class Segment:
     """Classe Segment : ajoute à space une ligne à partir du point p0 suivant le vecteur v, 
    d'épaisseur radius."""
-
+    color = (0, 255, 0, 0)
+    density = 0.1
     def __init__(self, space: pymunk.Space, p0: tuple[float, float],
                  v: tuple[float, float], radius=10):
         self.body = pymunk.Body()
         self.body.position = p0
         shape = pymunk.Segment(self.body, (0, 0), v, radius)
-        shape.density = 0.1
+        shape.density = Segment.density
         shape.elasticity = 0
         shape.filter = pymunk.ShapeFilter(group=1)
-        shape.color = (0, 255, 0, 0)
+        shape.color = Segment.color
         self.shape = shape
         space.add(self.body, shape)
 
@@ -50,6 +51,7 @@ class Circle:
         shape.color = (175, 175, 175, 0)
         shape.shape_outline_color = (0, 0, 0, 0)
         self.shape = shape
+        shape.filter = pymunk.ShapeFilter(group=1)
         space.add(self.body, shape)
 
 

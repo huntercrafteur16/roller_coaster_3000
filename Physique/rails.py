@@ -1,12 +1,9 @@
 """Module qui définit les classes relatives aux rails"""
 
 import random
-from geomdl import BSpline
-from geomdl import utilities
 import pymunk.pygame_util
 import pymunk
-import pygame
-import sys
+
 
 random.seed(1)  # make the simulation the same each time, easier to debug
 
@@ -18,8 +15,7 @@ class Rail():
     - rails "FREE": collision_type = 0
     - rails "PROP": collision_type = 1
     - rails "PULL": collision_type = 2
-    - rails "BRAKE": collision_type = 3 TODO actuellement c'est celui des wagons
-    TODO modifier collision_type des wagons
+    - rails "BRAKE": collision_type = 3 
     """
 
     segments: list[pymunk.Segment]
@@ -30,11 +26,8 @@ class Rail():
     color_prop_rail = (255, 0, 255, 255)
     color_brake_rail = (255, 0, 0, 255)
 
-    def __init__(self, degree=2) -> None:
+    def __init__(self) -> None:
         self.data_points = []  # courbe qui sera lue du fichier enregistré
-        # self.curve = BSpline.Curve(degree=degree)
-        # self.curve.delta = 1e-3
-        # self.curve.degree = degree
         self.width = 1
         self.segments = []
 
@@ -46,34 +39,42 @@ class Rail():
         self.data_points.append(p)
 
     def _addFreeRail(self, c_deb, c_fin, space: pymunk.Space):
+        """ajoute un segment de rail type FREE"""
         railseg = pymunk.Segment(space.static_body, c_deb, c_fin, self.width)
         railseg.color = Rail.color_free_rail
         railseg.elasticity = 0
+        railseg.friction = 1
         railseg.collision_type = 0  # la collision d'un rail non tractant sera 0
         self.segments.append(railseg)
 
         space.add(railseg)
 
     def _addPropRail(self, c_deb, c_fin, space: pymunk.Space):
+        """ajoute un segment de rail type PROP"""
         railseg = pymunk.Segment(space.static_body, c_deb, c_fin, self.width)
         railseg.color = Rail.color_prop_rail
         railseg.elasticity = 0
+        railseg.friction = 1
         railseg.collision_type = 1  # la collision d'un rail prop sera 1
         self.segments.append(railseg)
         space.add(railseg)
 
     def _addBrakeRail(self, c_deb, c_fin, space: pymunk.Space):
+        """ajoute un segment de rail type BRAKE"""
         railseg = pymunk.Segment(space.static_body, c_deb, c_fin, self.width)
         railseg.color = Rail.color_brake_rail
         railseg.elasticity = 0
+        railseg.friction = 1
         railseg.collision_type = 3  # la collision d'un rail brake sera 3
         self.segments.append(railseg)
         space.add(railseg)
 
     def _addPullRail(self, c_deb, c_fin, space: pymunk.Space):
+        """ajoute un segment de rail type PULL"""
         railseg = pymunk.Segment(space.static_body, c_deb, c_fin, self.width)
         railseg.color = Rail.color_pull_rail
         railseg.elasticity = 0
+        railseg.friction = 1
         railseg.collision_type = 2  # la collision d'un rail  tractant sera 2
         self.segments.append(railseg)
         space.add(railseg)
@@ -82,9 +83,10 @@ class Rail():
         """ajoute le premier rail, qui permet de poser le train"""
         premier_point = (self.data_points[0][0], self.data_points[0][1])
         railseg = pymunk.Segment(space.static_body, premier_point, (
-            premier_point[0]-3*L*nb_wagon, premier_point[1]), self.width)
+            premier_point[0]-2*L*nb_wagon, premier_point[1]), self.width)
         railseg.elasticity = 0
         railseg.collision_type = 1
+        railseg.friction = 1
         space.add(railseg)
 
     def renderRail(self, space, L, nb_wagon):

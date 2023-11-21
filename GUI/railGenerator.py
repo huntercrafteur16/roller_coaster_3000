@@ -170,7 +170,7 @@ class Canvas():
         if self.cfg.show_points:
             if self.count == 1:
                 pygame.draw.circle(
-                    self.screen, (0, 0, 200), self.ctrl_points[0], 5)
+                    self.screen, (0, 100, 220), self.ctrl_points[0], 5)
             elif self.count >= 2:
                 pygame.draw.lines(
                     self.screen, (50, 0, 100), False, self.ctrl_points)
@@ -178,7 +178,7 @@ class Canvas():
                 for i, point in enumerate(self.ctrl_points):
                     if i == 0:
                         pygame.draw.circle(
-                            self.screen, (0, 0, 200), point, 5)
+                            self.screen, (0, 100, 220), point, 5)
                         # le premier point du tracé
                     elif i == self.selected:
                         pygame.draw.circle(
