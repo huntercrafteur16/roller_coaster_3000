@@ -27,6 +27,7 @@ class Interface():
     start_reset_button_function: Callable
     apply_button_function: Callable
     open_file_function: Callable
+    show_results: Callable
 
     isRunning: bool
 
@@ -35,6 +36,7 @@ class Interface():
         self.play_pause_button_function = button_functions["play_pause"]
         self.apply_button_function = button_functions["apply"]
         self.open_file_function = button_functions["open"]
+        self.show_results = button_functions["show_results"]
         # dimensions de la fenetre pymunk en px
         roller_coaster_width = 1800
         roller_coaster_height = 550
@@ -85,6 +87,9 @@ class Interface():
                                  text='ouvrir le tracé', fg='#30b000', activebackground='#30b000')
         open_filebutton.grid(row=0, column=2, padx=3, pady=3)
 
+        show_result_button = Button(buttons, command=self.show_results, width=10, height=2,
+                                    text='afficher les résultats', fg='#30b000', activebackground='#30b000')
+        show_result_button.grid(row=0, column=3, padx=3, pady=3)
         # Paramètres
         param = Frame(toolbar, bg="lightgray", width=200, padx=5, pady=5)
         param.grid(row=0, column=1)
