@@ -22,8 +22,8 @@ class physicManager(object):
     update_func: Callable  # fonction qui sera appelée à chaque boucle
     isPaused: bool
     time: int  # temps de la simulation en millisecondes
-    wagon_height = 20
-    wagon_length = 35
+    wagon_height = 10
+    wagon_length = 20
 
     def __init__(self, width, height, root=None, frame=None, gravity=980, fps=60) -> None:
         self.width = width
@@ -221,20 +221,21 @@ class physicManager(object):
 
         self._space = pymunk.Space()
         self._space.gravity = (0.0, self.gravity)
+
         if self.rail:
             startpos = (self.rail.data_points[0]
                         [0], self.rail.data_points[0][1]-20)
+            if param is not None:
+                self.N = param["nbr_wagon"]
             self.rail.renderRail(
                 self._space, physicManager.wagon_length, self.N)
-
         else:
-            startpos = (0, 0)
+            startpos = (self.width/2, self.height/2)
 
         if param is None:
             self.N = 3
             self.createTrain(startpos)
         else:
-            self.N = param["nbr_wagon"]
 
             self.createTrain(startpos, param["mass"])
 

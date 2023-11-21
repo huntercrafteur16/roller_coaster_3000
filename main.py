@@ -29,6 +29,7 @@ def update_sim():
     global interface
     param = interface.get_param()
     manager.reinit(param)
+    manager.play()
 
 
 def open_file():
@@ -51,8 +52,7 @@ interface.start_reset_button_function = reset_sim
 
 
 # génération du physicManager
-manager = physicManager(interface.get_pymunk_frame().winfo_width(),
-                        interface.get_pymunk_frame().winfo_height(),
+manager = physicManager(1800, 550,
                         interface.simu, interface.get_pymunk_frame())
 
 # graphe de représentation de vitesse
