@@ -32,9 +32,9 @@ class Wagon:
         vs = [(-L/2, -h/2), (L/2, -h/2), (L/2, h/2),
               (-L/2, h/2), ((2*L/3), 0), ((-2*L/3), 0)]
         v2, v3 = vs[2], vs[3]
-        v4 = (-L/2, h+L/6+10)
+        v4 = (-L/2, h+L/6+3)
         v5 = (-L/2, h/2)
-        v6 = (L/2, h+L/6+10)
+        v6 = (L/2, h+L/6+3)
         v7 = (+L/2, h/2)
 
         chassis = Poly(space, p, vs, Mass_chassis, L, h)
