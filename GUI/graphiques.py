@@ -45,17 +45,21 @@ class AnimatedGraph():
         self.data = []
         self.fig = plt.figure()
         self._ymax = 0
+        self._ymin = 0
         xlim(0, 0)
         plt.title(title)
-
+        plt.ion()
         self.curve, = plt.plot(self.t, self.data)
 
     def drawNext(self, t, data) -> None:  # actualise les données du graphiques à l'instant t
         xlim((0, t))
-
-        if self._ymax <= abs(data):
-            ylim((-abs(data), abs(data)))
-            self._ymax = abs(data)
+        
+        if self._ymax < data:
+            self._ymax = data
+            ylim((self._ymin, abs(data)))
+        if self._ymin > data:
+            self._ymin = data
+            ylim((data, self._ymax))
         self.t.append(t)  # type: ignore
         self.data.append(data)  # type: ignore
         self.curve.set_xdata(self.t)
