@@ -52,7 +52,10 @@ class Interface():
         self.applied_m, self.applied_f, self.applied_nbr_wagon = 1, 10, 3
         m, f, nbr_wagon = DoubleVar(value=1), DoubleVar(
             value=10),  IntVar(value=3)
-
+        
+        # Musique
+        self.music = Musique()
+        
         def apply_values():
             self.applied_m = float(m.get())
             self.applied_f = float(f.get())
