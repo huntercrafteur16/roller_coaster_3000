@@ -33,10 +33,13 @@ def update_sim():
 
 
 def open_file():
-
+    """
+    Donne le fichier à ouvrir à physicManager
+    """
     filename = fd.askopenfile()
-
     manager.import_rails_from_file(filename.name)
+    manager.reinit()
+    manager.play()
 
 
 # dictionnaire qui connecte les fonctions des boutons de l'affichade tkinter
