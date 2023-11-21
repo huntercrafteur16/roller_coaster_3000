@@ -1,8 +1,8 @@
 """Fichier principal du programme"""
+from tkinter import filedialog as fd
 from GUI.interface import Interface
 from GUI.graphiques import AnimatedGraph, DynamicGraph
 from Physique.physicManager import physicManager
-from tkinter import filedialog as fd
 
 global manager
 global graphs
