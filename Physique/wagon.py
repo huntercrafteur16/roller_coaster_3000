@@ -94,7 +94,7 @@ class Wagon:
 
     def get_kinetic(self):
         """renvoie l'energie cinétique de self"""
-        return self.c.kinetic_energy
+        return (0.5*self.m*(self.get_chassis_velocity())**2)
 
     def get_potential(self):
         """renvoie l'energie potentielle de self"""
