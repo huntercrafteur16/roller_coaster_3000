@@ -2,16 +2,9 @@
 Module qui gère l'interface
 """
 
-from pydoc import text
-from tkinter import E, N, X, Frame, Button, Text, Tk, DoubleVar, BOTTOM, TOP
-from tkinter import BOTH, IntVar, Entry, Scale, Label, HORIZONTAL, LEFT, Radiobutton, StringVar
-# from GUI.graphiques import AnimatedGraph
-from tkinter import filedialog as fd
+from tkinter import N, X, Frame, Button, Tk, DoubleVar, BOTTOM, TOP
+from tkinter import BOTH, IntVar, Entry, Scale, Label, HORIZONTAL
 from typing import Callable
-from functools import partial
-import matplotlib.pyplot as plt
-from matplotlib.figure import Figure
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from GUI.musique import Musique
 
 
@@ -88,7 +81,8 @@ class Interface():
         open_filebutton.grid(row=0, column=2, padx=3, pady=3)
 
         show_result_button = Button(buttons, command=self.show_results, width=10, height=2,
-                                    text='afficher les résultats', fg='#30b000', activebackground='#30b000')
+                                    text='afficher les résultats', fg='#30b000',
+                                    activebackground='#30b000')
         show_result_button.grid(row=0, column=3, padx=3, pady=3)
         # Paramètres
         param = Frame(toolbar, bg="lightgray", width=200, padx=5, pady=5)
