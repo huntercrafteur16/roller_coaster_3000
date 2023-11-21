@@ -6,11 +6,11 @@ from GUI.railGenerator import Canvas
 if __name__ == "__main__":
     pygame.init()
     pygame.font.init()
-    screen = pygame.display.set_mode((1500, 650))
+    screen = pygame.display.set_mode((1200, 600))
     canvas = Canvas(screen)
 
     def update():
-        screen.fill((255, 255, 255))
+        screen.fill((200, 255, 255))
         canvas.render()
         pygame.display.update()
 

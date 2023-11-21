@@ -15,14 +15,9 @@ class Config():
     def __init__(self):
         self.fill = (255, 255, 255)
         self.width = 2
-        self.color = (255, 180, 0)
-        self.dark = (0, 0, 0)
-        self.bright = (0, 255, 0)
-        self.brightdanger = (255, 0, 0)
         self.restrict = False
         self.restrict_zone = (160, 200, 560, 600)
         self.show_points = True
-        self.edit_mode = True
 
 
 class Canvas():
@@ -46,104 +41,139 @@ class Canvas():
         self.selected = None
         self.move_point = False
         self.add_mode = 0
-        self.presel = False
         self.lineselection = []
+
+        # grille
+
         # affichage graphique
         self.my_font = pygame.font.SysFont('Comic Sans MS', 10)
-        width, height = screen.get_width(), screen.get_height()
+        self.w, self.h = screen.get_width(), screen.get_height()
+        dl = 60
         dh = 20
-        dl = 50
-        self.add_button = (width/8, height - 50, dl, dh)
-        self.del_button = (2*width/8, height - 50, dl, dh)
-        self.sel_button = (3*width/8, height - 50, dl, dh)
-        self.hide_button = (4*width/8, height - 50, dl, dh)
-        self.edit_button = (5*width/8, height - 50, 50, 20)
-        self.save_open_button = (6*width/8, height - 50, 50, 20)
-        self.free_type_button = ((7*width/8, height - 200, 50, 20))
-        self.pull_type_button = ((7*width/8, height - 150, 50, 20))
-        self.prop_type_button = ((7*width/8, height - 100, 50, 20))
-        self.brake_type_button = ((7*width/8, height - 50, 50, 20))
+
+        self.instructions = ((7*self.w/12, self.h-50, 50, 20))
+        self.save_button = (self.w/12-30, 20, dl, dh)
+        self.open_button = (2*self.w/12-30, 20, dl, dh)
+
+        self.hide_button = (self.w/12-30, self.h - 50, dl, dh)
+        self.add_button = (2*self.w/12-30, self.h - 50, dl, dh)
+        self.del_button = (3*self.w/12-30, self.h - 50, dl, dh)
+        self.desel_button = (4*self.w/12-30, self.h - 50, dl, dh)
+
+        self.free_type_button = ((3*self.w/12-30, self.h - 50, dl, dh))
+        self.prop_type_button = ((4*self.w/12-30, self.h - 50, dl, dh))
+        self.pull_type_button = ((5*self.w/12-30, self.h - 50, dl, dh))
+        self.brake_type_button = ((6*self.w/12-30, self.h - 50, dl, dh))
 
     def button_render(self):
-        if self.cfg.edit_mode:
-            if self.add_mode:
-                pygame.draw.rect(self.screen, self.cfg.bright, self.add_button)
-                text_surface = self.my_font.render(
-                    'ajout de points', False, (0, 0, 0))
-                self.screen.blit(
-                    text_surface, (self.add_button[0], self.add_button[1]+20))
-            else:
-                pygame.draw.rect(self.screen, self.cfg.dark, self.add_button)
-                text_surface = self.my_font.render(
-                    'ajouter un point', False, (0, 0, 0))
-                self.screen.blit(
-                    text_surface, (self.add_button[0], self.add_button[1]+20))
-            if self.selected != None:
 
-                pygame.draw.rect(self.screen, self.cfg.bright, self.sel_button)
-                text_surface = self.my_font.render(
-                    'déselectionner', False, (0, 0, 0))
-                self.screen.blit(
-                    text_surface, (self.sel_button[0], self.sel_button[1]+20))
-
-                pygame.draw.rect(
-                    self.screen, self.cfg.bright, self.del_button)
-                text_surface = self.my_font.render(
-                    'supprimer', False, (0, 0, 0))
-                self.screen.blit(
-                    text_surface, (self.del_button[0], self.del_button[1]+20))
-
-            if len(self.lineselection) == 2:
-                pygame.draw.rect(
-                    self.screen, self.cfg.bright, self.free_type_button)
-                text_surface = self.my_font.render(
-                    'libre', False, (0, 0, 0))
-                self.screen.blit(
-                    text_surface, (self.free_type_button[0], self.free_type_button[1]+20))
-
-                pygame.draw.rect(
-                    self.screen, self.cfg.bright, self.brake_type_button)
-                text_surface = self.my_font.render(
-                    'frein', False, (0, 0, 0))
-                self.screen.blit(
-                    text_surface, (self.brake_type_button[0], self.brake_type_button[1]+20))
-
-                pygame.draw.rect(
-                    self.screen, self.cfg.bright, self.pull_type_button)
-                text_surface = self.my_font.render(
-                    'treuil', False, (0, 0, 0))
-                self.screen.blit(
-                    text_surface, (self.pull_type_button[0], self.pull_type_button[1]+20))
-
-                pygame.draw.rect(
-                    self.screen, self.cfg.bright, self.prop_type_button)
-                text_surface = self.my_font.render(
-                    'entraîner', False, (0, 0, 0))
-                self.screen.blit(
-                    text_surface, (self.prop_type_button[0], self.prop_type_button[1]+20))
-
-            pygame.draw.rect(self.screen, self.cfg.dark, self.hide_button)
+        text_surface = self.my_font.render(
+            'Clic gauche pour sélectionner/ajouter un point. Si sélection, ajout après le point sélectionné.', False, (0, 0, 0))
+        self.screen.blit(
+            text_surface, (self.instructions[0], self.brake_type_button[1]))
+        text_surface = self.my_font.render(
+            'Deux clics droits pour la sélection de tracé, un troisième pour désélectionner.', False, (0, 0, 0))
+        self.screen.blit(
+            text_surface, (self.instructions[0], self.brake_type_button[1]+15))
+        if self.add_mode:
+            pygame.draw.rect(self.screen, (0, 230, 0), self.add_button)
             text_surface = self.my_font.render(
-                'montrer/cacher', False, (0, 0, 0))
+                'ajout de points', False, (0, 0, 0))
+            self.screen.blit(
+                text_surface, (self.add_button[0], self.add_button[1]+20))
+        else:
+            pygame.draw.rect(
+                self.screen, (150, 150, 150), self.add_button)
+            text_surface = self.my_font.render(
+                'ajout de points', False, (0, 0, 0))
+            self.screen.blit(
+                text_surface, (self.add_button[0], self.add_button[1]+20))
+
+        if self.selected != None:
+            pygame.draw.rect(self.screen, (255, 150, 0), self.desel_button)
+            text_surface = self.my_font.render(
+                'déselectionner', False, (0, 0, 0))
+            self.screen.blit(
+                text_surface, (self.desel_button[0], self.desel_button[1]+20))
+
+            pygame.draw.rect(
+                self.screen, (255, 0, 0), self.del_button)
+            text_surface = self.my_font.render(
+                'supprimer', False, (0, 0, 0))
+            self.screen.blit(
+                text_surface, (self.del_button[0], self.del_button[1]+20))
+
+        elif len(self.lineselection) == 2:
+            pygame.draw.rect(
+                self.screen, (60, 60, 60), self.free_type_button)
+            text_surface = self.my_font.render(
+                'rail libre', False, (0, 0, 0))
+            self.screen.blit(
+                text_surface, (self.free_type_button[0], self.free_type_button[1]+20))
+
+            pygame.draw.rect(
+                self.screen, (250, 0, 0), self.brake_type_button)
+            text_surface = self.my_font.render(
+                'frein', False, (0, 0, 0))
+            self.screen.blit(
+                text_surface, (self.brake_type_button[0], self.brake_type_button[1]+20))
+
+            pygame.draw.rect(
+                self.screen, (250, 150, 0), self.pull_type_button)
+            text_surface = self.my_font.render(
+                'treuil', False, (0, 0, 0))
+            self.screen.blit(
+                text_surface, (self.pull_type_button[0], self.pull_type_button[1]+20))
+
+            pygame.draw.rect(
+                self.screen, (220, 220, 0), self.prop_type_button)
+            text_surface = self.my_font.render(
+                'accélérateur', False, (0, 0, 0))
+            self.screen.blit(
+                text_surface, (self.prop_type_button[0], self.prop_type_button[1]+20))
+
+        if self.cfg.show_points == True:
+            pygame.draw.rect(self.screen, (100, 0, 200), self.hide_button)
+            text_surface = self.my_font.render(
+                'ossature : visible', False, (0, 0, 0))
             self.screen.blit(
                 text_surface, (self.hide_button[0], self.hide_button[1]+20))
 
-            pygame.draw.rect(self.screen, self.cfg.dark, self.save_open_button)
-            text_surface = self.my_font.render(
-                'enregistrer', False, (0, 0, 0))
-            self.screen.blit(
-                text_surface, (self.save_open_button[0], self.save_open_button[1]+20))
-
         else:
-            pygame.draw.rect(self.screen, self.cfg.dark, self.edit_button)
+            pygame.draw.rect(
+                self.screen, (150, 150, 150), self.hide_button)
+            text_surface = self.my_font.render(
+                'ossature : cachée', False, (0, 0, 0))
+            self.screen.blit(
+                text_surface, (self.hide_button[0], self.hide_button[1]+20))
+
+        pygame.draw.rect(self.screen, (0, 0, 0), self.save_button)
+        text_surface = self.my_font.render(
+            'enregistrer sous', False, (0, 0, 0))
+        self.screen.blit(
+            text_surface, (self.save_button[0], self.save_button[1]+20))
+
+        pygame.draw.rect(self.screen, (0, 0, 0), self.open_button)
+        text_surface = self.my_font.render(
+            'ouvrir un tracé', False, (0, 0, 0))
+        self.screen.blit(
+            text_surface, (self.open_button[0], self.open_button[1]+20))
 
     def render(self):
-        if self.cfg.edit_mode:
-            if self.cfg.show_points:
-                if self.count >= 2:
-                    pygame.draw.lines(
-                        self.screen, (100, 100, 100), 0, self.ctrl_points)
 
+        # affichage de la grille
+        for n in range(0, self.w, 10):
+            pygame.draw.line(self.screen, (255, 255, 255), (n, 0), (n, self.h))
+        for m in range(0, self.h, 10):
+            pygame.draw.line(self.screen, (255, 255, 255), (0, m), (self.w, m))
+
+        if self.cfg.show_points:
+            if self.count == 1:
+                pygame.draw.circle(
+                    self.screen, (0, 0, 200), self.ctrl_points[0], 5)
+            elif self.count >= 2:
+                pygame.draw.lines(
+                    self.screen, (50, 0, 100), False, self.ctrl_points)
                 # cette ligne trace les segments entre les points
                 for i, point in enumerate(self.ctrl_points):
                     if i == 0:
@@ -152,48 +182,37 @@ class Canvas():
                         # le premier point du tracé
                     elif i == self.selected:
                         pygame.draw.circle(
-                            self.screen, (0, 200, 0), point, 5)
+                            self.screen, (0, 230, 0), point, 5)
                         # le point séléctionné (pour le bouger)
                     else:
                         pygame.draw.circle(
-                            self.screen, (140, 140, 140), point, 5)
+                            self.screen, (100, 0, 200), point, 5)
                         # les autres points
-            if self.count >= self.spline.degree+1:
-                for i in range(len(self.maindata)-1):
-                    pt1 = self.maindata[i]
-                    pt2 = self.maindata[i+1]
-                    if len(self.lineselection) == 2 and i > self.lineselection[0] and i < self.lineselection[1]:
-                        pygame.draw.lines(self.screen, (0, 255, 255), 0, [
-                                          pt1[0], pt2[0]], width=self.cfg.width)
 
-                    elif pt2[1] == "FREE":
-                        pygame.draw.lines(self.screen, (50, 50, 50), 0, [
-                                          pt1[0], pt2[0]], width=self.cfg.width)
-                    elif pt2[1] == "PROP":
-                        pygame.draw.lines(self.screen, (0, 255, 0), 0, [
-                                          pt1[0], pt2[0]], width=self.cfg.width)
-                    elif pt2[1] == "PULL":
-                        pygame.draw.lines(self.screen, (255, 150, 0), 0, [
-                                          pt1[0], pt2[0]], width=self.cfg.width)
-                    elif pt2[1] == "BRAKE":
-                        pygame.draw.lines(self.screen, (255, 0, 0), 0, [
-                                          pt1[0], pt2[0]], width=self.cfg.width)
+        if len(self.lineselection) == 2:
+            self.selected = None
 
-                # la courbe calculée, sans zone sélectionnée
-                # if len(self.lineselection) < 2:
-                #    pygame.draw.lines(self.screen, self.cfg.color,
-                #                      0, self.curve_points, width=self.cfg.width)
+        if self.count >= 3:
+            for i in range(len(self.maindata)-1):
+                pt1 = self.maindata[i]
+                pt2 = self.maindata[i+1]
+                if len(self.lineselection) == 2 and i > self.lineselection[0] and i < self.lineselection[1]:
+                    pygame.draw.lines(self.screen, (0, 220, 220), False, [
+                        pt1[0], pt2[0]], width=self.cfg.width)
 
-                # la courbe calculée, avec une zone de sélection bleue
-                # else:
-                #    if self.lineselection[0] != 0:
-                #        pygame.draw.lines(
-                #            self.screen, self.cfg.color, 0, self.curve_points[:self.lineselection[0]+1], width=self.cfg.width)
-                #    pygame.draw.lines(
-                #        self.screen, self.cfg.sea, 0, self.curve_points[self.lineselection[0]:self.lineselection[1]+1], width=self.cfg.width)
-                #    if self.lineselection[1] != len(self.curve_points)-1:
-                #        pygame.draw.lines(
-                #            self.screen, self.cfg.color, 0, self.curve_points[self.lineselection[1]:], width=self.cfg.width)
+                elif pt2[1] == "FREE":
+                    pygame.draw.lines(self.screen, (60, 60, 60), False, [
+                        pt1[0], pt2[0]], width=self.cfg.width)
+                elif pt2[1] == "PULL":
+                    pygame.draw.lines(self.screen, (250, 150, 0), False, [
+                        pt1[0], pt2[0]], width=self.cfg.width)
+                elif pt2[1] == "BRAKE":
+                    pygame.draw.lines(self.screen, (250, 0, 0), False, [
+                        pt1[0], pt2[0]], width=self.cfg.width)
+                elif pt2[1] == "PROP":
+                    pygame.draw.lines(self.screen, (220, 220, 0), False, [
+                        pt1[0], pt2[0]], width=self.cfg.width)
+
         self.button_render()
 
     def region(self, button, x, y):
@@ -203,92 +222,74 @@ class Canvas():
         return False
 
     def select_left(self, x, y, r=10):
-        if self.cfg.edit_mode:
-            can_add = True
-            if self.region(self.add_button, x, y):
-                self.add_mode = not self.add_mode
-                can_add = False
-            elif self.region(self.sel_button, x, y):
-                self.selected = None
-                can_add = False
+        can_add = True
+        if self.region(self.add_button, x, y):
+            self.add_mode = not self.add_mode
+            can_add = False
+        elif self.region(self.hide_button, x, y):
+            self.cfg.show_points = not self.cfg.show_points
+            self.selected = None
+            can_add = False
 
-            elif self.region(self.hide_button, x, y):
-                self.cfg.show_points = not self.cfg.show_points
-                self.selected = None
+        if self.selected != None:
+            if self.region(self.desel_button, x, y):
                 can_add = False
-
+                self.selected = None
             elif self.region(self.del_button, x, y):
+                can_add = False
                 if self.selected:
                     self.ctrl_points.pop(self.selected)
                     self.count -= 1
                     self.selected -= 1
-                    can_add = False
                     if self.count >= 3:
                         self.draw(self.ctrl_points)
-            elif self.region(self.save_open_button, x, y):
 
-                self.save_file()
+        if self.region(self.save_button, x, y):
+            can_add = False
+            self.save_file()
 
-            elif len(self.lineselection) == 2:
-                if self.region(self.free_type_button, x, y):
-                    self.selected = None
+        elif self.region(self.open_button, x, y):
+            can_add = False
+            self.open_file()
+
+        elif len(self.lineselection) == 2:
+            self.selected = None
+            can_add = None
+
+            if self.region(self.free_type_button, x, y):
+                for point in self.maindata[self.lineselection[0]+2:(self.lineselection[1]+1)]:
+                    point[1] = "FREE"
+
+            if self.region(self.brake_type_button, x, y):
+                for point in self.maindata[self.lineselection[0]+2:(self.lineselection[1]+1)]:
+                    point[1] = "BRAKE"
+
+            if self.region(self.prop_type_button, x, y):
+                for point in self.maindata[self.lineselection[0]+2:(self.lineselection[1]+1)]:
+                    point[1] = "PROP"
+
+            if self.region(self.pull_type_button, x, y):
+                for point in self.maindata[self.lineselection[0]+2:(self.lineselection[1]+1)]:
+                    point[1] = "PULL"
+
+        if self.count:
+            for i, points in enumerate(self.ctrl_points):
+                px, py = points
+                if px-r < x < px+r and py-r < y < py+r:
+                    print("OK")
+                    self.selected = i
+                    self.move_point = True
                     can_add = False
-                    for point in self.maindata[self.lineselection[0]:(self.lineselection[1]+1)]:
-                        point[1] = "FREE"
 
-                elif self.region(self.brake_type_button, x, y):
-                    self.selected = None
-                    can_add = False
-                    for point in self.maindata[self.lineselection[0]:(self.lineselection[1]+1)]:
-                        point[1] = "BRAKE"
-
-                elif self.region(self.prop_type_button, x, y):
-                    self.selected = None
-                    can_add = False
-                    for point in self.maindata[self.lineselection[0]:(self.lineselection[1]+1)]:
-                        point[1] = "PROP"
-
-                elif self.region(self.pull_type_button, x, y):
-                    self.selected = None
-                    can_add = False
-                    for point in self.maindata[self.lineselection[0]:(self.lineselection[1]+1)]:
-                        point[1] = "PULL"
-
-            elif self.count:
-                for i, points in enumerate(self.ctrl_points):
-                    px, py = points
-                    if px-r < x < px+r and py-r < y < py+r:
-                        self.selected = i
-                        self.move_point = True
-                        can_add = False
-                        break
-
-            if self.add_mode and can_add:
-                self.count += 1
-                if self.selected != None:
-                    xpoint, _ = self.ctrl_points[self.selected]
-                    if xpoint > x:
-                        self.ctrl_points.insert(self.selected, (x, y))
-                    else:
-                        self.ctrl_points.insert(self.selected+1, (x, y))
-                else:
-                    self.ctrl_points.append((x, y))
-                if self.count >= 3:
-                    self.draw(self.ctrl_points)
-
-        elif self.region(self.edit_button, x, y):
-            self.cfg.edit_mode = True
-
-            # file_path = filedialog.asksaveasfilename(defaultextension='.txt', filetypes=[
-            #                                          ("Text files", "*.txt"), ("All files", "*.*")])
-            # if file_path:
-            #     with open(file_path, 'w') as file:
-            #         content = "\n".join(
-            #             [f"{point[0]},{point[1]}" for point in self.ctrl_points])
-            #         file.write(content)
-
-            # elif self.region(self.save_open_button, x, y):
-            #     self.save_file()
+        if self.add_mode and can_add:
+            self.count += 1
+            if self.selected != None:
+                xpoint, _ = self.ctrl_points[self.selected]
+                self.ctrl_points.insert(self.selected+1, (x, y))
+            else:
+                self.ctrl_points.append((x, y))
+            if self.count >= 3:
+                self.draw(self.ctrl_points)
 
     def closest_point(self, x, y):
         closest_i = 0
@@ -298,18 +299,20 @@ class Canvas():
         return closest_i
 
     def select_right(self, x, y):
-        if self.presel == True and self.closest_point(x, y) != self.lineselection[0]:
+        if len(self.lineselection) == 0:
+            self.lineselection = [self.closest_point(x, y)]
+
+        elif len(self.lineselection) == 1 and self.closest_point(x, y) != self.lineselection[0]:
             if self.closest_point(x, y) > self.lineselection[0]:
                 self.lineselection.append(self.closest_point(x, y))
             else:
                 self.lineselection = [self.closest_point(
                     x, y), self.lineselection[0]]
-        else:
-            self.lineselection = [self.closest_point(x, y)]
-        self.presel = not self.presel
+        elif len(self.lineselection) == 2:
+            self.lineselection = []
 
     def move(self, xy):
-        if self.move_point:
+        if self.move_point and self.selected != None:
             self.ctrl_points.pop(self.selected)
             self.ctrl_points.insert(self.selected, xy)
             if self.count >= 3:
@@ -332,16 +335,52 @@ class Canvas():
             self.maindata.append([(self.curve_points[i]), "FREE"])
 
     def save_file(self):
-        file_path = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[
-            ("Text files", "*.txt"), ("All files", "*.*")])
+        file_path = filedialog.asksaveasfilename(
+            defaultextension=".txt", filetypes=[("Text files", "*.txt")])
 
         if file_path:
             with open(file_path, 'w') as file:
                 lines = []
-                for i in range(len(self.maindata)):
 
-                    line = str(
-                        self.maindata[i][0][0])+","+str(self.maindata[i][0][1])+","+str(self.maindata[i][1])+"\n"
+                # Points du tracé
+                for i in range(len(self.maindata)):
+                    line = str(self.maindata[i][0][0])+","+str(
+                        self.maindata[i][0][1])+","+str(self.maindata[i][1])+"\n"
                     lines.append(line)
+
+                # Points de contrôle (sert à rouvrir le fichier)
+                for i in range(len(self.ctrl_points)):
+                    line = str(self.ctrl_points[i][0]) + \
+                        ","+str(self.ctrl_points[i][1])+"\n"
+                    lines.append(line)
+
                 file.writelines(lines)
-            sys.exit()
+
+    def open_file(self):
+        file_path = filedialog.askopenfilename(
+            defaultextension=".txt", filetypes=[("Text files", "*.txt")])
+
+        if file_path:
+            self.maindata = []
+            self.ctrl_points = []
+
+            with open(file_path, 'r') as file:
+                lines = file.readlines()
+                for line in lines:
+                    line = line.strip('\n')
+                    line = line.split(",")
+
+                    # Lecture des points du tracé
+                    if len(line) == 3:
+                        self.maindata.append(
+                            [(float(line[0]), float(line[1])), line[2]])
+
+                    # Lecture des points de contrôle
+                    elif len(line) == 2:
+                        self.ctrl_points.append(
+                            (float(line[0]), float(line[1])))
+
+                self.count = len(self.ctrl_points)
+                self.selected = None
+
+                print(self.ctrl_points)
