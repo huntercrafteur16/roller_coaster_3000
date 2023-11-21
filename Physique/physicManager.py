@@ -224,7 +224,7 @@ class physicManager(object):
 
         if self.rail:
             startpos = (self.rail.data_points[0]
-                        [0], self.rail.data_points[0][1]-20)
+                        [0], self.rail.data_points[0][1]-10)
             if param is not None:
                 self.N = param["nbr_wagon"]
             self.rail.renderRail(

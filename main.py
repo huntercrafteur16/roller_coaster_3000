@@ -33,9 +33,10 @@ def update_sim():
 
 
 def open_file():
-
+    """
+    Donne le fichier à ouvrir à physicManager
+    """
     filename = fd.askopenfile()
-
     manager.import_rails_from_file(filename.name)
 
 
