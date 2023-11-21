@@ -43,7 +43,7 @@ class physicManager(object):
         # Réglage des paramètres temporels
         self._fps = fps
         self._dt = 1.0 / fps
-        self._physics_steps_per_frame = 1000
+        self._physics_steps_per_frame = 100
 
         # instanciation et réglage des paramètres physiques
 
