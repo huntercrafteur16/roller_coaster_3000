@@ -29,7 +29,7 @@ class physicManager():
     wagon_length = 20
     ppm = 10
 
-    def __init__(self, width, height, root=None, frame: Frame = None, gravity=9.8, fps=30, physics_step_per_frame=60, logger=None) -> None:
+    def __init__(self, width, height, root=None, frame: Frame = None, gravity=9.8, fps=25, physics_step_per_frame=70, logger=None) -> None:
         self.width = width
         self.height = height
         self.frame = frame
@@ -84,7 +84,7 @@ class physicManager():
         """
         l = physicManager.wagon_length
         h = physicManager.wagon_height
-        self.wagon = Wagon(self._space, mass, l, h, startpos, mass*1000, True)
+        self.wagon = Wagon(self._space, mass, l, h, startpos, mass*8000, True)
         wagon_handler_prop = self._space.add_collision_handler(4, 1)
         wagon_handler_prop.pre_solve = self._on_prop_rail_Collision
 

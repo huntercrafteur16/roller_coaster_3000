@@ -2,9 +2,11 @@
 Module qui gère l'interface
 """
 
-from tkinter import N, X, Frame, Button, Tk, DoubleVar, BOTTOM, TOP
+from tkinter import N, RIGHT, X, Frame, Button, Checkbutton, Tk, DoubleVar, BOTTOM, TOP
 from tkinter import BOTH, IntVar, Entry, Scale, Label, HORIZONTAL
 from typing import Callable
+import pygame
+from numpy import var
 from GUI.music.musique import Musique
 import sys
 import subprocess
@@ -17,12 +19,12 @@ class Interface():
     """
     Classe interface pour l'affichage GUI
     """
+    # 
     play_pause_button_function: Callable
     start_reset_button_function: Callable
     apply_button_function: Callable
     open_file_function: Callable
     show_results: Callable
-
     isRunning: bool
 
     def __init__(self, button_functions: dict):
@@ -60,7 +62,7 @@ class Interface():
         c = DoubleVar(value=1)
 
         # Musique
-        self.music = Musique()
+        musique = Musique()
 
         def apply_values():
             self.applied_m = float(m.get())*1000
@@ -91,6 +93,10 @@ class Interface():
                                     text='Afficher résult.', fg='#d08000',
                                     activebackground='#d08000')
         show_result_button.grid(row=0, column=3, padx=3, pady=3)
+
+        # Affichage du bouton musique on/off
+        musique_or_not = Button(toolbar, text="Musique", command = musique.music_mute)
+        musique_or_not.grid(row=0, column=5, padx=3, pady=3)
 
         # Paramètres
         param = Frame(toolbar, bg="lightgray", width=200, padx=5, pady=5)

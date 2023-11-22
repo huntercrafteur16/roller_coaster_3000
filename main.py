@@ -56,7 +56,7 @@ def show_results():
     global logger
     logger.render_result()
 
-
+    
 # dictionnaire qui connecte les fonctions des boutons de l'affichade tkinter
 dict_func = {
     "start_reset": update_sim,
@@ -99,5 +99,6 @@ while True:
     if not phys_cont:
         show_results()
         update_sim()
+        logger.reset()
         phys_cont = True
         manager.pause()
