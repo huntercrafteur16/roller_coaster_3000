@@ -50,7 +50,7 @@ class Interface():
         self.graphbar.pack(side=BOTTOM, fill=X, expand=True, padx=5, pady=5)
 
         # Variables
-        self.applied_m, self.applied_f, self.applied_nbr_wagon = 1, 10, 3
+        self.applied_m, self.applied_f, self.applied_nbr_wagon = 1000, 10, 3
         m, f, nbr_wagon = DoubleVar(value=1), DoubleVar(
             value=10),  IntVar(value=3)
 
