@@ -73,7 +73,7 @@ class dataLogger:
 
     def _compute_accel(self):
         """
-        Calcule l'accélération
+        Calcule l'accélération en dérivant terme à terme
         """
         self.datas["acceleration"] = [0]
         for i in range(len(self.time)-1):

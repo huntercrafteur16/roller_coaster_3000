@@ -8,7 +8,6 @@ Class physicManager qui gère la physique Pymunk
 import os
 import platform
 from tkinter import Frame
-from typing import Callable
 import pymunk
 import pymunk.pygame_util
 import pygame
@@ -22,7 +21,6 @@ class physicManager():
     """
     Manager du monde physique pymunk et de l'interaction entre les différentes actions
     """
-    update_func: Callable  # fonction qui sera appelée à chaque boucle
     isPaused: bool
     time: int  # temps de la simulation en millisecondes
     wagon_height = 10
