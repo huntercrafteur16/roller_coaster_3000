@@ -2,14 +2,9 @@
 Module qui gère l'interface
 """
 
-from tkinter import N, RIGHT, X, Frame, Button, Checkbutton, Tk, DoubleVar, BOTTOM, TOP
-from tkinter import BOTH, IntVar, Entry, Scale, Label, HORIZONTAL
+from tkinter import N, RIGHT, X, Frame, Button, Tk, DoubleVar, BOTTOM, TOP, BOTH, IntVar, Entry, Scale, Label, HORIZONTAL
 from typing import Callable
-import pygame
-from numpy import var
 from GUI.music.musique import Musique
-import sys
-import subprocess
 
 # On définit une classe "Interface" qui prend en argument deux dictionnaires,
 # les variables et les fonctions donc l'interface a besoin pour s'implémenter

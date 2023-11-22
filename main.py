@@ -12,17 +12,6 @@ dyn_graphs: DynamicGraph
 logger: dataLogger
 
 
-def reset_sim():
-    "dit à physicmanager de se réinitialiser et réinitialise les graphiques"
-    global dyn_graphs
-    dyn_graphs.clear()
-    global logger
-    logger.reset()
-    global manager
-    manager.reinit()
-    manager.play()
-
-
 def play_pause_sim():
     "pause ou reactive physicmanger selon son état précédent "
     if manager.isPaused:
@@ -56,7 +45,7 @@ def show_results():
     global logger
     logger.render_result()
 
-    
+
 # dictionnaire qui connecte les fonctions des boutons de l'affichade tkinter
 dict_func = {
     "start_reset": update_sim,
@@ -67,7 +56,6 @@ dict_func = {
 }
 # génération de l'objet générant l'interface principal
 interface = Interface(dict_func)
-interface.start_reset_button_function = reset_sim
 
 logger = dataLogger()
 # génération du physicManager
