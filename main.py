@@ -38,8 +38,6 @@ def update_sim():
     global interface
     param = interface.get_param()
     manager.reinit(param)
-    print(param)
-    manager.play()
 
 
 def open_file():
