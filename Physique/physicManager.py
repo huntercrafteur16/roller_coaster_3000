@@ -27,6 +27,7 @@ class physicManager():
     time: int  # temps de la simulation en millisecondes
     wagon_height = 10
     wagon_length = 20
+    ppm = 10
 
     def __init__(self, width, height, root=None, frame: Frame = None, gravity=980, fps=60) -> None:
         self.width = width
@@ -47,7 +48,7 @@ class physicManager():
         # Réglage des paramètres temporels
         self._fps = fps
         self._dt = 1.0 / fps
-        self._physics_steps_per_frame = 100
+        self._physics_steps_per_frame = 30
 
         # instanciation et réglage des paramètres physiques
 
@@ -310,14 +311,16 @@ class physicManager():
                     self.rail.addPoint(point, L_point[2].strip())
             self.rail.renderRail(self._space, L, self.N)
 
-    def get_length_from_pixel(self, pixel, ratio):
+    def get_length_from_pixel(self, pixel):
         """
         ratio est le nombre de pixel pour un mètre
         """
-        return pixel/ratio
+        return pixel/physicManager.ppm
 
-    def get_pixel_from_length(self, length, ratio):
+    def get_pixel_from_length(self, length):
         'ratio est le nombre de pixel pour un nombre'
-        return length*ratio
-    
-    
+        return length*physicManager.ppm
+
+    def get_loco_velocity(self) -> float:
+
+        return self.get_length_from_pixel(self.wagon.get_chassis_velocity()[0])

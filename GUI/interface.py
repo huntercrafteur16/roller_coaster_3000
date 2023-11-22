@@ -58,7 +58,7 @@ class Interface():
         self.music = Musique()
 
         def apply_values():
-            self.applied_m = float(m.get())
+            self.applied_m = float(m.get())*1000
             self.applied_f = float(f.get())
 
             self.applied_nbr_wagon = int(nbr_wagon.get())
@@ -101,7 +101,7 @@ class Interface():
         label_m = Label(param_m, text='Masse des wagons (Tonnes)',
                         width=25, height=1)
         entry_m = Entry(param_m, textvariable=m, width=5)
-        scale_m = Scale(param_m, from_=0, to=50, showvalue=False, variable=m,
+        scale_m = Scale(param_m, from_=1, to=50, showvalue=False, variable=m,
                         tickinterval=25, orient=HORIZONTAL, width=10)
         # vitesse
         param_F = Frame(param)
