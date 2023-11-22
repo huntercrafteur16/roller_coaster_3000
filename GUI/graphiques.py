@@ -73,7 +73,7 @@ class DynamicGraph:
         self.master = master
 
         self.fig, self.axes = plt.subplots(1, num_subplots, sharex=True)
-        # Ensure self.axes is a numpy array even if num_subplots is 1
+        # il faut s'assurer que self.axes est un tableau numpy même si num_subplots est 1
         if not isinstance(self.axes, np.ndarray):
             self.axes = np.array([self.axes])
 
@@ -89,7 +89,7 @@ class DynamicGraph:
                       for ax, title in zip(self.axes, self.plot_titles)]
         self.x_data = []
 
-        # Adjust the figure layout for multiple subplots
+        # Ajuste la disposition de la figure pour plusieurs subplots
         if num_subplots > 1:
             self.fig.subplots_adjust(hspace=0.5)
         self.y_datas = [[] for _ in range(num_subplots)]
