@@ -4,7 +4,7 @@ Class physicManager qui gère la physique Pymunk
 -on peut effectuer scénario standart
 """
 # Python imports
-from logging import ERROR
+
 import os
 import platform
 from tkinter import Frame
@@ -45,6 +45,7 @@ class physicManager():
         self.wagon_is_braking = False
         self.simulation_ended = False
         self.param = None
+        self.power = float
         # code pour contenir la fenetre dans la frame tkinter indiquée #
         if frame is not None:
             os.environ['SDL_WINDOWID'] = str(frame.winfo_id())
