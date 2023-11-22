@@ -29,7 +29,7 @@ class physicManager():
     wagon_length = 20
     ppm = 10
 
-    def __init__(self, width, height, root=None, frame: Frame = None, gravity=9.8, fps=60, physics_step_per_frame=400) -> None:
+    def __init__(self, width, height, root=None, frame: Frame = None, gravity=9.8, fps=60, physics_step_per_frame=400, logger=None) -> None:
         self.width = width
         self.height = height
         self.frame = frame
@@ -50,7 +50,8 @@ class physicManager():
         self._fps = fps
         self._dt = 1.0 / fps
         self._physics_steps_per_frame = physics_step_per_frame
-
+        self.logger = logger
+        self.logger.setManager(self)
         # instanciation et réglage des paramètres physiques
 
         # Number of physics steps per screen frame
@@ -128,9 +129,12 @@ class physicManager():
             return False
         # frames de simulation physique pour 1 frame d'affichage (physics oversampling)
         for _ in range(self._physics_steps_per_frame):
-            self._space.step(self._dt/self._physics_steps_per_frame)
-            self.time += self._space.current_time_step
 
+            self._space.step(self._dt/self._physics_steps_per_frame)
+
+            self.time += self._space.current_time_step
+        if self.logger is not None:
+            self.logger.record()
         if self._process_events() == "QUIT":  # vérification des évènements terminaux
 
             return False

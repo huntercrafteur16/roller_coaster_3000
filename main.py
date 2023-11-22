@@ -69,10 +69,10 @@ dict_func = {
 interface = Interface(dict_func)
 interface.start_reset_button_function = reset_sim
 
-
+logger = dataLogger()
 # génération du physicManager
 manager = physicManager(1920, 700,
-                        interface.simu, interface.get_pymunk_frame())
+                        interface.simu, interface.get_pymunk_frame(), logger=logger)
 
 # graphe de représentation de vitesse
 
@@ -80,7 +80,7 @@ dyn_graphs = DynamicGraph(interface.get_graph_frame(), 2,
                           plot_titles=["energie", "vitesse"])
 
 # continuer l'exécution du programme
-logger = dataLogger(manager)
+
 GUI_cont, phys_cont = True, True
 update_sim()
 manager.pause()
@@ -89,8 +89,6 @@ while True:
 
         dyn_graphs.update_data(manager.getTime(), [
             manager.get_total_train_energy()/physicManager.ppm, manager.get_loco_velocity()/physicManager.ppm])
-        if not manager.isPaused:
-            logger.record()
 
         GUI_cont = interface.render_GUI()
         phys_cont = manager.process()
