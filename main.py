@@ -95,7 +95,7 @@ while True:
         for wagon in L:
             energy += wagon.get_total_energy()
         dyn_graphs.update_data(manager.getTime(), [
-            energy, manager.getWagon().get_chassis_velocity()[0]])
+            energy, manager.get_loco_velocity()])
         if not manager.isPaused:
             logger.record()
 
