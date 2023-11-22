@@ -90,7 +90,7 @@ class Rail():
         space.add(railseg)
 
     def add_last_rail(self, space, L, nb_wagon):
-        """ajoute le premier rail, qui permet de poser le train"""
+        """ajoute le dernier rail, qui permet de poser le train"""
         dernier_point = (self.data_points[-1][0], self.data_points[-1][1])
         railseg = pymunk.Segment(space.static_body, dernier_point, (
             dernier_point[0]+4*L*nb_wagon, dernier_point[1]), self.width)
