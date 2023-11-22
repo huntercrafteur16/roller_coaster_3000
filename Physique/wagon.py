@@ -98,7 +98,7 @@ class Wagon:
 
     def get_potential(self, ref_point=600):
         """renvoie l'energie potentielle de self"""
-        return self.m*self.gravity[1]*(ref_point-self.c.position[1])*0.80
+        return self.m*self.gravity[1]*(ref_point-self.c.position[1])*0.8
 
     def get_total_energy(self):
         """renvoie l'energie mécanique de self"""
