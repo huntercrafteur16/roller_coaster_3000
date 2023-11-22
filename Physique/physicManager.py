@@ -75,8 +75,6 @@ class physicManager():
         self.time = 0
         self.pausedTime = 0
 
-        self._curr_step_power = 0
-
     def createTrain(self, startpos: tuple[float, float], mass=10):
         """
         Crée le premier wagon et le reste du train
@@ -131,13 +129,11 @@ class physicManager():
 
             return False
         # frames de simulation physique pour 1 frame d'affichage (physics oversampling)
-        power = []
         for _ in range(self._physics_steps_per_frame):
 
-            self._curr_step_power = 0
             self._space.step(self._dt/self._physics_steps_per_frame)
-            self.time += self._space.current_time_step
 
+            self.time += self._space.current_time_step
         if self.logger is not None:
             self.logger.record()
         if self._process_events() == "QUIT":  # vérification des évènements terminaux
