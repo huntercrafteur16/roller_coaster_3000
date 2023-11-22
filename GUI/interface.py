@@ -2,9 +2,11 @@
 Module qui gère l'interface
 """
 
-from tkinter import N, X, Frame, Button, Tk, DoubleVar, BOTTOM, TOP
+from tkinter import N, RIGHT, X, Frame, Button, Checkbutton, Tk, DoubleVar, BOTTOM, TOP
 from tkinter import BOTH, IntVar, Entry, Scale, Label, HORIZONTAL
 from typing import Callable
+import pygame
+from numpy import var
 from GUI.music.musique import Musique
 import subprocess
 
@@ -55,8 +57,8 @@ class Interface():
             value=10),  IntVar(value=3)
 
         # Musique
-        self.music = Musique()
-
+        musique = Musique()
+        
         def apply_values():
             self.applied_m = float(m.get())*1000
             self.applied_f = float(f.get())
@@ -87,6 +89,9 @@ class Interface():
         open_editor_button = Button(toolbar, command=self.open_editor, width=10, height=2,
                                     text="Ouvrir éditeur", fg="#6400c8", activebackground="#6400c8")
         open_editor_button.grid(row=0, column=4, padx=3, pady=3)
+         
+        musique_or_not = Button(toolbar, text="Musique", command = musique.music_mute)
+        musique_or_not.grid(row=0, column=5, padx=3, pady=3)
 
         # Paramètres
         param = Frame(toolbar, bg="lightgray", width=200, padx=5, pady=5)

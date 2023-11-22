@@ -55,14 +55,14 @@ def show_results():
     global logger
     logger.render_result()
 
-
+    
 # dictionnaire qui connecte les fonctions des boutons de l'affichade tkinter
 dict_func = {
     "start_reset": update_sim,
     "play_pause": play_pause_sim,
     "apply": update_sim,
     "open": open_file,
-    "show_results": show_results
+    "show_results": show_results,
 }
 # génération de l'objet générant l'interface principal
 interface = Interface(dict_func)
