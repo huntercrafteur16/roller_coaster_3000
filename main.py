@@ -1,7 +1,6 @@
 """Fichier principal du programme"""
-from tkinter import filedialog as fd
 
-from scipy.__config__ import show
+from tkinter import filedialog as fd
 from GUI.interface import Interface
 from GUI.graphiques import DynamicGraph
 from Physique.physicManager import physicManager
@@ -58,6 +57,7 @@ def open_file():
 
 
 def show_results():
+    """affiche les résultats"""
     global logger
     logger.render_result()
 
