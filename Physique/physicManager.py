@@ -7,6 +7,7 @@ Class physicManager qui gère la physique Pymunk
 from logging import ERROR
 import os
 import platform
+from tkinter import Frame
 from typing import Callable
 import pymunk
 import pymunk.pygame_util
@@ -17,7 +18,7 @@ from Physique.rails import Rail
 from Physique.ClasseTrain import Train
 
 
-class physicManager(object):
+class physicManager():
     """
     Manager du monde physique pymunk et de l'interaction entre les différentes actions
     """
@@ -27,7 +28,7 @@ class physicManager(object):
     wagon_height = 10
     wagon_length = 20
 
-    def __init__(self, width, height, root=None, frame=None, gravity=980, fps=60) -> None:
+    def __init__(self, width, height, root=None, frame: Frame = None, gravity=980, fps=60) -> None:
         self.width = width
         self.height = height
         self.frame = frame
@@ -265,7 +266,7 @@ class physicManager(object):
 
         if self.rail:
             startpos = (self.rail.data_points[0]
-                        [0], self.rail.data_points[0][1]-10)
+                        [0]-self.getWagon().L/2, self.rail.data_points[0][1]-10)
             if param is not None:
                 self.N = param["nbr_wagon"]
             self.rail.renderRail(
