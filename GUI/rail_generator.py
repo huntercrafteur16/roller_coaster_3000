@@ -131,7 +131,7 @@ class Canvas():
             pygame.draw.rect(
                 self.screen, (220, 220, 0), self.prop_type_button)
             text_surface = self.my_font.render(
-                'accélérateur', False, (0, 0, 0))
+                'propulseur', False, (0, 0, 0))
             self.screen.blit(
                 text_surface, (self.prop_type_button[0], self.prop_type_button[1]+20))
 
@@ -311,7 +311,7 @@ class Canvas():
         temp = self.curve_points
         for i in range(len(temp)):
             if (x-temp[i][0])**2 + (y-temp[i][1])**2 < (x-temp[cl_i][0])**2 + (y-temp[cl_i][1])**2:
-                clos_i = i
+                cl_i = i
         return cl_i
 
     def select_right(self, x: float, y: float):

@@ -5,7 +5,7 @@ from GUI.interface import Interface
 from GUI.graphiques import DynamicGraph
 from Physique.physicManager import physicManager
 from dataLogger import dataLogger
-from railgenerator_launcher import launch
+
 
 manager: physicManager
 dyn_graphs: DynamicGraph
@@ -56,7 +56,7 @@ def show_results():
     global logger
     logger.render_result()
 
-
+    
 # dictionnaire qui connecte les fonctions des boutons de l'affichade tkinter
 dict_func = {
     "start_reset": update_sim,

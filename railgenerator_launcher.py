@@ -43,5 +43,4 @@ def launch():
         update()
 
 
-if __name__ == "__main__":
-    launch()
+launch()
