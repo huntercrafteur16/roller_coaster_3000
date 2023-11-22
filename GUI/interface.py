@@ -63,7 +63,7 @@ class Interface():
 
         # Musique
         musique = Musique()
-        
+
         def apply_values():
             self.applied_m = float(m.get())*1000
             self.applied_f = float(f.get())*1000
@@ -93,11 +93,9 @@ class Interface():
                                     text='Afficher résult.', fg='#d08000',
                                     activebackground='#d08000')
         show_result_button.grid(row=0, column=3, padx=3, pady=3)
-        open_editor_button = Button(toolbar, command=self.open_editor, width=10, height=2,
-                                    text="Ouvrir éditeur", fg="#6400c8", activebackground="#6400c8")
-        open_editor_button.grid(row=0, column=4, padx=3, pady=3)
-         
-        musique_or_not = Button(toolbar, text="Musique", command = musique.music_mute)
+
+        musique_or_not = Button(toolbar, text="Musique",
+                                command=musique.music_mute)
         musique_or_not.grid(row=0, column=5, padx=3, pady=3)
 
         # Paramètres
