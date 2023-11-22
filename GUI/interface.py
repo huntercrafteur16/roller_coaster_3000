@@ -98,10 +98,10 @@ class Interface():
 
         # masse
         param_m = Frame(param)
-        label_m = Label(param_m, text='Masse des wagons (kg)',
+        label_m = Label(param_m, text='Masse des wagons (Tonnes)',
                         width=25, height=1)
         entry_m = Entry(param_m, textvariable=m, width=5)
-        scale_m = Scale(param_m, from_=0, to=100, showvalue=False, variable=m,
+        scale_m = Scale(param_m, from_=0, to=50, showvalue=False, variable=m,
                         tickinterval=25, orient=HORIZONTAL, width=10)
         # vitesse
         param_F = Frame(param)
