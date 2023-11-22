@@ -11,10 +11,10 @@ class dataLogger:
     """
     time: list
 
-    def __init__(self, manager: physicManager):
+    def __init__(self):
         self.result_render = ResultInterface(
             4, ["vitesse", "acceleration", "energie", "puissance"])
-        self.manager = manager
+        self.manager = None
         self.time = []
         self.datas = {"velocity": [],
                       "acceleration": [],
@@ -22,6 +22,9 @@ class dataLogger:
                       "kinetic_energie": [],
                       "meca_energie": [],
                       "electric_power": []}
+
+    def setManager(self, manager):
+        self.manager = manager
 
     def record(self):
         """

@@ -84,9 +84,9 @@ class Interface():
                                     text='Afficher résult.', fg='#d08000',
                                     activebackground='#d08000')
         show_result_button.grid(row=0, column=3, padx=3, pady=3)
-        open_editor_button = Button(toolbar, command=self.open_editor, width=10, height=2,
-                                    text="Ouvrir éditeur", fg="#6400c8", activebackground="#6400c8")
-        open_editor_button.grid(row=0, column=4, padx=3, pady=3)
+        # open_editor_button = Button(toolbar, command=self.open_editor, width=10, height=2,
+        #                             text="Ouvrir éditeur", fg="#6400c8", activebackground="#6400c8")
+        # open_editor_button.grid(row=0, column=4, padx=3, pady=3)
 
         # Paramètres
         param = Frame(toolbar, bg="lightgray", width=200, padx=5, pady=5)
@@ -180,9 +180,3 @@ class Interface():
     def killInterface(self):
         """arrete l'interface """
         self.isRunning = False
-
-    def open_editor(self):
-        """ouvre le fichier railgenerator_launcher"""
-        with open(
-                'C:/- Centrale -/1A/7 - Coding weeks/GitDesktop/RollerCoaster3000/roller_coaster_3000/railgenerator_launcher.py') as rgl:
-            exec(rgl.read())
