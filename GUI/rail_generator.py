@@ -307,12 +307,11 @@ class Canvas():
         """
         Renvoie le point le plus proche
         """
-        cl_i = 0
-        temp = self.curve_points
-        for i in range(len(temp)):
-            if (x-temp[i][0])**2 + (y-temp[i][1])**2 < (x-temp[cl_i][0])**2 + (y-temp[cl_i][1])**2:
-                clos_i = i
-        return cl_i
+        closest_i = 0
+        for i in range(len(self.curve_points)):
+            if (x-self.curve_points[i][0])**2 + (y-self.curve_points[i][1])**2 < (x-self.curve_points[closest_i][0])**2 + (y-self.curve_points[closest_i][1])**2:
+                closest_i = i
+        return closest_i
 
     def select_right(self, x: float, y: float):
         """
@@ -355,7 +354,7 @@ class Canvas():
         self.curve_points = self.spline.evalpts
         if self.maindata != []:
             for i in range(len(self.maindata)):
-                self.maindata[i][0] = self.curve_points[i]
+                self.maindata[i][0] = (self.curve_points[i])
         for i in range(len(self.maindata)+1, len(self.curve_points)):
             self.maindata.append([(self.curve_points[i]), "FREE"])
 

@@ -88,8 +88,7 @@ while True:
     while phys_cont and GUI_cont:
 
         dyn_graphs.update_data(manager.getTime(), [
-            manager.get_total_train_energy()/physicManager.ppm,
-            manager.get_loco_velocity()/physicManager.ppm])
+            manager.get_total_train_energy()/physicManager.ppm, manager.get_loco_velocity()/physicManager.ppm])
         if not manager.isPaused:
             logger.record()
 
