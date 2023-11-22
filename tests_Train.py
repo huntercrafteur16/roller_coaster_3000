@@ -1,3 +1,7 @@
+"""
+Module de test de la classe Train
+"""
+
 import pymunk
 from Physique.wagon import Wagon
 from Physique.ClasseTrain import Train

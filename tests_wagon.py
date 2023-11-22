@@ -1,3 +1,5 @@
+"""Module de test de la classe Wagon"""
+
 import pymunk
 import pymunk.pygame_util
 from Physique.wagon import Wagon

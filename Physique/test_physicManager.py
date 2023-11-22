@@ -1,4 +1,7 @@
-from physicManager import *
+"""
+Module de test du fichier physicmanager
+"""
+from physicManager import physicManager
 import pygame
 manager = physicManager(1000, 600)
 
