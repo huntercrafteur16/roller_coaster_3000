@@ -90,8 +90,6 @@ while True:
         dyn_graphs.update_data(manager.getTime(), [
             manager.get_total_train_energy()/physicManager.ppm,
             manager.get_loco_velocity()/physicManager.ppm])
-        if not manager.isPaused:
-            logger.record()
 
         GUI_cont = interface.render_GUI()
         phys_cont = manager.process()

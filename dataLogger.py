@@ -76,5 +76,8 @@ class dataLogger:
         """
         self.datas["acceleration"] = [0]
         for i in range(len(self.time)-1):
-            self.datas["acceleration"].append((self.datas["velocity"][i+1]-self.datas["velocity"]
-                                               [i])/(self.time[i+1]-self.time[i]))
+            try:
+                self.datas["acceleration"].append((self.datas["velocity"][i+1]-self.datas["velocity"]
+                                                   [i])/(self.time[i+1]-self.time[i]))
+            except:
+                print(self.time)
