@@ -1,7 +1,14 @@
+"""
+ajoute la musique à la fenetre
+"""
 import pygame
 
 
 class Musique:
+    """
+    Classe permettant l'ajout de la musique
+    """
+
     def __init__(self):
         pygame.mixer.init()
         self.music = pygame.mixer.music.load("GUI/music/west_coaster.mp3")
@@ -11,4 +18,7 @@ class Musique:
         self.sound_volume()
 
     def sound_volume(self):
+        """
+        methode pour régler le volume sonore
+        """
         self.okay_lezgo.set_volume(0.15)

@@ -1,17 +1,14 @@
-import sys
+from tkinter import filedialog
 from geomdl import BSpline
 from geomdl import utilities
-from math import *
-
 import pygame
-from Physique.rails import Rail
-from geomdl import BSpline
-
-import tkinter as tk
-from tkinter import filedialog
 
 
 class Config():
+    """
+    Classe qui configure la fenetre
+    """
+
     def __init__(self):
         self.fill = (255, 255, 255)
         self.width = 2
@@ -66,6 +63,9 @@ class Canvas():
         self.brake_type_button = ((6*self.w/12-30, self.h - 50, dl, dh))
 
     def button_render(self):
+        """
+        renvoie les informations des bouttons
+        """
 
         text_surface = self.my_font.render(
             'Clic gauche pour sélectionner/ajouter un point. Si sélection, ajout après le point sélectionné.', False, (0, 0, 0))
@@ -89,7 +89,7 @@ class Canvas():
             self.screen.blit(
                 text_surface, (self.add_button[0], self.add_button[1]+20))
 
-        if self.selected != None:
+        if self.selected is not None:
             pygame.draw.rect(self.screen, (255, 150, 0), self.desel_button)
             text_surface = self.my_font.render(
                 'déselectionner', False, (0, 0, 0))
@@ -132,7 +132,7 @@ class Canvas():
             self.screen.blit(
                 text_surface, (self.prop_type_button[0], self.prop_type_button[1]+20))
 
-        if self.cfg.show_points == True:
+        if self.cfg.show_points is True:
             pygame.draw.rect(self.screen, (100, 0, 200), self.hide_button)
             text_surface = self.my_font.render(
                 'ossature : visible', False, (0, 0, 0))
@@ -160,7 +160,9 @@ class Canvas():
             text_surface, (self.open_button[0], self.open_button[1]+20))
 
     def render(self):
-
+        """
+        Renvoi les résultats
+        """
         # affichage de la grille
         for n in range(0, self.w, 10):
             pygame.draw.line(self.screen, (255, 255, 255), (n, 0), (n, self.h))
@@ -215,13 +217,19 @@ class Canvas():
 
         self.button_render()
 
-    def region(self, button, x, y):
+    def region(self, button: tuple[float, float, float, float], x: float, y: float):
+        """
+        Renvoie si le point est sur le bouton
+        """
         bx, by, brx, bry = button
         if bx < x < bx+brx and by < y < by+bry:
             return True
         return False
 
-    def select_left(self, x, y, r=10):
+    def select_left(self, x: float, y: float, r=10):
+        """
+        Renvoie si gauche est selectionné
+        """
         can_add = True
         if self.region(self.add_button, x, y):
             self.add_mode = not self.add_mode
@@ -231,7 +239,7 @@ class Canvas():
             self.selected = None
             can_add = False
 
-        if self.selected != None:
+        if self.selected is not None:
             if self.region(self.desel_button, x, y):
                 can_add = False
                 self.selected = None
@@ -283,7 +291,7 @@ class Canvas():
 
         if self.add_mode and can_add:
             self.count += 1
-            if self.selected != None:
+            if self.selected is not None:
                 xpoint, _ = self.ctrl_points[self.selected]
                 self.ctrl_points.insert(self.selected+1, (x, y))
             else:
@@ -291,14 +299,20 @@ class Canvas():
             if self.count >= 3:
                 self.draw(self.ctrl_points)
 
-    def closest_point(self, x, y):
+    def closest_point(self, x: float, y: float):
+        """
+        Renvoie le point le plus proche
+        """
         closest_i = 0
         for i in range(len(self.curve_points)):
             if (x-self.curve_points[i][0])**2 + (y-self.curve_points[i][1])**2 < (x-self.curve_points[closest_i][0])**2 + (y-self.curve_points[closest_i][1])**2:
                 closest_i = i
         return closest_i
 
-    def select_right(self, x, y):
+    def select_right(self, x: float, y: float):
+        """
+        Renvoie si droite est selectionné
+        """
         if len(self.lineselection) == 0:
             self.lineselection = [self.closest_point(x, y)]
 
@@ -312,7 +326,10 @@ class Canvas():
             self.lineselection = []
 
     def move(self, xy):
-        if self.move_point and self.selected != None:
+        """
+        Déplace les points de controle
+        """
+        if self.move_point and self.selected is not None:
             self.ctrl_points.pop(self.selected)
             self.ctrl_points.insert(self.selected, xy)
             if self.count >= 3:
@@ -320,7 +337,10 @@ class Canvas():
 
             return True
 
-    def draw(self, curvePts):
+    def draw(self, curvePts: list):
+        """
+        dessine la courbe
+        """
         p0x, p0y = curvePts[0]
         L = [(p0x-40, p0y), (p0x-39, p0y)]
         self.spline.degree = self.spline.degree  # Set the degree first
@@ -335,6 +355,9 @@ class Canvas():
             self.maindata.append([(self.curve_points[i]), "FREE"])
 
     def save_file(self):
+        """
+        enregistre le fichier
+        """
         file_path = filedialog.asksaveasfilename(
             defaultextension=".txt", filetypes=[("Text files", "*.txt")])
 
@@ -357,6 +380,9 @@ class Canvas():
                 file.writelines(lines)
 
     def open_file(self):
+        """
+        ouvre le fichier
+        """
         file_path = filedialog.askopenfilename(
             defaultextension=".txt", filetypes=[("Text files", "*.txt")])
 
