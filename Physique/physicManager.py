@@ -332,6 +332,9 @@ class physicManager():
         return self.wagon.get_chassis_velocity()[0]
 
     def get_total_train_energy(self) -> float:
+        """
+        renvoie l'énergie mécanique de l'ensemble du train
+        """
         L = self.Train.liste_wagon
         energy = 0
         for wagon in L:
