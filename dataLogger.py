@@ -23,11 +23,19 @@ class dataLogger:
 
         wagon = self.manager.getWagon()
         self.time.append(self.manager.getTime())
+        L = self.manager.Train.liste_wagon
+        total_energy = 0
+        potential_energy = 0
+        kinetic_energy = 0
+        for wagon in L:
+            potential_energy += wagon.get_potential()
+            kinetic_energy += wagon.get_kinetic()
+            total_energy = kinetic_energy + potential_energy
         self.datas["velocity"].append(
             self.manager.getWagon().get_chassis_velocity()[0])
-        self.datas["potential_energie"].append(wagon.get_potential())
-        self.datas["kinetic_energie"].append(wagon.get_kinetic())
-        self.datas["meca_energie"].append(wagon.get_total_energy())
+        self.datas["potential_energie"].append(potential_energy)
+        self.datas["kinetic_energie"].append(kinetic_energy)
+        self.datas["meca_energie"].append(total_energy)
         self.datas["electric_power"].append(wagon.get_puissance())
 
     def reset(self):
