@@ -34,7 +34,8 @@ class physicManager():
     wagon: Wagon
     train: Train
 
-    def __init__(self, width, height, root=None, frame: Frame = None, gravity=9.8, fps=25, physics_step_per_frame=100, logger=None) -> None:
+    def __init__(self, width, height, root=None, frame: Frame = None,
+                 gravity=9.8, fps=25, physics_step_per_frame=100, logger=None) -> None:
         self.width = width
         self.height = height
         self.frame = frame
