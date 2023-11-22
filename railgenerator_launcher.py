@@ -1,13 +1,18 @@
 """
 Module permetant la création et sauvegarde dans un fichier d'un parcours
 """
+import os
+import platform
 import sys
 import ctypes
+from tkinter import Tk
 import pygame
 from GUI.rail_generator import Canvas
 
-ctypes.windll.user32.SetProcessDPIAware()
-if __name__ == "__main__":
+
+def launch():
+
+    ctypes.windll.user32.SetProcessDPIAware()
     pygame.init()
     pygame.font.init()
     screen = pygame.display.set_mode((1920, 700))
@@ -36,3 +41,7 @@ if __name__ == "__main__":
             elif event.type == pygame.MOUSEMOTION:
                 canvas.move(event.pos)
         update()
+
+
+if __name__ == "__main__":
+    launch()

@@ -4,6 +4,7 @@ from GUI.interface import Interface
 from GUI.graphiques import DynamicGraph
 from Physique.physicManager import physicManager
 from dataLogger import dataLogger
+from railgenerator_launcher import launch
 
 manager: physicManager
 dyn_graphs: DynamicGraph
@@ -60,7 +61,7 @@ dict_func = {
     "play_pause": play_pause_sim,
     "apply": update_sim,
     "open": open_file,
-    "show_results": show_results
+    "show_results": show_results,
 }
 # génération de l'objet générant l'interface principal
 interface = Interface(dict_func)
