@@ -6,8 +6,13 @@ import ctypes
 import pygame
 from GUI.rail_generator import Canvas
 
-ctypes.windll.user32.SetProcessDPIAware()
-if __name__ == "__main__":
+
+def launch():
+    """
+    lance le programme
+    """
+
+    ctypes.windll.user32.SetProcessDPIAware()
     pygame.init()
     pygame.font.init()
     screen = pygame.display.set_mode((1920, 700))
@@ -36,3 +41,6 @@ if __name__ == "__main__":
             elif event.type == pygame.MOUSEMOTION:
                 canvas.move(event.pos)
         update()
+
+
+launch()
