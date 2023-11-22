@@ -55,10 +55,10 @@ class Wagon:
         PivotJoint(space, chassis.body, wheel2.body, v3, (0, 0), False)
 
         DampedSpring(space, chassis.body, wheel3.body,
-                     v5, (0, 0), L/6, tension_ressort, 60)
+                     v5, (0, 0), L/3+1, tension_ressort, 60)
 
         DampedSpring(space, chassis.body, wheel4.body,
-                     v7, (0, 0), L/6, tension_ressort, 60)
+                     v7, (0, 0), L/3+1, tension_ressort, 60)
 
         GrooveJoint(space, chassis.body, wheel3.body,
                     (-L/2, h/2), (-L/2, h/2+100), (0, 0))

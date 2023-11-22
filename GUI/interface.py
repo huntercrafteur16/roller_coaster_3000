@@ -19,7 +19,7 @@ class Interface():
     """
     Classe interface pour l'affichage GUI
     """
-    # 
+    #
     play_pause_button_function: Callable
     start_reset_button_function: Callable
     apply_button_function: Callable
@@ -54,7 +54,7 @@ class Interface():
 
         # Variables
         self.applied_m, self.applied_f, self.applied_v = 1000, 100000, 50
-        self.applied_nbr_wagon, self.applied_c = 3, 0.001
+        self.applied_nbr_wagon, self.applied_c = 3, 10
         m = DoubleVar(value=1)
         f = DoubleVar(value=10)
         nbr_wagon = IntVar(value=3)
@@ -69,7 +69,7 @@ class Interface():
             self.applied_f = float(f.get())*10000
             self.applied_v = float(v.get())*100
             self.applied_nbr_wagon = int(nbr_wagon.get())
-            self.applied_c = float(c.get())*0.001
+            self.applied_c = float(c.get())*10
             self.apply_button_function()
             print("nouvelles valeurs")
         # Boutons Start/Reset
@@ -95,7 +95,8 @@ class Interface():
         show_result_button.grid(row=0, column=3, padx=3, pady=3)
 
         # Affichage du bouton musique on/off
-        musique_or_not = Button(toolbar, text="Musique", command = musique.music_mute)
+        musique_or_not = Button(toolbar, text="Musique",
+                                command=musique.music_mute)
         musique_or_not.grid(row=0, column=5, padx=3, pady=3)
 
         # Paramètres

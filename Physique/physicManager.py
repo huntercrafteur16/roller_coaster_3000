@@ -29,7 +29,7 @@ class physicManager():
     wagon_length = 20
     ppm = 10
 
-    def __init__(self, width, height, root=None, frame: Frame = None, gravity=9.8, fps=25, physics_step_per_frame=70, logger=None) -> None:
+    def __init__(self, width, height, root=None, frame: Frame = None, gravity=9.8, fps=25, physics_step_per_frame=100, logger=None) -> None:
         self.width = width
         self.height = height
         self.frame = frame
@@ -84,7 +84,7 @@ class physicManager():
         """
         l = physicManager.wagon_length
         h = physicManager.wagon_height
-        self.wagon = Wagon(self._space, mass, l, h, startpos, mass*8000, True)
+        self.wagon = Wagon(self._space, mass, l, h, startpos, mass*1000, True)
         wagon_handler_prop = self._space.add_collision_handler(4, 1)
         wagon_handler_prop.pre_solve = self._on_prop_rail_Collision
 
@@ -102,6 +102,7 @@ class physicManager():
 
         wagon_handler_drag = self._space.add_collision_handler(4, 0)
         wagon_handler_drag.pre_solve = self._on_drag_rail_Collision
+
         self.Train = Train(self._space, self.wagon, self.N)
 
     def getWagon(self):
@@ -188,7 +189,6 @@ class physicManager():
         except ERROR:
             pygame.init()
             pygame.display.init()
-            print("error")
 
     def _draw_objects(self) -> None:
         """
@@ -223,6 +223,7 @@ class physicManager():
         """
         définit l'action lorsqu'on rencontre un rail de type Brake et termine la simulation si arrêt
         """
+
         self._prop_loco(-2000000)
         if self.getWagon().get_chassis_velocity()[0] < 2e-2:
             self.simulation_ended = True
@@ -235,12 +236,14 @@ class physicManager():
         signe = np.sign(vitesse)
         force = -signe*coef*vitesse**2
         self._prop_loco(force)
+
         return True
 
     def _on_prop_rail_Collision(self, arbiter, space, data):
         """
         définit l'action lorsqu'on rencontre un rail de type Propulsion
         """
+
         self._prop_loco(self.F)
         return True
 
@@ -248,6 +251,7 @@ class physicManager():
         """
         définit l'action lorsqu'on rencontre un rail de type Treuil
         """
+
         self._pull_loco(self.v)
         return True
 
