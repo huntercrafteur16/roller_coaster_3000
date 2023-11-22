@@ -1,10 +1,14 @@
-import numpy as np
-from GUI.interface import Interface
+"""
+Module permettant l'affichage des résultats à la fin de la simulation
+"""
 from GUI.resultInterface import ResultInterface
 from Physique.physicManager import physicManager
 
 
 class dataLogger:
+    """
+    Classe dataLogger pour gérer l'affichage des graphes à la fin de la simualtion
+    """
     time: list
 
     def __init__(self, manager: physicManager):
@@ -20,7 +24,9 @@ class dataLogger:
                       "electric_power": []}
 
     def record(self):
-
+        """
+        Lit les valeurs à ajouter dans les graphes et les garde dans les listes correspondantes
+        """
         wagon = self.manager.getWagon()
         self.time.append(self.manager.getTime())
         L = self.manager.Train.liste_wagon
@@ -39,6 +45,9 @@ class dataLogger:
         self.datas["electric_power"].append(wagon.get_puissance())
 
     def reset(self):
+        """
+        Réinitialise les listes contenant les données
+        """
         self.time = []
         self.datas = {"velocity": [],
                       "acceleration": [],
@@ -48,14 +57,20 @@ class dataLogger:
                       "electric_power": []}
 
     def render_result(self):
-
+        """
+        Renvoie les résultats
+        """
         self.result_render.fill_time(self.time)
         self._compute_accel()
         self.result_render._fill_datas_to_subplot(
-            [self.datas["velocity"], self.datas["acceleration"], self.datas["meca_energie"], self.datas["electric_power"]])
+            [self.datas["velocity"], self.datas["acceleration"],
+             self.datas["meca_energie"], self.datas["electric_power"]])
         self.result_render.show()
 
     def _compute_accel(self):
+        """
+        Calcule l'accélération
+        """
         self.datas["acceleration"] = [0]
         for i in range(len(self.time)-1):
             self.datas["acceleration"].append((self.datas["velocity"][i+1]-self.datas["velocity"]
