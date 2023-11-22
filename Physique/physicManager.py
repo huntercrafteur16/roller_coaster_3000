@@ -28,6 +28,13 @@ class physicManager():
     wagon_height = 10
     wagon_length = 20
     ppm = 10
+    _space: pymunk.Space
+    N: int
+    v: float
+    F: float
+    c: float
+    wagon: Wagon
+    train: Train
 
     def __init__(self, width, height, root=None, frame: Frame = None, gravity=9.8, fps=25, physics_step_per_frame=100, logger=None) -> None:
         self.width = width
@@ -67,12 +74,10 @@ class physicManager():
         self._draw_options.constraint_color = (255, 255, 255, 255)
         self._draw_options.flags ^= pymunk.pygame_util.DrawOptions.DRAW_CONSTRAINTS
         self._draw_options.flags ^= pymunk.pygame_util.DrawOptions.DRAW_COLLISION_POINTS
-
         # scénario test
         pygame.display.init()
         # réglages autres
         # fonction qui sera exécutée après chaque actualisation
-        self.update_func = lambda: None
         self.isPaused = True
         self.time = 0
         self.pausedTime = 0
@@ -103,7 +108,7 @@ class physicManager():
         wagon_handler_drag = self._space.add_collision_handler(4, 0)
         wagon_handler_drag.pre_solve = self._on_drag_rail_Collision
 
-        self.Train = Train(self._space, self.wagon, self.N)
+        self.train = Train(self._space, self.wagon, self.N)
 
     def getWagon(self):
         """
@@ -121,9 +126,6 @@ class physicManager():
             self._clock.tick_busy_loop(self._fps)
             self._clear_screen()
             self._draw_objects()
-
-        # fonction externe envoyée lors de l'exécution de process
-            self.update_func()
 
         # actualisation du rendu pygame
 
@@ -149,9 +151,6 @@ class physicManager():
         # fonctions nécessaires et explicites
         self._clear_screen()
         self._draw_objects()
-
-        # fonction externe envoyée lors de l'exécution de process
-        self.update_func()
 
         # actualisation du rendu pygame
 
@@ -183,12 +182,8 @@ class physicManager():
         Clears the screen.
         :return: None
         """
-        try:
-            self._screen.fill(pygame.Color("white"))
 
-        except ERROR:
-            pygame.init()
-            pygame.display.init()
+        self._screen.fill(pygame.Color("white"))
 
     def _draw_objects(self) -> None:
         """
@@ -307,8 +302,6 @@ class physicManager():
         # self._createSampleRail()
 
         # réglages autres
-        # fonction qui sera exécutée après chaque actualisation
-        self.update_func = lambda: None
         self.simulation_ended = False
         self.isPaused = True
         self.time = 0
@@ -351,7 +344,7 @@ class physicManager():
         """
         renvoie l'énergie mécanique de l'ensemble du train
         """
-        L = self.Train.liste_wagon
+        L = self.train.liste_wagon
         energy = 0
         for wagon in L:
             energy += wagon.get_total_energy()

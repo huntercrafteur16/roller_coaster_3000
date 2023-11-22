@@ -1,11 +1,7 @@
 """Module qui définit les classes relatives aux rails"""
 
-import random
 import pymunk.pygame_util
 import pymunk
-
-
-random.seed(1)  # make the simulation the same each time, easier to debug
 
 
 class Rail():

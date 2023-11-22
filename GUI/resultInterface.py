@@ -18,7 +18,7 @@ class ResultInterface():
         """ajoute l'attribut temps"""
         self.time = time
 
-    def _fill_datas_to_subplot(self, datas: list):
+    def fill_datas_to_subplot(self, datas: list):
         """
         remplit les listes de données à afficher
         """

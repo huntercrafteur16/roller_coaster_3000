@@ -4,7 +4,6 @@ Module qui gère l'interface
 
 from tkinter import N, RIGHT, X, Frame, Button, Tk, DoubleVar, BOTTOM, TOP, BOTH, IntVar, Entry, Scale, Label, HORIZONTAL
 from typing import Callable
-from numpy import var
 from GUI.music.musique import Musique
 
 # On définit une classe "Interface" qui prend en argument deux dictionnaires,

@@ -2,7 +2,7 @@
 Module permettant l'affichage des résultats à la fin de la simulation
 """
 from GUI.resultInterface import ResultInterface
-from Physique.physicManager import physicManager
+import Physique.physicManager
 
 
 class dataLogger:
@@ -23,7 +23,8 @@ class dataLogger:
                       "meca_energie": [],
                       "electric_power": []}
 
-    def setManager(self, manager):
+    def setManager(self, manager: Physique.physicManager.physicManager):
+        """set the manager the logger should get data from """
         self.manager = manager
 
     def record(self):
@@ -32,7 +33,7 @@ class dataLogger:
         """
         wagon = self.manager.getWagon()
         self.time.append(self.manager.getTime())
-        L = self.manager.Train.liste_wagon
+        L = self.manager.train.liste_wagon
         total_energy = 0
         potential_energy = 0
         kinetic_energy = 0
@@ -65,7 +66,7 @@ class dataLogger:
         """
         self.result_render.fill_time(self.time)
         self._compute_accel()
-        self.result_render._fill_datas_to_subplot(
+        self.result_render.fill_datas_to_subplot(
             [self.datas["velocity"], self.datas["acceleration"],
              self.datas["meca_energie"], self.datas["electric_power"]])
         self.result_render.show()
