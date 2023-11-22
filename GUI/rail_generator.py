@@ -131,7 +131,7 @@ class Canvas():
             pygame.draw.rect(
                 self.screen, (220, 220, 0), self.prop_type_button)
             text_surface = self.my_font.render(
-                'accélérateur', False, (0, 0, 0))
+                'propulseur', False, (0, 0, 0))
             self.screen.blit(
                 text_surface, (self.prop_type_button[0], self.prop_type_button[1]+20))
 

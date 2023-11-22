@@ -12,19 +12,19 @@ def launch():
     lance le programme
     """
 
-    ctypes.windll.user32.SetProcessDPIAware()
-    pygame.init()
-    pygame.font.init()
-    screen = pygame.display.set_mode((1920, 700))
-    canvas = Canvas(screen)
+        ctypes.windll.user32.SetProcessDPIAware()
+            pygame.init()
+        pygame.font.init()
+        screen = pygame.display.set_mode((1920, 700))
+        canvas = Canvas(screen)
 
-    def update():
-        """
-        Met à jour l'affichage
-        """
-        screen.fill((200, 255, 255))
-        canvas.render()
-        pygame.display.update()
+        def update():
+            """
+            Met à jour l'affichage
+            """
+            screen.fill((200, 255, 255))
+            canvas.render()
+            pygame.display.update()
 
     update()
     while True:
@@ -41,7 +41,3 @@ def launch():
             elif event.type == pygame.MOUSEMOTION:
                 canvas.move(event.pos)
         update()
-
-
-if __name__ == "__main__":
-    launch()
