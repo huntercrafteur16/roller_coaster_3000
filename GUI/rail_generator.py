@@ -288,7 +288,7 @@ class Canvas():
             for i, points in enumerate(self.ctrl_points):
                 px, py = points
                 if px-r < x < px+r and py-r < y < py+r:
-                    print("OK")
+
                     self.selected = i
                     self.move_point = True
                     can_add = False
@@ -413,5 +413,3 @@ class Canvas():
 
                 self.count = len(self.ctrl_points)
                 self.selected = None
-
-                print(self.ctrl_points)

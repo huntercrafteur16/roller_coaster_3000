@@ -135,15 +135,13 @@ class DynamicGraph:
 
     def clear(self):
         "reset l'affichage"
-        try:
-            self.x_data = []  # Clear x-data
+        self.x_data = []  # Clear x-data
 
-            for i, line in enumerate(self.lines):
-                line.set_ydata([])  # Clear y-data for each line
-                self.y_datas[i] = []  # Clear y-data in the y_datas list
+        for i, line in enumerate(self.lines):
+            line.set_ydata([])  # Clear y-data for each line
+            line.set_xdata([])
+            self.y_datas[i] = []  # Clear y-data in the y_datas list
 
-            for ax in self.axes:
-                ax.relim()
-                ax.autoscale_view()
-        except:
-            pass
+        for ax in self.axes:
+            ax.relim()
+            ax.autoscale_view()

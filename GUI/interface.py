@@ -72,7 +72,6 @@ class Interface():
             self.applied_nbr_wagon = int(nbr_wagon.get())
             self.applied_c = float(c.get())*10
             self.apply_button_function()
-            print("nouvelles valeurs")
 
         # 4 boutons: Start/Reset, Play/Pause, Ouvrir tracé et Afficher résult.
         buttons = Frame(toolbar, bg="lightgray", height=100, padx=5)
