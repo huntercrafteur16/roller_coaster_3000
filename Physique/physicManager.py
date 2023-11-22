@@ -29,11 +29,11 @@ class physicManager():
     wagon_length = 20
     ppm = 10
 
-    def __init__(self, width, height, root=None, frame: Frame = None, gravity=980, fps=60) -> None:
+    def __init__(self, width, height, root=None, frame: Frame = None, gravity=9.8, fps=30) -> None:
         self.width = width
         self.height = height
         self.frame = frame
-        self.gravity = gravity
+        self.gravity = gravity*physicManager.ppm  # en px.s-2
         self.rail = None  # type: ignore
         self.wagon_is_braking = False
         self.simulation_ended = False
@@ -48,7 +48,7 @@ class physicManager():
         # Réglage des paramètres temporels
         self._fps = fps
         self._dt = 1.0 / fps
-        self._physics_steps_per_frame = 30
+        self._physics_steps_per_frame = 100
 
         # instanciation et réglage des paramètres physiques
 
@@ -73,13 +73,13 @@ class physicManager():
         self.pausedTime = 0
         self.reinit()
 
-    def createTrain(self, startpos: tuple[float, float], mass=5):
+    def createTrain(self, startpos: tuple[float, float], mass=10):
         """
         Crée le premier wagon et le reste du train
         """
         l = physicManager.wagon_length
         h = physicManager.wagon_height
-        self.wagon = Wagon(self._space, mass, l, h, startpos, 8000, True)
+        self.wagon = Wagon(self._space, mass, l, h, startpos, mass*1000, True)
         wagon_handler_prop = self._space.add_collision_handler(4, 1)
         wagon_handler_prop.pre_solve = self._on_prop_rail_Collision
 
@@ -124,11 +124,12 @@ class physicManager():
             pygame.display.flip()
             return True
         if self.simulation_ended:
-            print("end")
+
             return False
         # frames de simulation physique pour 1 frame d'affichage (physics oversampling)
         for _ in range(self._physics_steps_per_frame):
             self._space.step(self._dt/self._physics_steps_per_frame)
+            self.time += self._space.current_time_step
 
         if self._process_events() == "QUIT":  # vérification des évènements terminaux
 
@@ -145,9 +146,8 @@ class physicManager():
         pygame.display.flip()
 
         # On pause la simulation selon les fps voulus
-        self.time += self._clock.tick_busy_loop(self._fps)
+        self._clock.tick(self._fps)
 
-        # pygame.display.set_caption("fps: " + str(self._clock.get_fps())) #affichage du nombre
         #  de fps sur le titre de la fenêtre
         return True  # aucun problème ni arrêt
 
