@@ -29,7 +29,8 @@ class physicManager():
     wagon_length = 20
     ppm = 10
 
-    def __init__(self, width, height, root=None, frame: Frame = None, gravity=9.8, fps=60, physics_step_per_frame=400, logger=None) -> None:
+    def __init__(self, width, height, root=None, frame: Frame = None,
+                 gravity=9.8, fps=60, physics_step_per_frame=400) -> None:
         self.width = width
         self.height = height
         self.frame = frame
@@ -336,6 +337,9 @@ class physicManager():
         return self.wagon.get_chassis_velocity()[0]
 
     def get_total_train_energy(self) -> float:
+        """
+        renvoie l'énergie mécanique de l'ensemble du train
+        """
         L = self.Train.liste_wagon
         energy = 0
         for wagon in L:
