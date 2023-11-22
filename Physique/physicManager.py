@@ -29,7 +29,7 @@ class physicManager():
     wagon_length = 20
     ppm = 10
 
-    def __init__(self, width, height, root=None, frame: Frame = None, gravity=9.8, fps=30) -> None:
+    def __init__(self, width, height, root=None, frame: Frame = None, gravity=9.8, fps=60, physics_step_per_frame=400) -> None:
         self.width = width
         self.height = height
         self.frame = frame
@@ -37,6 +37,7 @@ class physicManager():
         self.rail = None  # type: ignore
         self.wagon_is_braking = False
         self.simulation_ended = False
+        self.param = None
         # code pour contenir la fenetre dans la frame tkinter indiquée #
         if frame is not None:
             os.environ['SDL_WINDOWID'] = str(frame.winfo_id())
@@ -48,7 +49,7 @@ class physicManager():
         # Réglage des paramètres temporels
         self._fps = fps
         self._dt = 1.0 / fps
-        self._physics_steps_per_frame = 100
+        self._physics_steps_per_frame = physics_step_per_frame
 
         # instanciation et réglage des paramètres physiques
 
@@ -71,7 +72,6 @@ class physicManager():
         self.isPaused = True
         self.time = 0
         self.pausedTime = 0
-        self.reinit()
 
     def createTrain(self, startpos: tuple[float, float], mass=10):
         """
@@ -146,7 +146,7 @@ class physicManager():
         pygame.display.flip()
 
         # On pause la simulation selon les fps voulus
-        self._clock.tick(self._fps)
+        # self._clock.tick(self._fps)
 
         #  de fps sur le titre de la fenêtre
         return True  # aucun problème ni arrêt
@@ -193,22 +193,23 @@ class physicManager():
         self.wagon.get_chassis_body().apply_force_at_local_point((force, 0))
         # body.apply_force_at_local_point((force, 0), (0, 0))
 
-    def _pull_loco(self, speed_cons, K=3000):
+    def _pull_loco(self, speed_cons: float):
         """
-        exerce la force de traction sur la locomotive permettant 
-        l'avancée a vitesse constante
+        exerce force de traction sur  locomotive pour avancée a vitesse constante
         """
+        K = self.N*self.wagon.mass*1000
 
         cur_speed = self.wagon.get_chassis_body(
         ).velocity.rotated(-self.wagon.get_chassis_body().angle)
 
         self._prop_loco((speed_cons-cur_speed[0])*K)
 
-    def _on_brake_rail_Collision(self, arbiter, space, data):
+    def _on_brake_rail_Collision(self, arbiter: pymunk.Arbiter, space, data):
         """
-        définit l'action lorsqu'on rencontre un rail de type Brake
+        définit l'action lorsqu'on rencontre un rail de type Brake et termine la simulation si arrêt
         """
-        self._pull_loco(0, 200)
+
+        self._prop_loco(-2000000)
         if self.getWagon().get_chassis_velocity()[0] < 2e-2:
             self.simulation_ended = True
         return True
@@ -226,7 +227,7 @@ class physicManager():
         """
         définit l'action lorsqu'on rencontre un rail de type Propulsion
         """
-        self._prop_loco(6000)
+        self._prop_loco(2000000)
         return True
 
     def _on_pull_rail_Collision(self, arbiter, space, data):
@@ -256,31 +257,30 @@ class physicManager():
         self.isPaused = False
         self.time = self.pausedTime
 
-    def reinit(self, param=None):
+    def reinit(self, param):
         """
         reinitialise la simulation
         """
         # self._createSampleRail()
 
+        assert self.param is not None or param is not None, "on n'a pas de paramétre deja enregistré et on n'en donne pas"
+
         self._space = pymunk.Space()
         self._space.gravity = (0.0, self.gravity)
-
+        self.N = param["nbr_wagon"]
         if self.rail:
             startpos = (self.rail.data_points[0]
                         [0]-self.getWagon().L/2, self.rail.data_points[0][1]-10)
-            if param is not None:
-                self.N = param["nbr_wagon"]
+
             self.rail.renderRail(
                 self._space, physicManager.wagon_length, self.N)
         else:
             startpos = (self.width/2, self.height/2)
 
-        if param is None:
-            self.N = 3
-            self.createTrain(startpos)
-        else:
-
-            self.createTrain(startpos, param["mass"])
+        # if param is None:
+        #     self.N = 3
+        #     self.createTrain(startpos)
+        self.createTrain(startpos, param["mass"])
 
         self.process()
         # self._createSampleRail()
@@ -322,5 +322,13 @@ class physicManager():
         return length*physicManager.ppm
 
     def get_loco_velocity(self) -> float:
+        "récupère la vitesse de la locomotive "
 
-        return self.get_length_from_pixel(self.wagon.get_chassis_velocity()[0])
+        return self.wagon.get_chassis_velocity()[0]
+
+    def get_total_train_energy(self) -> float:
+        L = self.Train.liste_wagon
+        energy = 0
+        for wagon in L:
+            energy += wagon.get_total_energy()
+        return energy

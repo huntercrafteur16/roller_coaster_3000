@@ -17,6 +17,7 @@ class Wagon:
     def __init__(self, space: pymunk.Space, Mass: float, L: float, h: float, position_init: tuple,
                  tension_ressort=8000, loco=False, StartingLine=False):
         self.gravity = space.gravity
+        self.mass = Mass
         assert L >= 20, 'la longueur minimale est 20'
         assert h <= L, 'la hauteur doit être inférieure à la largeur'
         self.is_loco = loco
