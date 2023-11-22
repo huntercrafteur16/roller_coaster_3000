@@ -5,7 +5,7 @@ from GUI.interface import Interface
 from GUI.graphiques import DynamicGraph
 from Physique.physicManager import physicManager
 from dataLogger import dataLogger
-from railgenerator_launcher import launch
+
 
 manager: physicManager
 dyn_graphs: DynamicGraph

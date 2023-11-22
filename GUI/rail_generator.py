@@ -311,7 +311,7 @@ class Canvas():
         temp = self.curve_points
         for i in range(len(temp)):
             if (x-temp[i][0])**2 + (y-temp[i][1])**2 < (x-temp[cl_i][0])**2 + (y-temp[cl_i][1])**2:
-                clos_i = i
+                cl_i = i
         return cl_i
 
     def select_right(self, x: float, y: float):

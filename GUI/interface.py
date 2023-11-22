@@ -91,12 +91,6 @@ class Interface():
                                     text='Afficher résult.', fg='#d08000',
                                     activebackground='#d08000')
         show_result_button.grid(row=0, column=3, padx=3, pady=3)
-<<<<<<< Updated upstream
-        # open_editor_button = Button(toolbar, command=self.open_editor, width=10, height=2,
-        #                             text="Ouvrir éditeur", fg="#6400c8", activebackground="#6400c8")
-        # open_editor_button.grid(row=0, column=4, padx=3, pady=3)
-=======
->>>>>>> Stashed changes
 
         # Paramètres
         param = Frame(toolbar, bg="lightgray", width=200, padx=5, pady=5)
@@ -206,7 +200,7 @@ class Interface():
         - 'nbr_wagon'
         - 'coef_frot'
         """
-        return {'mass': self.applied_m, 'F_prop': self.applied_f, 'v_treuil': self.applied_v,
+        return {'mass': self.applied_m, 'f_prop': self.applied_f, 'v_treuil': self.applied_v,
                 'nbr_wagon': self.applied_nbr_wagon, 'coef_frot': self.applied_c}
 
     def render_GUI(self) -> bool:
