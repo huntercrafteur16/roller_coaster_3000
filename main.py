@@ -99,5 +99,6 @@ while True:
     if not phys_cont:
         show_results()
         update_sim()
+        logger.reset()
         phys_cont = True
         manager.pause()
