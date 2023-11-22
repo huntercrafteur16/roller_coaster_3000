@@ -29,7 +29,7 @@ class physicManager():
     wagon_length = 20
     ppm = 10
 
-    def __init__(self, width, height, root=None, frame: Frame = None, gravity=9.8, fps=60, physics_step_per_frame=400, logger=None) -> None:
+    def __init__(self, width, height, root=None, frame: Frame = None, gravity=9.8, fps=30, physics_step_per_frame=60, logger=None) -> None:
         self.width = width
         self.height = height
         self.frame = frame
@@ -106,7 +106,7 @@ class physicManager():
 
     def getWagon(self):
         """
-        retoure le wagon
+        retourne le wagon
         """
         return self.wagon
 
@@ -199,7 +199,7 @@ class physicManager():
 
     def _prop_loco(self, force):
         """
-        exerce la force de traction sur la locomotive
+        exerce une poussée qui accélère la locomotive
         """
         power = force * \
             abs(self.wagon.get_chassis_body().velocity_at_local_point((0, 0)))
@@ -208,7 +208,7 @@ class physicManager():
         self.wagon.get_chassis_body().apply_force_at_local_point((force, 0))
         # body.apply_force_at_local_point((force, 0), (0, 0))
 
-    def _pull_loco(self, speed_cons: float):
+    def _pull_loco(self, speed_cons, K=3000):
         """
         exerce force de traction sur  locomotive pour avancée a vitesse constante
         """
@@ -229,9 +229,8 @@ class physicManager():
         return True
 
     def _on_drag_rail_Collision(self, arbiter, space, data):
-        """définit les frotements quadratiques avec un coeficient arbitraire"""
-
-        coef = 0.1
+        """définit les frottements quadratiques avec un coefficient arbitraire"""
+        coef = self.c
         vitesse = self.wagon.get_chassis_velocity()[0]
         signe = np.sign(vitesse)
         force = -signe*coef*vitesse**2
@@ -242,15 +241,14 @@ class physicManager():
         """
         définit l'action lorsqu'on rencontre un rail de type Propulsion
         """
-
-        self._prop_loco(2000000)
+        self._prop_loco(self.F)
         return True
 
     def _on_pull_rail_Collision(self, arbiter, space, data):
         """
         définit l'action lorsqu'on rencontre un rail de type Treuil
         """
-        self._pull_loco(200)
+        self._pull_loco(self.v)
         return True
 
     def getTime(self) -> int:
@@ -284,6 +282,9 @@ class physicManager():
         self._space = pymunk.Space()
         self._space.gravity = (0.0, self.gravity)
         self.N = param["nbr_wagon"]
+        self.v = param["v_treuil"]
+        self.F = param["f_prop"]
+        self.c = param["coef_frot"]
         if self.rail:
             startpos = (self.rail.data_points[0]
                         [0]-self.getWagon().L/2, self.rail.data_points[0][1]-10)
@@ -316,7 +317,6 @@ class physicManager():
         """
         L = physicManager.wagon_length
         with open(chemin, "r") as file:
-            # file = open(chemin, "r")
             lines = file.readlines()
             file.close()
             self.rail = Rail()

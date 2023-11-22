@@ -85,7 +85,7 @@ class Rail():
         railseg = pymunk.Segment(space.static_body, premier_point, (
             premier_point[0]-2*L*nb_wagon, premier_point[1]), self.width)
         railseg.elasticity = 0
-        railseg.collision_type = 1
+        railseg.collision_type = 2
         railseg.friction = 1
         space.add(railseg)
 

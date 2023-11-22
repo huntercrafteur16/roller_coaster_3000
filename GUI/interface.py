@@ -54,7 +54,7 @@ class Interface():
         self.applied_m, self.applied_f, self.applied_v = 1000, 100000, 50
         self.applied_nbr_wagon, self.applied_c = 3, 0.001
         m = DoubleVar(value=1)
-        f = DoubleVar(value=100)
+        f = DoubleVar(value=10)
         nbr_wagon = IntVar(value=3)
         v = DoubleVar(value=5)
         c = DoubleVar(value=1)
@@ -64,8 +64,8 @@ class Interface():
 
         def apply_values():
             self.applied_m = float(m.get())*1000
-            self.applied_f = float(f.get())*1000
-            self.applied_v = float(v.get())*10
+            self.applied_f = float(f.get())*10000
+            self.applied_v = float(v.get())*100
             self.applied_nbr_wagon = int(nbr_wagon.get())
             self.applied_c = float(c.get())*0.001
             self.apply_button_function()
@@ -112,8 +112,8 @@ class Interface():
         label_F = Label(param_F, text='Force des propulseurs (kN)',
                         width=25, height=1)
         entry_F = Entry(param_F, textvariable=f, width=5)
-        scale_F = Scale(param_F, from_=50, to=1000, showvalue=False, variable=f,
-                        tickinterval=500, orient=HORIZONTAL, width=10)
+        scale_F = Scale(param_F, from_=5, to=100, showvalue=False, variable=f,
+                        tickinterval=50, orient=HORIZONTAL, width=10)
         # vitesse des treuils
         param_v = Frame(param)
         label_v = Label(param_v, text='Vitesse des treuils (m/s)',
