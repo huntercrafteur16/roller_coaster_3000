@@ -216,7 +216,7 @@ class physicManager():
 
     def _on_drag_rail_Collision(self, arbiter, space, data):
         """définit les frotements quadratiques avec un coeficient arbitraire"""
-        coef = 0.001
+        coef = 0.1
         vitesse = self.wagon.get_chassis_velocity()[0]
         signe = np.sign(vitesse)
         force = -signe*coef*vitesse**2
@@ -325,10 +325,6 @@ class physicManager():
 
     def get_loco_velocity(self) -> float:
         "récupère la vitesse de la locomotive "
-        """
-        renvoie la vitesse de la locomotive (1er wagon)
-        """
-
         return self.wagon.get_chassis_velocity()[0]
 
     def get_total_train_energy(self) -> float:
