@@ -45,7 +45,7 @@ class dataLogger:
         self.datas["potential_energie"].append(potential_energy)
         self.datas["kinetic_energie"].append(kinetic_energy)
         self.datas["meca_energie"].append(total_energy)
-        self.datas["electric_power"].append(wagon.get_puissance())
+        self.datas["electric_power"].append(self.manager.power)
 
     def reset(self):
         """
@@ -76,5 +76,8 @@ class dataLogger:
         """
         self.datas["acceleration"] = [0]
         for i in range(len(self.time)-1):
-            self.datas["acceleration"].append((self.datas["velocity"][i+1]-self.datas["velocity"]
-                                               [i])/(self.time[i+1]-self.time[i]))
+            try:
+                self.datas["acceleration"].append((self.datas["velocity"][i+1]-self.datas["velocity"]
+                                                   [i])/(self.time[i+1]-self.time[i]))
+            except:
+                print(self.time)
