@@ -1,16 +1,16 @@
 """
 Module permetant la création et sauvegarde dans un fichier d'un parcours
 """
-import os
-import platform
 import sys
 import ctypes
-from tkinter import Tk
 import pygame
 from GUI.rail_generator import Canvas
 
 
 def launch():
+    """
+    lance le programme
+    """
 
     ctypes.windll.user32.SetProcessDPIAware()
     pygame.init()
