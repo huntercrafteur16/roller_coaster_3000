@@ -76,6 +76,7 @@ class physicManager():
         self.isPaused = True
         self.time = 0
         self.pausedTime = 0
+        self.curr_dt_pow = 0
 
     def createTrain(self, startpos: tuple[float, float], mass=10):
         """
@@ -131,12 +132,15 @@ class physicManager():
 
             return False
         # frames de simulation physique pour 1 frame d'affichage (physics oversampling)
+        power = 0
         for _ in range(self._physics_steps_per_frame):
-
+            self.curr_dt_pow = 0
             self._space.step(self._dt/self._physics_steps_per_frame)
+            power += self.curr_dt_pow
 
             self.time += self._space.current_time_step
         if self.logger is not None:
+            self.power = power/self._physics_steps_per_frame
             self.logger.record()
         if self._process_events() == "QUIT":  # vérification des évènements terminaux
 
@@ -197,6 +201,10 @@ class physicManager():
         """
         exerce la force de traction sur la locomotive
         """
+        power = force * \
+            abs(self.wagon.get_chassis_body().velocity_at_local_point((0, 0)))
+        if power > 0:
+            self.curr_dt_pow += force
         self.wagon.get_chassis_body().apply_force_at_local_point((force, 0))
         # body.apply_force_at_local_point((force, 0), (0, 0))
 
@@ -215,7 +223,6 @@ class physicManager():
         """
         définit l'action lorsqu'on rencontre un rail de type Brake et termine la simulation si arrêt
         """
-
         self._prop_loco(-2000000)
         if self.getWagon().get_chassis_velocity()[0] < 2e-2:
             self.simulation_ended = True
@@ -223,6 +230,7 @@ class physicManager():
 
     def _on_drag_rail_Collision(self, arbiter, space, data):
         """définit les frotements quadratiques avec un coeficient arbitraire"""
+
         coef = 0.1
         vitesse = self.wagon.get_chassis_velocity()[0]
         signe = np.sign(vitesse)
@@ -234,6 +242,7 @@ class physicManager():
         """
         définit l'action lorsqu'on rencontre un rail de type Propulsion
         """
+
         self._prop_loco(2000000)
         return True
 
