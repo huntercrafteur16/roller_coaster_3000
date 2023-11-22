@@ -19,12 +19,12 @@ class Interface():
     """
     Classe interface pour l'affichage GUI
     """
+    # 
     play_pause_button_function: Callable
     start_reset_button_function: Callable
     apply_button_function: Callable
     open_file_function: Callable
     show_results: Callable
-
     isRunning: bool
 
     def __init__(self, button_functions: dict):
@@ -93,7 +93,8 @@ class Interface():
                                     text='Afficher résult.', fg='#d08000',
                                     activebackground='#d08000')
         show_result_button.grid(row=0, column=3, padx=3, pady=3)
-   
+
+        # Affichage du bouton musique on/off
         musique_or_not = Button(toolbar, text="Musique", command = musique.music_mute)
         musique_or_not.grid(row=0, column=5, padx=3, pady=3)
 
