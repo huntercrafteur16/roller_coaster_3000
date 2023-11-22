@@ -63,7 +63,7 @@ class Interface():
 
         # Musique
         musique = Musique()
-        
+
         def apply_values():
             self.applied_m = float(m.get())*1000
             self.applied_f = float(f.get())*1000
