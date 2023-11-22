@@ -41,13 +41,13 @@ class Interface():
         self.root.protocol('WM_DELETE_WINDOW', self.killInterface)
         # Trois frames : barre d'outils, simulation, barre des graphes
         toolbar = Frame(self.root, bg="lightgray")
-        simu = Frame(self.root, borderwidth=5, bg="blue")
+        simu = Frame(self.root, borderwidth=5, bg="white")
         self.simu = simu
         self.graphbar = Frame(self.root, bg="lightgray")
 
         toolbar.pack(side=TOP, expand=False, fill=X)
-        simu.pack(anchor=N, expand=True, fill=BOTH)
-        self.graphbar.pack(side=BOTTOM, fill=X, expand=True)
+        simu.pack(anchor=N, expand=True, fill=BOTH, padx=5)
+        self.graphbar.pack(side=BOTTOM, fill=X, expand=True, padx=5, pady=5)
 
         # Variables
         self.applied_m, self.applied_f, self.applied_nbr_wagon = 1, 10, 3
@@ -139,11 +139,13 @@ class Interface():
         self.roller_coaster = Frame(
             simu, bg='white', height=roller_coaster_height, width=roller_coaster_width)
         self.frame_graph = Frame(
-            self.graphbar, width=1800, height=50)
-        Vitesse = Label(self.frame_graph, text="Vitesse", justify="center")
+            self.graphbar, width=1800, height=50, bg="lightgray")
+        Vitesse = Label(self.frame_graph, text="Vitesse",
+                        justify="center", bg="lightgray", width="20")
         Vitesse.grid(row=0, column=1, sticky="nsew", padx=400)
 
-        Energie = Label(self.frame_graph, text="Energie", justify="center")
+        Energie = Label(self.frame_graph, text="Energie",
+                        justify="center", bg="lightgray", width="20")
         Energie.grid(row=0, column=0, sticky="nsew", padx=400)
         self.frame_graph.pack(expand=1)
         self.roller_coaster.grid(
