@@ -1,3 +1,6 @@
+"""
+Module qui permet la construction personalisée des rails
+"""
 from tkinter import filedialog
 from geomdl import BSpline
 from geomdl import utilities
@@ -198,7 +201,8 @@ class Canvas():
             for i in range(len(self.maindata)-1):
                 pt1 = self.maindata[i]
                 pt2 = self.maindata[i+1]
-                if len(self.lineselection) == 2 and i > self.lineselection[0] and i < self.lineselection[1]:
+                temp = self.lineselection
+                if len(self.lineselection) == 2 and i > temp[0] and i < temp[1]:
                     pygame.draw.lines(self.screen, (0, 220, 220), False, [
                         pt1[0], pt2[0]], width=self.cfg.width)
 
@@ -344,7 +348,7 @@ class Canvas():
         p0x, p0y = curvePts[0]
         L = [(p0x-40, p0y), (p0x-39, p0y)]
         self.spline.degree = self.spline.degree  # Set the degree first
-        self.spline.ctrlpts = L+curvePts
+        self.spline.ctrlpts = L + curvePts
         self.spline.knotvector = utilities.generate_knot_vector(
             self.spline.degree, len(self.spline.ctrlpts))
         self.curve_points = self.spline.evalpts

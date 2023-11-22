@@ -1,4 +1,5 @@
 """Fichier principal du programme"""
+
 from tkinter import filedialog as fd
 from GUI.interface import Interface
 from GUI.graphiques import DynamicGraph
@@ -51,6 +52,7 @@ def open_file():
 
 
 def show_results():
+    """affiche les résultats"""
     global logger
     logger.render_result()
 
