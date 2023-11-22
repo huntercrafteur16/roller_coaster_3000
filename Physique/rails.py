@@ -89,6 +89,16 @@ class Rail():
         railseg.friction = 1
         space.add(railseg)
 
+    def add_last_rail(self, space, L, nb_wagon):
+        """ajoute le dernier rail, qui permet de poser le train"""
+        dernier_point = (self.data_points[-1][0], self.data_points[-1][1])
+        railseg = pymunk.Segment(space.static_body, dernier_point, (
+            dernier_point[0]+4*L*nb_wagon, dernier_point[1]), self.width)
+        railseg.elasticity = 0
+        railseg.collision_type = 3
+        railseg.friction = 1
+        space.add(railseg)
+
     def renderRail(self, space, L, nb_wagon):
         """Permet d'ajouter le rail dans l'espace pymunk indiqué
         options: liste des coordonnées a_deb,a_fin et type du segment en question
@@ -99,7 +109,7 @@ class Rail():
         #     self.curve.degree, len(self.curve.ctrlpts))
         # bspline = self.curve.evalpts
         self.add_premier_rail(space, L, nb_wagon)
-
+        self.add_last_rail(space, L, nb_wagon)
         for i, p in enumerate(self.data_points[:-1]):
 
             if p[2] == "FREE":
