@@ -149,47 +149,6 @@ class Interface():
         self.roller_coaster.grid(
             row=1, column=1, rowspan=3, columnspan=3, sticky=N)
 
-        # A l'intérieur de graphbar, choix des graphes.
-        """
-        # Boutons radio pour voir ou non un des graphes proposés
-        graph_choice = Frame(self.graphbar, height=80)
-        # graph_choice.pack(side=LEFT, expand=False, padx=5, pady=5)
-
-        self.choice = StringVar(value='none')
-        label_graph_choice = Label(
-            graph_choice, text="Choix du graphe à afficher", height=2)
-        label_graph_choice.grid(row=0, column=0, padx=5, pady=5)
-
-        # graph_choice.grid(row=0, column=0)
-        Radiobuttons = Frame(graph_choice, borderwidth=5)
-        Radiobuttons.grid(row=1, column=0)
-
-        self.None_button = Radiobutton(Radiobuttons, variable=self.choice, value='none',
-                                       height=1)
-        self.None_button.grid(row=1, column=1, sticky=E)
-        Label(Radiobuttons, text='Aucun graphe', width=15,
-              height=1).grid(row=1, column=0, sticky=E)
-
-        self.Speeds_button = Radiobutton(Radiobuttons, variable=self.choice, value='vitesse',
-                                         height=1)
-        self.Speeds_button.grid(row=2, column=1, sticky=E)
-        Label(Radiobuttons, text='Vitesse(t)',
-              width=15, height=1).grid(row=2, column=0, sticky=E)
-
-        self.Accels_button = Radiobutton(Radiobuttons, variable=self.choice, value='acceleration',
-                                         height=1)
-        self.Accels_button.grid(row=3, column=1, sticky=E)
-        Label(Radiobuttons, text='Accélération(t)',
-              width=15, height=1).grid(row=3, column=0, sticky=E)
-
-        self.Energie_button = Radiobutton(Radiobuttons, variable=self.choice, value='energie',
-                                          height=1)
-        self.Energie_button.grid(row=4, column=1, sticky=E)
-        Label(Radiobuttons, text='Énergie mécanique(t)',
-              width=15, height=1).grid(row=4, column=0, sticky=E)
-        """
-    # fonction qui affiche ou non la frame en fonction de la valeur du radio button
-
     # Donne la frame qui doit contenir un graphe et le choix de graphe associé
     def get_graph_frame(self):
         """return self.graphbar"""
