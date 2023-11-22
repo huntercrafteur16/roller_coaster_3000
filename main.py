@@ -90,8 +90,12 @@ GUI_cont, phys_cont = True, True
 
 while True:
     while phys_cont and GUI_cont:
+        L = manager.Train.liste_wagon
+        energy = 0
+        for wagon in L:
+            energy += wagon.get_total_energy()
         dyn_graphs.update_data(manager.getTime(), [
-            manager.getWagon().get_total_energy(), manager.getWagon().get_chassis_velocity()[0]])
+            energy, manager.getWagon().get_chassis_velocity()[0]])
         if not manager.isPaused:
             logger.record()
 
