@@ -1,13 +1,15 @@
 """
 Module permetant la création et sauvegarde dans un fichier d'un parcours
 """
-import sys
-import pygame
 from GUI.rail_generator import Canvas
+import pygame
+import sys
+import ctypes
+ctypes.windll.user32.SetProcessDPIAware()
 if __name__ == "__main__":
     pygame.init()
     pygame.font.init()
-    screen = pygame.display.set_mode((1200, 600))
+    screen = pygame.display.set_mode((1920, 700))
     canvas = Canvas(screen)
 
     def update():

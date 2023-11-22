@@ -31,8 +31,8 @@ class Interface():
         self.open_file_function = button_functions["open"]
         self.show_results = button_functions["show_results"]
         # dimensions de la fenetre pymunk en px
-        roller_coaster_width = 1800
-        roller_coaster_height = 550
+        roller_coaster_width = 1900
+        roller_coaster_height = 700
         # Fenêtre principale
         self.root = Tk()
         self.root.title("Bienvenue dans le Roller Coaster 3000, visiteur !")
@@ -41,7 +41,7 @@ class Interface():
         self.root.protocol('WM_DELETE_WINDOW', self.killInterface)
         # Trois frames : barre d'outils, simulation, barre des graphes
         toolbar = Frame(self.root, bg="lightgray")
-        simu = Frame(self.root, borderwidth=5, bg="white")
+        simu = Frame(self.root, borderwidth=5, bg="blue")
         self.simu = simu
         self.graphbar = Frame(self.root, bg="lightgray")
 

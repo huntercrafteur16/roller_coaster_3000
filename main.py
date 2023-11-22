@@ -76,7 +76,7 @@ interface.start_reset_button_function = reset_sim
 
 
 # génération du physicManager
-manager = physicManager(1800, 550,
+manager = physicManager(1920, 700,
                         interface.simu, interface.get_pymunk_frame())
 
 # graphe de représentation de vitesse
