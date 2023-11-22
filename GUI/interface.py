@@ -221,6 +221,7 @@ class Interface():
         self.isRunning = False
 
     def open_editor(self):
+        """ouvre le fichier railgenerator_launcher"""
         with open(
                 'C:/- Centrale -/1A/7 - Coding weeks/GitDesktop/RollerCoaster3000/roller_coaster_3000/railgenerator_launcher.py') as rgl:
             exec(rgl.read())
