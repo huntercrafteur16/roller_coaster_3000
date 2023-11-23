@@ -46,12 +46,12 @@ class Canvas():
         # grille
 
         # affichage graphique
-        self.my_font = pygame.font.SysFont('Comic Sans MS', 10)
+        self.my_font = pygame.font.SysFont('Comic Sans MS', 12)
         self.w, self.h = screen.get_width(), screen.get_height()
         dl = 60
         dh = 20
 
-        self.instructions = ((7*self.w/12, self.h-50, 50, 20))
+        self.instructions = ((7*self.w/12, self.h-60, dl, dh))
         self.save_button = (self.w/12-30, 20, dl, dh)
         self.open_button = (2*self.w/12-30, 20, dl, dh)
 
@@ -73,11 +73,16 @@ class Canvas():
         text_surface = self.my_font.render(
             'Clic gauche pour sélectionner/ajouter un point. Si sélection, ajout après le point sélectionné.', False, (0, 0, 0))
         self.screen.blit(
-            text_surface, (self.instructions[0], self.brake_type_button[1]))
+            text_surface, (self.instructions[0], self.instructions[1]))
         text_surface = self.my_font.render(
             'Deux clics droits pour la sélection de tracé, un troisième pour désélectionner.', False, (0, 0, 0))
         self.screen.blit(
-            text_surface, (self.instructions[0], self.brake_type_button[1]+15))
+            text_surface, (self.instructions[0], self.instructions[1]+15))
+        text_surface = self.my_font.render(
+            'Les loopings ne marchent pas !', False, (0, 0, 0))
+        self.screen.blit(
+            text_surface, (self.instructions[0], self.instructions[1]+30))
+
         if self.add_mode:
             pygame.draw.rect(self.screen, (0, 230, 0), self.add_button)
             text_surface = self.my_font.render(
