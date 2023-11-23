@@ -6,6 +6,7 @@ from tkinter import N, X, Frame, Button, Tk, DoubleVar, BOTTOM
 from tkinter import TOP, BOTH, IntVar, Entry, Scale, Label, HORIZONTAL
 from typing import Callable
 from GUI.music.musique import Musique
+from PIL import Image, ImageTk
 
 # On définit une classe "Interface" qui prend en argument deux dictionnaires,
 # les variables et les fonctions donc l'interface a besoin pour s'implémenter
@@ -40,6 +41,9 @@ class Interface():
 
         # Fenêtre principale
         self.root = Tk()
+        ico = Image.open('GUI/icon.ico')
+        photo = ImageTk.PhotoImage(ico)
+        self.root.wm_iconphoto(True, photo)
         self.root.title("Bienvenue dans le Roller Coaster 3000, visiteur !")
         self.root.state('zoomed')
         self.isRunning = True
