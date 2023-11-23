@@ -68,7 +68,7 @@ class Interface():
             '''Fonction auxiliaires pour appliquer les variables utilisateurs'''
             self.applied_m = float(m.get())*1000
             self.applied_f = float(f.get())*10000
-            self.applied_v = float(v.get())*100
+            self.applied_v = float(v.get())*10
             self.applied_nbr_wagon = int(nbr_wagon.get())
             self.applied_c = float(c.get())*10
             self.apply_button_function()
@@ -192,12 +192,12 @@ class Interface():
             self.graphbar, width=1800, height=50, bg="lightgray")
 
         # On place les 2 graphes à afficher dans la frame prévue à cet effet
-        Vitesse = Label(self.frame_graph, text="Vitesse",
+        Vitesse = Label(self.frame_graph, text="Vitesse en m/s",
                         justify="center", bg="lightgray", width="20")
-        Vitesse.grid(row=0, column=1, sticky="nsew", padx=400)
-        Energie = Label(self.frame_graph, text="Energie",
+        Vitesse.grid(row=0, column=1, sticky="nsew", padx=300)
+        Energie = Label(self.frame_graph, text="Énergie mécanique en J",
                         justify="center", bg="lightgray", width="20")
-        Energie.grid(row=0, column=0, sticky="nsew", padx=400)
+        Energie.grid(row=0, column=0, sticky="nsew", padx=300)
 
         # Affichage des frames
         self.frame_graph.pack(expand=1)

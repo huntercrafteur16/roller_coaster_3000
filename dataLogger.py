@@ -13,7 +13,7 @@ class dataLogger:
 
     def __init__(self):
         self.result_render = ResultInterface(
-            4, ["vitesse", "acceleration", "energie", "puissance"])
+            4, ["vitesse en m/s", "acceleration en g", "énergie en J", "puissance électrique installation en W"])
         self.manager = None
         self.time = []
         self.datas = {"velocity": [],
@@ -42,7 +42,7 @@ class dataLogger:
             kinetic_energy += wagon.get_kinetic()
             total_energy = kinetic_energy + potential_energy
         self.datas["velocity"].append(
-            self.manager.getWagon().get_chassis_velocity()[0])
+            self.manager.getWagon().get_chassis_velocity()[0]/Physique.physicManager.physicManager.ppm)
         self.datas["potential_energie"].append(potential_energy)
         self.datas["kinetic_energie"].append(kinetic_energy)
         self.datas["meca_energie"].append(total_energy)
@@ -66,6 +66,7 @@ class dataLogger:
         """
         self.result_render.fill_time(self.time)
         self._compute_accel()
+
         self.result_render.fill_datas_to_subplot(
             [self.datas["velocity"], self.datas["acceleration"],
              self.datas["meca_energie"], self.datas["electric_power"]])
@@ -77,8 +78,8 @@ class dataLogger:
         """
         self.datas["acceleration"] = [0]
         for i in range(len(self.time)-1):
-            try:
-                self.datas["acceleration"].append((self.datas["velocity"][i+1]-self.datas["velocity"]
-                                                   [i])/(self.time[i+1]-self.time[i]))
-            except:
-                print(self.time)
+
+            accel = (self.datas["velocity"][i+1]-self.datas["velocity"]
+                     [i])/(self.time[i+1]-self.time[i])
+            self.datas["acceleration"].append(
+                accel/9.81)

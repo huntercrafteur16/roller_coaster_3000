@@ -65,7 +65,7 @@ manager = physicManager(1920, 700,
 # graphe de représentation de vitesse
 
 dyn_graphs = DynamicGraph(interface.get_graph_frame(), 2,
-                          plot_titles=["energie", "vitesse"])
+                          plot_titles=["énergie mécanique en J", "vitesse en m/s"])
 
 # continuer l'exécution du programme
 
