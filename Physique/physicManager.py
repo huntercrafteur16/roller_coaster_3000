@@ -35,7 +35,7 @@ class physicManager():
     train: Train
 
     def __init__(self, width, height, root=None, frame: Frame = None,
-                 gravity=9.8, fps=25, physics_step_per_frame=150, logger=None) -> None:
+                 gravity=9.8, fps=30, physics_step_per_frame=350, logger=None) -> None:
         self.width = width
         self.height = height
         self.frame = frame

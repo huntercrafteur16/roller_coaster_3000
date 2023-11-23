@@ -55,10 +55,10 @@ class Wagon:
         PivotJoint(space, chassis.body, wheel2.body, v3, (0, 0), False)
 
         DampedSpring(space, chassis.body, wheel3.body,
-                     v5, (0, 0), L/3+1, tension_ressort, 60)
+                     v5, (0, 0), L/3+1, tension_ressort, 0)
 
         DampedSpring(space, chassis.body, wheel4.body,
-                     v7, (0, 0), L/3+1, tension_ressort, 60)
+                     v7, (0, 0), L/3+1, tension_ressort, 0)
 
         GrooveJoint(space, chassis.body, wheel3.body,
                     (-L/2, h/2), (-L/2, h/2+100), (0, 0))
@@ -99,7 +99,7 @@ class Wagon:
 
     def get_potential(self, ref_point=600):
         """renvoie l'energie potentielle de self"""
-        return self.m*self.gravity[1]*(ref_point-self.c.position[1])*0.8
+        return self.m*self.gravity[1]*(ref_point-self.c.position[1])
 
     def get_total_energy(self):
         """renvoie l'energie mécanique de self"""
