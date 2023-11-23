@@ -2,7 +2,8 @@
 Module qui gère l'interface
 """
 
-from tkinter import N, RIGHT, X, Frame, Button, Tk, DoubleVar, BOTTOM, TOP, BOTH, IntVar, Entry, Scale, Label, HORIZONTAL
+from tkinter import N, X, Frame, Button, Tk, DoubleVar, BOTTOM
+from tkinter import TOP, BOTH, IntVar, Entry, Scale, Label, HORIZONTAL
 from typing import Callable
 from GUI.music.musique import Musique
 
