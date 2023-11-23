@@ -41,9 +41,12 @@ class Interface():
 
         # Fenêtre principale
         self.root = Tk()
-        ico = Image.open('GUI/icon.ico')
-        photo = ImageTk.PhotoImage(ico)
-        self.root.wm_iconphoto(True, photo)
+        try:
+            ico = Image.open('GUI/icon.ico')
+            photo = ImageTk.PhotoImage(ico)
+            self.root.wm_iconphoto(True, photo)
+        except:
+            pass
         self.root.title("Bienvenue dans le Roller Coaster 3000, visiteur !")
         self.root.state('zoomed')
         self.isRunning = True

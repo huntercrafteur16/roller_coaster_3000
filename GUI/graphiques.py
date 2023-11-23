@@ -11,58 +11,6 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 # et on bidouille
 
 
-class AnimatedGraph():
-    """
-    Classe qui permet de réaliser des graphes à animer sous 
-    tkinter avec des données envoyées en temps réel
-    """
-
-    def __init__(self, title) -> None:
-        self.t = []
-        self.data = []
-        self.fig = plt.figure()
-        self._ymax = 0
-        self._ymin = 0
-        xlim(0, 0)
-        plt.title(title)
-        plt.ion()
-        self.curve, = plt.plot(self.t, self.data)
-
-    def drawNext(self, t, data) -> None:
-        """actualise les données du graphiques à l'instant t"""
-        xlim((0, t))
-
-        if self._ymax < data:
-            self._ymax = data
-            ylim((self._ymin, data))
-        if self._ymin > data:
-            self._ymin = data
-            ylim((data, self._ymax))
-        self.t.append(t)  # type: ignore
-        self.data.append(data)  # type: ignore
-        self.curve.set_xdata(self.t)
-        self.curve.set_ydata(self.data)
-        draw()
-
-    def reset(self):
-        """reset l'affichage du graphique"""
-        self.t = []
-        self.data = []
-        self.curve.set_xdata([])
-        self.curve.set_ydata([])
-        draw()
-
-    def fixDisplay(self):
-        """fix the display"""
-        ioff()
-        show()
-
-    def attach_to_frame(self, frame: Frame):
-        """attach figure to frame"""
-        FigureCanvasTkAgg(
-            self.fig, frame).get_tk_widget().pack()
-
-
 class DynamicGraph:
     """Affichage dynamique des graphes dans tkinter"""
 

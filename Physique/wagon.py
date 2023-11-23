@@ -104,18 +104,3 @@ class Wagon:
     def get_total_energy(self):
         """renvoie l'energie mécanique de self"""
         return (self.get_kinetic() + self.get_potential())
-
-    def get_chassis_acceleration(self):
-        """renvoie l'accélération de self"""
-        return self.c.force/self.m
-
-    def get_starting_position(self, pos_rail: tuple[float, float]):
-        """renvoie la position à laquelle appeler le wagon en fonction de la position du rail"""
-        return (pos_rail[0], pos_rail[1]-(self.L/3))
-
-    def get_puissance(self):
-        """renvoie la puissance lorsqu'il est tracté"""
-        force = self.c.force
-        vitesse = self.get_chassis_velocity()
-        puissance = force.dot(vitesse)
-        return puissance
