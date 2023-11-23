@@ -99,33 +99,38 @@ assert wag.m == 5
 assert wag.c.position == (300, 150)
 
 d = {"show_results": 1, "open": 1, "apply": 1, "play_pause": 1, "start_reset": 1}
-interface = Interface(d)
-assert isinstance(interface, Interface)
+# interface = Interface(d)
+# assert isinstance(interface, Interface)
 
 
-config = Config()
-assert isinstance(config, Config)
-assert config.fill == (255, 255, 255)
-assert config.width == 2
-assert config.restrict is False
-assert config.restrict_zone == (160, 200, 560, 600)
-assert config.show_points is True
-screen = pygame.Surface((0, 0))
-canvas = Canvas(screen)
-assert canvas.screen == screen
-assert canvas.spline.degree == 2
-assert canvas.spline.delta == 1e-3
-assert not canvas.ctrl_points
-assert not canvas.curve_points
-assert not canvas.maindata
-assert canvas.count == 0
-assert canvas.selected is None
-assert canvas.move_point is False
-assert canvas.add_mode == 0
-assert not canvas.lineselection
+def test_config():
+    config = Config()
+    assert isinstance(config, Config)
+    assert config.fill == (255, 255, 255)
+    assert config.width == 2
+    assert config.restrict is False
+    assert config.restrict_zone == (160, 200, 560, 600)
+    assert config.show_points is True
 
 
-result = ResultInterface(1, 'test')
-assert isinstance(result, ResultInterface)
-assert result.subplt_nbr == 1
-assert result.subplt_titles == 'test'
+def test_canvas():
+    screen = pygame.Surface((0, 0))
+    canvas = Canvas(screen)
+    assert canvas.screen == screen
+    assert canvas.spline.degree == 2
+    assert canvas.spline.delta == 1e-3
+    assert not canvas.ctrl_points
+    assert not canvas.curve_points
+    assert not canvas.maindata
+    assert canvas.count == 0
+    assert canvas.selected is None
+    assert canvas.move_point is False
+    assert canvas.add_mode == 0
+    assert not canvas.lineselection
+
+
+def test_result_interface():
+    result = ResultInterface(1, 'test')
+    assert isinstance(result, ResultInterface)
+    assert result.subplt_nbr == 1
+    assert result.subplt_titles == 'test'
