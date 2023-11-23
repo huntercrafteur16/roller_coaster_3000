@@ -25,7 +25,7 @@ class Wagon:
         if StartingLine:
             Start_line(space, (position_init[0]-(L/2+10)-50, position_init[1]+50),
                        (position_init[0]+L/2+10+50, position_init[1]+50))
-        Mass_roues, Mass_chassis = (1/3)*Mass, (2/3)*Mass
+        Mass_roues, Mass_chassis = (1/100)*Mass, (99/100)*Mass
 
         # Ajout des objets
 
