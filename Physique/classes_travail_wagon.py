@@ -14,6 +14,7 @@ class PivotJoint:
                  b2: pymunk.body.Body, a=(0, 0), a2=(0, 0), collide=False):
         joint = pymunk.PinJoint(b, b2, a, a2)
         joint._set_error_bias(1e-6)
+        self.collide = collide
         joint.collide_bodies = collide
         space.add(joint)
 
@@ -62,6 +63,7 @@ class Box:
         x0, y0 = p0
         x1, y1 = p1
         pts = [(x0, y0), (x1, y0+20), (x1, y1+20), (x0, y1)]
+        self.points = pts
         for i in range(4):
             segment = pymunk.Segment(
                 space.static_body, pts[i], pts[(i+1) % 4], d)
@@ -76,6 +78,7 @@ class Start_line:
     def __init__(self, space: pymunk.Space, p0: tuple[float, float], p1: tuple[float, float]):
         segment = pymunk.Segment(space.static_body, p0, p1, 2)
         segment.elasticity = 1
+        self.position = p0
         segment.friction = 1
         space.add(segment)
 
@@ -88,6 +91,7 @@ class Poly:
                  Mass: float, L: float, h: float):
         self.body = pymunk.Body(1, 100)
         self.body.position = pos
+        self.vertices = vertices
         shape = pymunk.Poly(self.body, vertices)
         shape.filter = pymunk.ShapeFilter(group=1)
         shape.density = Mass/(L*h)
@@ -107,6 +111,7 @@ class DampedSpring:
                  stiffness: float, damping: float):
         joint = pymunk.DampedSpring(
             b, b2, anchor_b, anchor_b2, rest_length, stiffness, damping)
+        self.stif = stiffness
         space.add(joint)
 
 
@@ -120,6 +125,7 @@ class GrooveJoint:
                  anchor_b: tuple[float, float]):
         joint = pymunk.GrooveJoint(
             a, b, groove_a, groove_b, anchor_b)
+        self.anchor_b = anchor_b
         joint.collide_bodies = False
         space.add(joint)
 
@@ -131,4 +137,5 @@ class PinJoint:
     def __init__(self, space: pymunk.Space, b: pymunk.body.Body, b2: pymunk.body.Body,
                  a=(0, 0), a2=(0, 0)):
         joint = pymunk.PinJoint(b, b2, a, a2)
+        self.a = a
         space.add(joint)
