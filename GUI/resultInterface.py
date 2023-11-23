@@ -1,6 +1,7 @@
 """
 Definition de la classe ResultInterface et methodes
 """
+
 import matplotlib.pyplot as plt
 
 
@@ -22,10 +23,13 @@ class ResultInterface():
         """
         remplit les listes de données à afficher
         """
+
         self.fig, self.ax = plt.subplots(self.subplt_nbr, sharex=True)
+
         for i in range(self.subplt_nbr):
             self.ax[i].set_title(self.subplt_titles[i])
-            self.ax[i].plot(self.time, datas[i])
+
+            self.ax[i].plot(self.time[1::], datas[i][1::])
 
     def show(self):
         """
