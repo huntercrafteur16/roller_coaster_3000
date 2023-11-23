@@ -1,2 +1,29 @@
 *.pyc
-**.pyc
+
+**/.vscode/.ropeproject/**
+.nyc_output
+.vscode-test
+__pycache__
+**/.vscode-test/**
+**/.vscode test/**
+**/.vscode-smoke/**
+**/.venv*/
+
+.pytest_cache
+tmp/**
+.python-version
+.vs/
+test-results*.xml
+xunit-test-results.xml
+build/ci/performance/performance-results.json
+!build/
+debug*.log
+debugpy*.log
+pydevd*.log
+nodeLanguageServer/**
+nodeLanguageServer.*/**
+dist/**
+# translation files
+*.xlf
+package.nls.*.json
+l10n/
