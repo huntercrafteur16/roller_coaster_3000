@@ -2,13 +2,10 @@
 Module qui gère l'interface
 """
 
-from tkinter import N, RIGHT, X, Frame, Button, Tk, DoubleVar, BOTTOM, TOP
-from tkinter import BOTH, IntVar, Entry, Scale, Label, HORIZONTAL
+from tkinter import N, X, Frame, Button, Tk, DoubleVar, BOTTOM
+from tkinter import TOP, BOTH, IntVar, Entry, Scale, Label, HORIZONTAL
 from typing import Callable
-from numpy import var
 from GUI.music.musique import Musique
-import sys
-import subprocess
 
 # On définit une classe "Interface" qui prend en argument deux dictionnaires,
 # les variables et les fonctions donc l'interface a besoin pour s'implémenter
@@ -36,18 +33,18 @@ class Interface():
         self.apply_button_function = button_functions["apply"]
         self.open_file_function = button_functions["open"]
         self.show_results = button_functions["show_results"]
-        
+
         # dimensions de la fenetre pymunk en px
         roller_coaster_width = 1900
         roller_coaster_height = 700
-        
+
         # Fenêtre principale
         self.root = Tk()
         self.root.title("Bienvenue dans le Roller Coaster 3000, visiteur !")
         self.root.state('zoomed')
         self.isRunning = True
         self.root.protocol('WM_DELETE_WINDOW', self.killInterface)
-        
+
         # Trois frames : barre d'outils, simulation, barre des graphes
         toolbar = Frame(self.root, bg="lightgray")
         simu = Frame(self.root, borderwidth=5, bg="white")
@@ -76,8 +73,7 @@ class Interface():
             self.applied_nbr_wagon = int(nbr_wagon.get())
             self.applied_c = float(c.get())*10
             self.apply_button_function()
-            print("nouvelles valeurs")
-            
+
         # 4 boutons: Start/Reset, Play/Pause, Ouvrir tracé et Afficher résult.
         buttons = Frame(toolbar, bg="lightgray", height=100, padx=5)
         buttons.grid(row=0, column=0)
@@ -90,7 +86,7 @@ class Interface():
                                  activebackground='#0080ff')
         self.start_reset.grid(row=0, column=0, padx=3, pady=3)
         self.play_pause.grid(row=0, column=1, padx=3, pady=3)
-        
+
         open_filebutton = Button(buttons, command=self.open_file_function, width=10, height=2,
                                  text='Ouvrir tracé', fg='#000000', activebackground='#000000')
         open_filebutton.grid(row=0, column=2, padx=3, pady=3)
@@ -102,7 +98,7 @@ class Interface():
 
         # Initialisation de la musique
         musique = Musique()
-        
+
         # Affichage du bouton musique on/off
         musique_or_not = Button(toolbar, text="Musique",
                                 command=musique.music_mute)
@@ -117,10 +113,10 @@ class Interface():
                              bg='lightgray', fg='red', activebackground='red', command=apply_values)
         apply_param.grid(row=0, column=0, padx=5, pady=5)
 
-        # 5 curseurs pour les paramètres utilisateurs: 
-        # Masse, Force des propulseurs, Vitesse des treuils, 
+        # 5 curseurs pour les paramètres utilisateurs:
+        # Masse, Force des propulseurs, Vitesse des treuils,
         # Nombre de wagons, Coefficient de frottement
-        
+
         # Masse
         param_m = Frame(param)
         label_m = Label(param_m, text='Masse des wagons (Tonnes)',
@@ -128,7 +124,7 @@ class Interface():
         entry_m = Entry(param_m, textvariable=m, width=5)
         scale_m = Scale(param_m, from_=1, to=50, showvalue=False, variable=m,
                         tickinterval=25, orient=HORIZONTAL, width=10)
-        
+
         # Force des propulseurs
         param_F = Frame(param)
         label_F = Label(param_F, text='Force des propulseurs (kN)',
@@ -136,7 +132,7 @@ class Interface():
         entry_F = Entry(param_F, textvariable=f, width=5)
         scale_F = Scale(param_F, from_=5, to=100, showvalue=False, variable=f,
                         tickinterval=50, orient=HORIZONTAL, width=10)
-        
+
         # Vitesse des treuils
         param_v = Frame(param)
         label_v = Label(param_v, text='Vitesse des treuils (m/s)',
@@ -145,7 +141,7 @@ class Interface():
             param_v, textvariable=v, width=5)
         scale_v = Scale(param_v, from_=1, to=10, showvalue=False,
                         variable=v, tickinterval=3, orient=HORIZONTAL, width=10)
-        
+
         # Nombre de wagons
         param_nbr_wagon = Frame(param)
         label_nbr_wagon = Label(param_nbr_wagon, text='Nombre de wagons',
@@ -154,7 +150,7 @@ class Interface():
             param_nbr_wagon, textvariable=nbr_wagon, width=5)
         scale_nbr_wagon = Scale(param_nbr_wagon, from_=0, to=10, showvalue=False,
                                 variable=nbr_wagon, tickinterval=2, orient=HORIZONTAL, width=10)
-        
+
         # Coefficient de frottement
         param_c = Frame(param)
         label_c = Label(param_c, text='Coef. de frott. (arb.)',
@@ -195,7 +191,7 @@ class Interface():
             simu, bg='white', height=roller_coaster_height, width=roller_coaster_width)
         self.frame_graph = Frame(
             self.graphbar, width=1800, height=50, bg="lightgray")
-        
+
         # On place les 2 graphes à afficher dans la frame prévue à cet effet
         Vitesse = Label(self.frame_graph, text="Vitesse",
                         justify="center", bg="lightgray", width="20")
@@ -203,12 +199,12 @@ class Interface():
         Energie = Label(self.frame_graph, text="Energie",
                         justify="center", bg="lightgray", width="20")
         Energie.grid(row=0, column=0, sticky="nsew", padx=400)
-        
+
         # Affichage des frames
         self.frame_graph.pack(expand=1)
         self.roller_coaster.grid(
             row=1, column=1, rowspan=3, columnspan=3, sticky=N)
-        
+
         # L'initialisation est terminée
 
     def get_graph_frame(self):
