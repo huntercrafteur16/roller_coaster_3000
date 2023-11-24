@@ -35,7 +35,7 @@ class physicManager():
     train: Train
 
     def __init__(self, width, height, root=None, frame: Frame = None,
-                 gravity=9.8, fps=25, physics_step_per_frame=100, logger=None) -> None:
+                 gravity=9.8, fps=30, physics_step_per_frame=350, logger=None) -> None:
         self.width = width
         self.height = height
         self.frame = frame
@@ -157,7 +157,7 @@ class physicManager():
         pygame.display.flip()
 
         # On pause la simulation selon les fps voulus
-        # self._clock.tick(self._fps)
+        self._clock.tick(self._fps)
 
         #  de fps sur le titre de la fenêtre
         return True  # aucun problème ni arrêt
@@ -203,11 +203,11 @@ class physicManager():
         self.wagon.get_chassis_body().apply_force_at_local_point((force, 0))
         # body.apply_force_at_local_point((force, 0), (0, 0))
 
-    def _pull_loco(self, speed_cons, K=3000):
+    def _pull_loco(self, speed_cons):
         """
         exerce force de traction sur  locomotive pour avancée a vitesse constante
         """
-        K = self.N*self.wagon.mass*1000
+        K = self.N*self.wagon.mass*10
 
         cur_speed = self.wagon.get_chassis_body(
         ).velocity.rotated(-self.wagon.get_chassis_body().angle)
@@ -286,7 +286,7 @@ class physicManager():
         self.c = param["coef_frot"]
         if self.rail:
             startpos = (self.rail.data_points[0]
-                        [0]-self.getWagon().L/2, self.rail.data_points[0][1]-10)
+                        [0]-self.getWagon().L, self.rail.data_points[0][1]-10)
 
             self.rail.renderRail(
                 self._space, physicManager.wagon_length, self.N)

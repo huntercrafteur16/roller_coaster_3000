@@ -78,8 +78,8 @@ class Rail():
     def add_premier_rail(self, space, L, nb_wagon):
         """ajoute le premier rail, qui permet de poser le train"""
         premier_point = (self.data_points[0][0], self.data_points[0][1])
-        railseg = pymunk.Segment(space.static_body, premier_point, (
-            premier_point[0]-2*L*nb_wagon, premier_point[1]), self.width)
+        railseg = pymunk.Segment(space.static_body, (
+            premier_point[0]-2*L*nb_wagon, premier_point[1]), premier_point, self.width)
         railseg.elasticity = 0
         railseg.collision_type = 2
         railseg.friction = 1

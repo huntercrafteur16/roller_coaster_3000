@@ -55,10 +55,10 @@ class Wagon:
         PivotJoint(space, chassis.body, wheel2.body, v3, (0, 0), False)
 
         DampedSpring(space, chassis.body, wheel3.body,
-                     v5, (0, 0), L/3+1, tension_ressort, 60)
+                     v5, (0, 0), L/3+1, tension_ressort, 0)
 
         DampedSpring(space, chassis.body, wheel4.body,
-                     v7, (0, 0), L/3+1, tension_ressort, 60)
+                     v7, (0, 0), L/3+1, tension_ressort, 0)
 
         GrooveJoint(space, chassis.body, wheel3.body,
                     (-L/2, h/2), (-L/2, h/2+100), (0, 0))
@@ -99,23 +99,8 @@ class Wagon:
 
     def get_potential(self, ref_point=600):
         """renvoie l'energie potentielle de self"""
-        return self.m*self.gravity[1]*(ref_point-self.c.position[1])*0.8
+        return self.m*self.gravity[1]*(ref_point-self.c.position[1])
 
     def get_total_energy(self):
         """renvoie l'energie mécanique de self"""
         return (self.get_kinetic() + self.get_potential())
-
-    def get_chassis_acceleration(self):
-        """renvoie l'accélération de self"""
-        return self.c.force/self.m
-
-    def get_starting_position(self, pos_rail: tuple[float, float]):
-        """renvoie la position à laquelle appeler le wagon en fonction de la position du rail"""
-        return (pos_rail[0], pos_rail[1]-(self.L/3))
-
-    def get_puissance(self):
-        """renvoie la puissance lorsqu'il est tracté"""
-        force = self.c.force
-        vitesse = self.get_chassis_velocity()
-        puissance = force.dot(vitesse)
-        return puissance

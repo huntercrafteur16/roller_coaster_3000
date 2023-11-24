@@ -41,9 +41,12 @@ class Interface():
 
         # Fenêtre principale
         self.root = Tk()
-        ico = Image.open('GUI/icon.ico')
-        photo = ImageTk.PhotoImage(ico)
-        self.root.wm_iconphoto(True, photo)
+        try:
+            ico = Image.open('GUI/icon.ico')
+            photo = ImageTk.PhotoImage(ico)
+            self.root.wm_iconphoto(True, photo)
+        except:
+            pass
         self.root.title("Bienvenue dans le Roller Coaster 3000, visiteur !")
         self.root.state('zoomed')
         self.isRunning = True
@@ -63,8 +66,8 @@ class Interface():
         # Variables utilisateurs
         self.applied_m, self.applied_f, self.applied_v = 1000, 100000, 50
         self.applied_nbr_wagon, self.applied_c = 3, 10
-        m = DoubleVar(value=1)
-        f = DoubleVar(value=10)
+        m = DoubleVar(value=10)
+        f = DoubleVar(value=50)
         nbr_wagon = IntVar(value=3)
         v = DoubleVar(value=5)
         c = DoubleVar(value=1)
@@ -134,8 +137,8 @@ class Interface():
         label_F = Label(param_F, text='Force des propulseurs (kN)',
                         width=25, height=1)
         entry_F = Entry(param_F, textvariable=f, width=5)
-        scale_F = Scale(param_F, from_=5, to=100, showvalue=False, variable=f,
-                        tickinterval=50, orient=HORIZONTAL, width=10)
+        scale_F = Scale(param_F, from_=0, to=500, showvalue=False, variable=f,
+                        tickinterval=250, orient=HORIZONTAL, width=10)
 
         # Vitesse des treuils
         param_v = Frame(param)
