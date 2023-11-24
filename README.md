@@ -14,16 +14,17 @@ Envoyer un mail au support pour avoir des screenshots du logiciel
 
 ## Installation
 
-cloner le repository et exécuter main.py pour lancer le programme principal ou bien railgenerator_launcher.py pouur l'éditeur de tracés
+Cloner le repository. Requiert python3, les modules requis sont dans requirements.txt, exécuter la commande "pip install -r requirements.txt" pour installer le nécessaire.
 
 ## Utilisation
 
-Voir catégorie support
+Exécuter main.py pour lancer le programme principal (commande "py main.py")
+Exécuter railgenerator_launcher.py pour l'éditeur de tracés (commande "py railgenerator_launcher.py")
+Des indications sont prévues pour aider l'utilisateur dans son usage du logiciel.
 
 ## Support
 
 antoine.vallade@student-cs.fr
-.
 
 ## Auteurs
 
@@ -31,8 +32,8 @@ Merci à Anouchka Daniel, Martin Graffin, Arthur Biot, Clément Bonizec, Fabien 
 
 ## License
 
-open source malgré la haute complexité du projet et les secrets industriels de réalisation de roller coasters
+Open source malgré la haute complexité du projet et les secrets industriels de réalisation de roller coasters
 
 ## Project status
 
-Version finale finie
+Version finale
