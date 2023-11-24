@@ -1,3 +1,4 @@
 [MASTER]
 disable=
     C0103, # uppercase naming style
+    E0401,
